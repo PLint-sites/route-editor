@@ -17,6 +17,9 @@
         @routes
         <script src="{{ mix('js/app.js') }}" defer></script>
 
+        {{-- Font Awesome 5 --}}
+        <script src="https://kit.fontawesome.com/48dc4a9b21.js" crossorigin="anonymous"></script>
+
         <!-- Leaflet CSS and JS -->
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
             integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
