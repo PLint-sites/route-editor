@@ -41,6 +41,32 @@ class RouteController extends Controller
         }
     }
 
+    /**
+     * Import existing GPX file. Check if correct filetype, open and read lat-lng data and return it
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function import(Request $request)
+    {
+        // available: $lats, $lons, $latlng
+        extract($this->readGpx($request->gpx, 'strava'));
+        extract($this->addDistance($lats, $lons));
+
+        // number of points per km is 'pointDensity'
+        $pointDensity = ceil(count($lats)/$total_distance);
+        $coarsenFactor = ceil($pointDensity/5);
+
+        $coarsendData = [];
+        foreach($latlng as $key => $point) {
+            if ($key % $coarsenFactor == 0) {
+                $coarsendData[] = $point;
+            }
+        }
+
+        return ['track' => $coarsendData, 'distance' => $total_distance];
+    }
+
     // ---
     // Helper functions to read data, move to library
     // ---

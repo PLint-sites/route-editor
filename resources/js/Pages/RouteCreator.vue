@@ -24,8 +24,8 @@
                         </div>
                     </div>
                 </div>
+                <Dropzone @track-imported="handleTrackImported"/>
             </div>
-
         </div>
     </div>
 </template>
@@ -33,12 +33,13 @@
 <script>
 import calculateDistance from '../libs/distance'
 import Button from '../Components/Button'
+import Dropzone from '../RouteComponents/Dropzone'
 import { Notyf } from 'notyf';
 import 'notyf/notyf.min.css';
 
 export default {
     name: 'RouteCreator',
-    components: { Button },
+    components: { Button, Dropzone },
     props: ['track', 'distance'],
     data() {
         return {
@@ -48,7 +49,11 @@ export default {
             routes: [],
             activeRouteIndex: 0,
             colors: ['#ec008c', '#fff100', '#ff8c00', '#e81123', '#68217a', '#00188f', '#00bcf2', '#00b294', '#009e49', '#bad80a'],
-            // notyf: new Notyf({duration: 3000}),
+            upload: {
+                isInitial: true,
+                isSaving: false,
+                fieldName: 'gpx',
+            },
         }
     },
     methods: {
@@ -103,7 +108,7 @@ export default {
             // Init listener for clicks
             this.mymap.on('click', this.onMapClick)
 
-            this.showMessage('Route ingeladen, klaar voor gebruik!', 'success')
+            this.showMessage('Route ingeladen, klaar voor gebruik!')
         },
         onMapClick({latlng}) {
             console.log('Handle onMapClick')
@@ -176,7 +181,7 @@ export default {
             this.updateRouteOnCut(route, route1Points)
             
             // idem for route2Points (first update activeRouteIndex)
-            this.addRouteOnCut(route2Points)
+            this.addRoute(route2Points)
         },
         updateRouteOnCut(route, points) {
             const polyline = L.polyline(points.map(({circle}) => circle.getLatLng()), {color: route.color})
@@ -192,17 +197,17 @@ export default {
                 circle.setStyle({color})
             })
         },
-        addRouteOnCut(points) {
+        addRoute(points) {
             this.activeRouteIndex = this.routes.length
-            const color2 = this.colors[this.activeRouteIndex]
-            const polyline = L.polyline(points.map(({circle}) => circle.getLatLng()), {color: color2})
+            const color = this.colors[this.activeRouteIndex]
+            const polyline = L.polyline(points.map(({circle}) => circle.getLatLng()), {color})
             polyline.addTo(this.mymap);
 
-            const route1 = {
-                name: 'Route 2',
+            const route = {
+                name: `Route ${this.activeRouteIndex}`,
                 distance: calculateDistance(polyline.getLatLngs()),
                 index: this.activeRouteIndex,
-                color: color2,
+                color,
                 points: points.map((point, index) => ({
                     ...point,
                     index
@@ -211,17 +216,51 @@ export default {
             }
 
             // add the click events for the individual circles and update colors
-            route1.points.forEach(({circle}, index, ar) => {
+            route.points.forEach(({circle}, index, ar) => {
                 const color = index === 0 ? '#ffffff' : (index === ar.length-1 ? '#000000' : 'blue')
                 circle.on('click', this.onPointClick)
                 circle.setStyle({color})
             })
 
-            this.routes.push(route1)
+            this.routes.push(route)
         },
-        showMessage(message, type) {
-            (new Notyf({duration: 1500}))[type](message)
+        showMessage(message, type = 'success') {
+            (new Notyf({
+                duration: 1500,
+                position: {
+                    x: 'left',
+                    y: 'bottom'
+                },
+            }))[type](message)
         },
+        handleTrackImported({track, distance}) {
+            // Map track points to floating point and create objects
+            const points = track
+                .map(point => [parseFloat(point[0]), parseFloat(point[1])])
+                .map((point, index, ar) => {
+                    // eerste punt wit, laatste zwart
+                    const color = index === 0 ? '#ffffff' : (index === ar.length-1 ? '#000000' : 'blue')
+
+                    const circle = L.circle(point, {
+                        radius: 15, 
+                        color,
+                        fillOpacity: 1,
+                        bubblingMouseEvents: false
+                    })
+                    circle.addTo(this.mymap);
+                    circle.on('click', this.onPointClick)
+
+                    return {
+                        circle,
+                        index
+                    }
+                })
+
+            this.addRoute(points)
+
+            this.showMessage(`New track imported (number of points ${track.length}), distance: ${distance}`)
+        },
+        
     },
     mounted() {
         this.initMap()
@@ -267,36 +306,5 @@ export default {
         }
     }
 
-}
-
-#upload-form {
-    .dropbox {
-        outline: 2px dashed grey; /* the dash box */
-        outline-offset: -10px;
-        background: lightcyan;
-        color: dimgray;
-        padding: 10px 10px;
-        min-height: 200px; /* minimum height */
-        position: relative;
-        cursor: pointer;
-
-        &:hover {
-            background: lightblue; /* when mouse over to the drop zone, change color */
-        }
-
-        p {
-            font-size: 1.2em;
-            text-align: center;
-            padding: 50px 0;
-        }
-    }
-
-    .input-file {
-        opacity: 0; /* invisible but it's there! */
-        width: 100%;
-        height: 200px;
-        position: absolute;
-        cursor: pointer;
-    }
 }
 </style>

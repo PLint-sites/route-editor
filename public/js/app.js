@@ -17265,9 +17265,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _libs_distance__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../libs/distance */ "./resources/js/libs/distance.js");
 /* harmony import */ var _Components_Button__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Components/Button */ "./resources/js/Components/Button.vue");
-/* harmony import */ var notyf__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! notyf */ "./node_modules/notyf/notyf.es.js");
-/* harmony import */ var notyf_notyf_min_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! notyf/notyf.min.css */ "./node_modules/notyf/notyf.min.css");
-/* harmony import */ var notyf_notyf_min_css__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(notyf_notyf_min_css__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _RouteComponents_Dropzone__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../RouteComponents/Dropzone */ "./resources/js/RouteComponents/Dropzone.vue");
+/* harmony import */ var notyf__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! notyf */ "./node_modules/notyf/notyf.es.js");
+/* harmony import */ var notyf_notyf_min_css__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! notyf/notyf.min.css */ "./node_modules/notyf/notyf.min.css");
+/* harmony import */ var notyf_notyf_min_css__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(notyf_notyf_min_css__WEBPACK_IMPORTED_MODULE_4__);
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -17278,10 +17279,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: 'RouteCreator',
   components: {
-    Button: _Components_Button__WEBPACK_IMPORTED_MODULE_1__.default
+    Button: _Components_Button__WEBPACK_IMPORTED_MODULE_1__.default,
+    Dropzone: _RouteComponents_Dropzone__WEBPACK_IMPORTED_MODULE_2__.default
   },
   props: ['track', 'distance'],
   data: function data() {
@@ -17291,8 +17294,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       home: [51.01097800768912, 5.856136009097099],
       routes: [],
       activeRouteIndex: 0,
-      colors: ['#ec008c', '#fff100', '#ff8c00', '#e81123', '#68217a', '#00188f', '#00bcf2', '#00b294', '#009e49', '#bad80a'] // notyf: new Notyf({duration: 3000}),
-
+      colors: ['#ec008c', '#fff100', '#ff8c00', '#e81123', '#68217a', '#00188f', '#00bcf2', '#00b294', '#009e49', '#bad80a'],
+      upload: {
+        isInitial: true,
+        isSaving: false,
+        fieldName: 'gpx'
+      }
     };
   },
   methods: {
@@ -17344,7 +17351,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.routes.push(route); // Init listener for clicks
 
       this.mymap.on('click', this.onMapClick);
-      this.showMessage('Route ingeladen, klaar voor gebruik!', 'success');
+      this.showMessage('Route ingeladen, klaar voor gebruik!');
     },
     onMapClick: function onMapClick(_ref) {
       var latlng = _ref.latlng;
@@ -17424,7 +17431,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       this.updateRouteOnCut(route, route1Points); // idem for route2Points (first update activeRouteIndex)
 
-      this.addRouteOnCut(route2Points);
+      this.addRoute(route2Points);
     },
     updateRouteOnCut: function updateRouteOnCut(route, points) {
       var _this4 = this;
@@ -17450,23 +17457,23 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         });
       });
     },
-    addRouteOnCut: function addRouteOnCut(points) {
+    addRoute: function addRoute(points) {
       var _this5 = this;
 
       this.activeRouteIndex = this.routes.length;
-      var color2 = this.colors[this.activeRouteIndex];
+      var color = this.colors[this.activeRouteIndex];
       var polyline = L.polyline(points.map(function (_ref6) {
         var circle = _ref6.circle;
         return circle.getLatLng();
       }), {
-        color: color2
+        color: color
       });
       polyline.addTo(this.mymap);
-      var route1 = {
-        name: 'Route 2',
+      var route = {
+        name: "Route ".concat(this.activeRouteIndex),
         distance: (0,_libs_distance__WEBPACK_IMPORTED_MODULE_0__.default)(polyline.getLatLngs()),
         index: this.activeRouteIndex,
-        color: color2,
+        color: color,
         points: points.map(function (point, index) {
           return _objectSpread(_objectSpread({}, point), {}, {
             index: index
@@ -17475,7 +17482,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         polyline: polyline
       }; // add the click events for the individual circles and update colors
 
-      route1.points.forEach(function (_ref7, index, ar) {
+      route.points.forEach(function (_ref7, index, ar) {
         var circle = _ref7.circle;
         var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : 'blue';
         circle.on('click', _this5.onPointClick);
@@ -17483,12 +17490,44 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           color: color
         });
       });
-      this.routes.push(route1);
+      this.routes.push(route);
     },
-    showMessage: function showMessage(message, type) {
-      new notyf__WEBPACK_IMPORTED_MODULE_2__.Notyf({
-        duration: 1500
+    showMessage: function showMessage(message) {
+      var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'success';
+      new notyf__WEBPACK_IMPORTED_MODULE_3__.Notyf({
+        duration: 1500,
+        position: {
+          x: 'left',
+          y: 'bottom'
+        }
       })[type](message);
+    },
+    handleTrackImported: function handleTrackImported(_ref8) {
+      var _this6 = this;
+
+      var track = _ref8.track,
+          distance = _ref8.distance;
+      // Map track points to floating point and create objects
+      var points = track.map(function (point) {
+        return [parseFloat(point[0]), parseFloat(point[1])];
+      }).map(function (point, index, ar) {
+        // eerste punt wit, laatste zwart
+        var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : 'blue';
+        var circle = L.circle(point, {
+          radius: 15,
+          color: color,
+          fillOpacity: 1,
+          bubblingMouseEvents: false
+        });
+        circle.addTo(_this6.mymap);
+        circle.on('click', _this6.onPointClick);
+        return {
+          circle: circle,
+          index: index
+        };
+      });
+      this.addRoute(points);
+      this.showMessage("New track imported (number of points ".concat(track.length, "), distance: ").concat(distance));
     }
   },
   mounted: function mounted() {
@@ -17517,6 +17556,62 @@ __webpack_require__.r(__webpack_exports__);
     errors: Object,
     laravelVersion: String,
     phpVersion: String
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/RouteComponents/Dropzone.vue?vue&type=script&lang=js":
+/*!*******************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/RouteComponents/Dropzone.vue?vue&type=script&lang=js ***!
+  \*******************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  name: 'Dropzone',
+  data: function data() {
+    return {
+      isInitial: true,
+      isSaving: false,
+      fieldName: 'gpx'
+    };
+  },
+  methods: {
+    filesChange: function filesChange(fieldName, fileList) {
+      // handle file changes
+      var formData = new FormData();
+      if (!fileList.length) return; // append the files to FormData
+
+      Array.from(Array(fileList.length).keys()).map(function (x) {
+        formData.append(fieldName, fileList[x], fileList[x].name);
+      }); // save it
+
+      this.save(formData);
+    },
+    save: function save(formData) {
+      var _this = this;
+
+      axios.post("/import-gpx", formData) // .then(({data: {track, distance}}) => {
+      .then(function (_ref) {
+        var data = _ref.data;
+
+        // // create a new route with this data
+        // this.activeRouteIndex = this.routes.length
+        // this.appendRoute(route, this.colors[this.activeRouteIndex], this.activeRouteIndex, distance)
+        // // create the individual points of the route
+        // route.forEach(point => this.createPointOnMap(point))
+        // this.showMessage(`New track imported (number of points ${track.length}), distance: ${distance}`)
+        // console.log(`New track imported (number of points ${track.length}), distance: ${distance}`)
+        _this.$emit('track-imported', data);
+      })["catch"](function (error) {
+        return console.log(error);
+      });
+    }
   }
 });
 
@@ -18872,6 +18967,8 @@ var _hoisted_6 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("
 var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data, $options) {
   var _component_Button = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Button");
 
+  var _component_Dropzone = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Dropzone");
+
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", null, [_hoisted_1, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("select", {
     "onUpdate:modelValue": _cache[1] || (_cache[1] = function ($event) {
       return $data.activeRouteIndex = $event;
@@ -18929,7 +19026,11 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
     )]);
   }), 128
   /* KEYED_FRAGMENT */
-  ))])])])]);
+  ))]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Dropzone, {
+    onTrackImported: $options.handleTrackImported
+  }, null, 8
+  /* PROPS */
+  , ["onTrackImported"])])])]);
 });
 
 /***/ }),
@@ -19209,6 +19310,72 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/RouteComponents/Dropzone.vue?vue&type=template&id=b4a14bae&scoped=true":
+/*!***********************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/RouteComponents/Dropzone.vue?vue&type=template&id=b4a14bae&scoped=true ***!
+  \***********************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render)
+/* harmony export */ });
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
+
+
+var _withId = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.withScopeId)("data-v-b4a14bae");
+
+(0,vue__WEBPACK_IMPORTED_MODULE_0__.pushScopeId)("data-v-b4a14bae");
+
+var _hoisted_1 = {
+  id: "upload-form"
+};
+var _hoisted_2 = {
+  key: 0,
+  enctype: "multipart/form-data"
+};
+var _hoisted_3 = {
+  "class": "dropbox"
+};
+var _hoisted_4 = {
+  key: 0
+};
+
+var _hoisted_5 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Drag your file(s) here to begin");
+
+var _hoisted_6 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("br", null, null, -1
+/* HOISTED */
+);
+
+var _hoisted_7 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" or click to browse ");
+
+var _hoisted_8 = {
+  key: 1
+};
+
+(0,vue__WEBPACK_IMPORTED_MODULE_0__.popScopeId)();
+
+var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data, $options) {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_1, [$data.isInitial || $data.isSaving ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("form", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("input", {
+    type: "file",
+    multiple: "",
+    name: $data.fieldName,
+    disabled: $data.isSaving,
+    onChange: _cache[1] || (_cache[1] = function ($event) {
+      $options.filesChange($event.target.name, $event.target.files);
+      _ctx.fileCount = $event.target.files.length;
+    }),
+    "class": "input-file"
+  }, null, 40
+  /* PROPS, HYDRATE_EVENTS */
+  , ["name", "disabled"]), $data.isInitial ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("p", _hoisted_4, [_hoisted_5, _hoisted_6, _hoisted_7])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $data.isSaving ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("p", _hoisted_8, " Uploading " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(_ctx.fileCount) + " files... ", 1
+  /* TEXT */
+  )) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]);
+});
+
+/***/ }),
+
 /***/ "./resources/js/app.js":
 /*!*****************************!*\
   !*** ./resources/js/app.js ***!
@@ -19440,7 +19607,31 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "#mapid[data-v-2013be4c] {\n  height: 80vh;\n}\n#control-container[data-v-2013be4c] {\n  box-sizing: border-box;\n  min-height: 20vh;\n  background: #ddeeff;\n  padding: 10px;\n}\n#control-container select[data-v-2013be4c] {\n  width: 270px;\n}\n#control-container #controls[data-v-2013be4c] {\n  display: grid;\n  grid-template-columns: 400px 1fr 1fr;\n  grid-gap: 20px;\n}\n#control-container #legend > div > div[data-v-2013be4c] {\n  margin-bottom: 8px;\n  border: 1px solid;\n  display: inline-block;\n  font-size: 0.7875rem;\n  line-height: 42px;\n  padding: 0 10px;\n}\n#control-container #legend > div > div button[data-v-2013be4c] {\n  margin-left: 20px;\n}\n#control-container #legend > div > div.active[data-v-2013be4c] {\n  border: 1px solid black !important;\n}\n#upload-form .dropbox[data-v-2013be4c] {\n  outline: 2px dashed grey;\n  /* the dash box */\n  outline-offset: -10px;\n  background: lightcyan;\n  color: dimgray;\n  padding: 10px 10px;\n  min-height: 200px;\n  /* minimum height */\n  position: relative;\n  cursor: pointer;\n}\n#upload-form .dropbox[data-v-2013be4c]:hover {\n  background: lightblue;\n  /* when mouse over to the drop zone, change color */\n}\n#upload-form .dropbox p[data-v-2013be4c] {\n  font-size: 1.2em;\n  text-align: center;\n  padding: 50px 0;\n}\n#upload-form .input-file[data-v-2013be4c] {\n  opacity: 0;\n  /* invisible but it's there! */\n  width: 100%;\n  height: 200px;\n  position: absolute;\n  cursor: pointer;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "#mapid[data-v-2013be4c] {\n  height: 80vh;\n}\n#control-container[data-v-2013be4c] {\n  box-sizing: border-box;\n  min-height: 20vh;\n  background: #ddeeff;\n  padding: 10px;\n}\n#control-container select[data-v-2013be4c] {\n  width: 270px;\n}\n#control-container #controls[data-v-2013be4c] {\n  display: grid;\n  grid-template-columns: 400px 1fr 1fr;\n  grid-gap: 20px;\n}\n#control-container #legend > div > div[data-v-2013be4c] {\n  margin-bottom: 8px;\n  border: 1px solid;\n  display: inline-block;\n  font-size: 0.7875rem;\n  line-height: 42px;\n  padding: 0 10px;\n}\n#control-container #legend > div > div button[data-v-2013be4c] {\n  margin-left: 20px;\n}\n#control-container #legend > div > div.active[data-v-2013be4c] {\n  border: 1px solid black !important;\n}\n", ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js??clonedRuleSet-18.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-18.use[2]!./node_modules/less-loader/dist/cjs.js!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/RouteComponents/Dropzone.vue?vue&type=style&index=0&id=b4a14bae&lang=less&scoped=true":
+/*!**************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js??clonedRuleSet-18.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-18.use[2]!./node_modules/less-loader/dist/cjs.js!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/RouteComponents/Dropzone.vue?vue&type=style&index=0&id=b4a14bae&lang=less&scoped=true ***!
+  \**************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__);
+// Imports
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, "#upload-form .dropbox[data-v-b4a14bae] {\n  outline: 2px dashed grey;\n  /* the dash box */\n  outline-offset: -10px;\n  background: lightcyan;\n  color: dimgray;\n  padding: 10px 10px;\n  min-height: 200px;\n  /* minimum height */\n  position: relative;\n  cursor: pointer;\n}\n#upload-form .dropbox[data-v-b4a14bae]:hover {\n  background: lightblue;\n  /* when mouse over to the drop zone, change color */\n}\n#upload-form .dropbox p[data-v-b4a14bae] {\n  font-size: 1.2em;\n  text-align: center;\n  padding: 50px 0;\n}\n#upload-form .input-file[data-v-b4a14bae] {\n  opacity: 0;\n  /* invisible but it's there! */\n  width: 100%;\n  height: 200px;\n  position: absolute;\n  cursor: pointer;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -42412,6 +42603,36 @@ _Welcome_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__.default.__file
 
 /***/ }),
 
+/***/ "./resources/js/RouteComponents/Dropzone.vue":
+/*!***************************************************!*\
+  !*** ./resources/js/RouteComponents/Dropzone.vue ***!
+  \***************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _Dropzone_vue_vue_type_template_id_b4a14bae_scoped_true__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Dropzone.vue?vue&type=template&id=b4a14bae&scoped=true */ "./resources/js/RouteComponents/Dropzone.vue?vue&type=template&id=b4a14bae&scoped=true");
+/* harmony import */ var _Dropzone_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Dropzone.vue?vue&type=script&lang=js */ "./resources/js/RouteComponents/Dropzone.vue?vue&type=script&lang=js");
+/* harmony import */ var _Dropzone_vue_vue_type_style_index_0_id_b4a14bae_lang_less_scoped_true__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Dropzone.vue?vue&type=style&index=0&id=b4a14bae&lang=less&scoped=true */ "./resources/js/RouteComponents/Dropzone.vue?vue&type=style&index=0&id=b4a14bae&lang=less&scoped=true");
+
+
+
+
+;
+_Dropzone_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__.default.render = _Dropzone_vue_vue_type_template_id_b4a14bae_scoped_true__WEBPACK_IMPORTED_MODULE_0__.render
+_Dropzone_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__.default.__scopeId = "data-v-b4a14bae"
+/* hot reload */
+if (false) {}
+
+_Dropzone_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__.default.__file = "resources/js/RouteComponents/Dropzone.vue"
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_Dropzone_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__.default);
+
+/***/ }),
+
 /***/ "./resources/js/Components/Button.vue?vue&type=script&lang=js":
 /*!********************************************************************!*\
   !*** ./resources/js/Components/Button.vue?vue&type=script&lang=js ***!
@@ -42712,6 +42933,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_Welcome_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__.default)
 /* harmony export */ });
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_Welcome_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./Welcome.vue?vue&type=script&lang=js */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/Pages/Welcome.vue?vue&type=script&lang=js");
+ 
+
+/***/ }),
+
+/***/ "./resources/js/RouteComponents/Dropzone.vue?vue&type=script&lang=js":
+/*!***************************************************************************!*\
+  !*** ./resources/js/RouteComponents/Dropzone.vue?vue&type=script&lang=js ***!
+  \***************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_Dropzone_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__.default)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_Dropzone_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./Dropzone.vue?vue&type=script&lang=js */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/RouteComponents/Dropzone.vue?vue&type=script&lang=js");
  
 
 /***/ }),
@@ -43052,6 +43289,22 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/RouteComponents/Dropzone.vue?vue&type=template&id=b4a14bae&scoped=true":
+/*!*********************************************************************************************!*\
+  !*** ./resources/js/RouteComponents/Dropzone.vue?vue&type=template&id=b4a14bae&scoped=true ***!
+  \*********************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_Dropzone_vue_vue_type_template_id_b4a14bae_scoped_true__WEBPACK_IMPORTED_MODULE_0__.render)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_Dropzone_vue_vue_type_template_id_b4a14bae_scoped_true__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./Dropzone.vue?vue&type=template&id=b4a14bae&scoped=true */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/RouteComponents/Dropzone.vue?vue&type=template&id=b4a14bae&scoped=true");
+
+
+/***/ }),
+
 /***/ "./resources/js/Pages/RouteCreator.vue?vue&type=style&index=0&id=2013be4c&lang=less&scoped=true":
 /*!******************************************************************************************************!*\
   !*** ./resources/js/Pages/RouteCreator.vue?vue&type=style&index=0&id=2013be4c&lang=less&scoped=true ***!
@@ -43064,6 +43317,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_18_use_1_node_modules_vue_loader_dist_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_18_use_2_node_modules_less_loader_dist_cjs_js_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_RouteCreator_vue_vue_type_style_index_0_id_2013be4c_lang_less_scoped_true__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_18_use_1_node_modules_vue_loader_dist_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_18_use_2_node_modules_less_loader_dist_cjs_js_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_RouteCreator_vue_vue_type_style_index_0_id_2013be4c_lang_less_scoped_true__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
 /* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_18_use_1_node_modules_vue_loader_dist_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_18_use_2_node_modules_less_loader_dist_cjs_js_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_RouteCreator_vue_vue_type_style_index_0_id_2013be4c_lang_less_scoped_true__WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== "default") __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_18_use_1_node_modules_vue_loader_dist_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_18_use_2_node_modules_less_loader_dist_cjs_js_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_RouteCreator_vue_vue_type_style_index_0_id_2013be4c_lang_less_scoped_true__WEBPACK_IMPORTED_MODULE_0__[__WEBPACK_IMPORT_KEY__]
+/* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
+
+
+/***/ }),
+
+/***/ "./resources/js/RouteComponents/Dropzone.vue?vue&type=style&index=0&id=b4a14bae&lang=less&scoped=true":
+/*!************************************************************************************************************!*\
+  !*** ./resources/js/RouteComponents/Dropzone.vue?vue&type=style&index=0&id=b4a14bae&lang=less&scoped=true ***!
+  \************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_18_use_1_node_modules_vue_loader_dist_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_18_use_2_node_modules_less_loader_dist_cjs_js_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_Dropzone_vue_vue_type_style_index_0_id_b4a14bae_lang_less_scoped_true__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-style-loader/index.js!../../../node_modules/css-loader/dist/cjs.js??clonedRuleSet-18.use[1]!../../../node_modules/vue-loader/dist/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-18.use[2]!../../../node_modules/less-loader/dist/cjs.js!../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./Dropzone.vue?vue&type=style&index=0&id=b4a14bae&lang=less&scoped=true */ "./node_modules/vue-style-loader/index.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-18.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-18.use[2]!./node_modules/less-loader/dist/cjs.js!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/RouteComponents/Dropzone.vue?vue&type=style&index=0&id=b4a14bae&lang=less&scoped=true");
+/* harmony import */ var _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_18_use_1_node_modules_vue_loader_dist_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_18_use_2_node_modules_less_loader_dist_cjs_js_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_Dropzone_vue_vue_type_style_index_0_id_b4a14bae_lang_less_scoped_true__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_18_use_1_node_modules_vue_loader_dist_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_18_use_2_node_modules_less_loader_dist_cjs_js_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_Dropzone_vue_vue_type_style_index_0_id_b4a14bae_lang_less_scoped_true__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
+/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_18_use_1_node_modules_vue_loader_dist_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_18_use_2_node_modules_less_loader_dist_cjs_js_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_Dropzone_vue_vue_type_style_index_0_id_b4a14bae_lang_less_scoped_true__WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== "default") __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_18_use_1_node_modules_vue_loader_dist_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_18_use_2_node_modules_less_loader_dist_cjs_js_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_Dropzone_vue_vue_type_style_index_0_id_b4a14bae_lang_less_scoped_true__WEBPACK_IMPORTED_MODULE_0__[__WEBPACK_IMPORT_KEY__]
 /* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
 
 
@@ -43102,6 +43372,27 @@ if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
 var add = __webpack_require__(/*! !../../../node_modules/vue-style-loader/lib/addStylesClient.js */ "./node_modules/vue-style-loader/lib/addStylesClient.js").default
 var update = add("91f67fa4", content, false, {});
+// Hot Module Replacement
+if(false) {}
+
+/***/ }),
+
+/***/ "./node_modules/vue-style-loader/index.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-18.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-18.use[2]!./node_modules/less-loader/dist/cjs.js!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/RouteComponents/Dropzone.vue?vue&type=style&index=0&id=b4a14bae&lang=less&scoped=true":
+/*!*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-style-loader/index.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-18.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-18.use[2]!./node_modules/less-loader/dist/cjs.js!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/RouteComponents/Dropzone.vue?vue&type=style&index=0&id=b4a14bae&lang=less&scoped=true ***!
+  \*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(/*! !!../../../node_modules/css-loader/dist/cjs.js??clonedRuleSet-18.use[1]!../../../node_modules/vue-loader/dist/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-18.use[2]!../../../node_modules/less-loader/dist/cjs.js!../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./Dropzone.vue?vue&type=style&index=0&id=b4a14bae&lang=less&scoped=true */ "./node_modules/css-loader/dist/cjs.js??clonedRuleSet-18.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-18.use[2]!./node_modules/less-loader/dist/cjs.js!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/RouteComponents/Dropzone.vue?vue&type=style&index=0&id=b4a14bae&lang=less&scoped=true");
+if(content.__esModule) content = content.default;
+if(typeof content === 'string') content = [[module.id, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var add = __webpack_require__(/*! !../../../node_modules/vue-style-loader/lib/addStylesClient.js */ "./node_modules/vue-style-loader/lib/addStylesClient.js").default
+var update = add("34075556", content, false, {});
 // Hot Module Replacement
 if(false) {}
 

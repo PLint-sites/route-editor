@@ -31,3 +31,4 @@ use Inertia\Inertia;
 // require __DIR__.'/auth.php';
 
 Route::get('/', [App\Http\Controllers\RouteController::class, 'init'])->name('home');
+Route::post('import-gpx', [App\Http\Controllers\RouteController::class, 'import']);
