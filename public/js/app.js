@@ -17387,9 +17387,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         _this2.mymap.removeLayer(circle);
       }); // remove from this.routes
 
-      this.routes.splice(index, 1); // set first route active
+      this.routes.splice(index, 1); // set first route active if active route is being deleted
 
-      this.activeRouteIndex = 0;
+      if (index === this.activeRouteIndex) {
+        this.activeRouteIndex = 0;
+        this.highlightActiveRoute();
+      }
     },
     findCuttingPointIndex: function findCuttingPointIndex(event) {
       // find index of the ACTIVE route where this point is part of
@@ -17398,11 +17401,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var pointIndex = routePoints.findIndex(function (point) {
         return point.lat === event.latlng.lat && point.lng === event.latlng.lng;
       });
-      console.log(pointIndex);
 
       if (pointIndex > -1) {
-        console.log("point clicked ".concat(event.latlng, ", cut route in two..."));
-
         if (pointIndex > 0 && pointIndex < routePoints.length - 1) {
           return pointIndex;
         }
@@ -17491,6 +17491,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         });
       });
       this.routes.push(route);
+      this.highlightActiveRoute();
     },
     showMessage: function showMessage(message) {
       var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'success';
@@ -17528,6 +17529,41 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       });
       this.addRoute(points);
       this.showMessage("New track imported (number of points ".concat(track.length, "), distance: ").concat(distance));
+    },
+    highlightActiveRoute: function highlightActiveRoute() {
+      var _this7 = this;
+
+      this.routes.forEach(function (route) {
+        if (route.index !== _this7.activeRouteIndex) {
+          route.polyline.setStyle({
+            opacity: 0.4
+          });
+          route.points.forEach(function (_ref9, index, ar) {
+            var circle = _ref9.circle;
+            var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : route.color;
+            circle.setStyle({
+              opacity: 0.3,
+              fillOpacity: 0.3,
+              weight: 1,
+              color: color
+            });
+          });
+        } else {
+          route.polyline.setStyle({
+            opacity: 1
+          });
+          route.points.forEach(function (_ref10, index, ar) {
+            var circle = _ref10.circle;
+            var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : 'blue';
+            circle.setStyle({
+              opacity: 1,
+              fillOpacity: 1,
+              weight: 3,
+              color: color
+            });
+          });
+        }
+      });
     }
   },
   mounted: function mounted() {
@@ -18972,6 +19008,9 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", null, [_hoisted_1, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("select", {
     "onUpdate:modelValue": _cache[1] || (_cache[1] = function ($event) {
       return $data.activeRouteIndex = $event;
+    }),
+    onChange: _cache[2] || (_cache[2] = function () {
+      return $options.highlightActiveRoute && $options.highlightActiveRoute.apply($options, arguments);
     })
   }, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.routes, function (route, index) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("option", {
@@ -18982,8 +19021,8 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
     , ["value"]);
   }), 128
   /* KEYED_FRAGMENT */
-  ))], 512
-  /* NEED_PATCH */
+  ))], 544
+  /* HYDRATE_EVENTS, NEED_PATCH */
   ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $data.activeRouteIndex]])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_4, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.routes, function (route, index) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", {
       key: "legend_".concat(index)

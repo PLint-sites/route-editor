@@ -4,7 +4,7 @@
         <div id="control-container">
             <div id="controls">
                 <div>
-                    <select v-model="activeRouteIndex">
+                    <select v-model="activeRouteIndex" @change="highlightActiveRoute">
                         <option v-for="(route, index) in routes" :key="`route_${index}`" :value="index">Route {{ index+1 }}</option>
                     </select>
                 </div>
@@ -146,18 +146,19 @@ export default {
             // remove from this.routes
             this.routes.splice(index, 1)
 
-            // set first route active
-            this.activeRouteIndex = 0
+            // set first route active if active route is being deleted
+            if (index === this.activeRouteIndex) {
+                this.activeRouteIndex = 0
+                this.highlightActiveRoute()
+            }
         },
         findCuttingPointIndex(event) {
             // find index of the ACTIVE route where this point is part of
             const route = this.routes[this.activeRouteIndex]
             const routePoints = route.polyline.getLatLngs()
             const pointIndex = routePoints.findIndex(point => point.lat === event.latlng.lat && point.lng === event.latlng.lng)
-            console.log(pointIndex)
 
             if (pointIndex > -1) {
-                console.log(`point clicked ${event.latlng}, cut route in two...`)
                 if (pointIndex > 0 && pointIndex < routePoints.length-1) {
                     return pointIndex
                 }
@@ -223,6 +224,8 @@ export default {
             })
 
             this.routes.push(route)
+
+            this.highlightActiveRoute()
         },
         showMessage(message, type = 'success') {
             (new Notyf({
@@ -256,11 +259,37 @@ export default {
                     }
                 })
 
-            this.addRoute(points)
+            this.addRoute(points)            
 
             this.showMessage(`New track imported (number of points ${track.length}), distance: ${distance}`)
         },
-        
+        highlightActiveRoute() {
+            this.routes.forEach(route => {
+                if (route.index !== this.activeRouteIndex) {
+                    route.polyline.setStyle({opacity: 0.4})
+                    route.points.forEach(({circle}, index, ar) => {
+                        const color = index === 0 ? '#ffffff' : (index === ar.length-1 ? '#000000' : route.color)
+                        circle.setStyle({
+                            opacity: 0.3,
+                            fillOpacity: 0.3,
+                            weight: 1,
+                            color
+                        })
+                    })
+                } else {
+                    route.polyline.setStyle({opacity: 1})
+                    route.points.forEach(({circle}, index, ar) => {
+                        const color = index === 0 ? '#ffffff' : (index === ar.length-1 ? '#000000' : 'blue')
+                        circle.setStyle({
+                            opacity: 1,
+                            fillOpacity: 1,
+                            weight: 3,
+                            color
+                        })
+                    })
+                }
+            })
+        },
     },
     mounted() {
         this.initMap()
