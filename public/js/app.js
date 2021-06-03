@@ -17569,6 +17569,22 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     merge: function merge() {
       console.log('merge routes');
+    },
+    reverse: function reverse(index) {
+      var route = this.routes[index]; // reverse route, reset index and switch start/endpoint colors
+
+      route.points = route.points.reverse().map(function (point, index, ar) {
+        if (index === 0) point.circle.setStyle({
+          color: '#ffffff'
+        });
+        if (index === ar.length - 1) point.circle.setStyle({
+          color: '#000000'
+        });
+        return _objectSpread(_objectSpread({}, point), {}, {
+          index: index
+        });
+      });
+      this.showMessage("Route has been reversed");
     }
   },
   mounted: function mounted() {
@@ -19003,6 +19019,12 @@ var _hoisted_6 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("
 /* HOISTED */
 );
 
+var _hoisted_7 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
+  "class": "fas fa-exchange-alt"
+}, null, -1
+/* HOISTED */
+);
+
 (0,vue__WEBPACK_IMPORTED_MODULE_0__.popScopeId)();
 
 var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data, $options) {
@@ -19041,7 +19063,8 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
       type: "button",
       onClick: function onClick($event) {
         return $options.deleteRoute(index);
-      }
+      },
+      title: "Delete route"
     }, {
       "default": _withId(function () {
         return [_hoisted_5];
@@ -19054,7 +19077,8 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
     , ["onClick"]), index === $data.activeRouteIndex && $data.routes.length > 1 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_Button, {
       key: 0,
       type: "button",
-      onClick: $options.merge
+      onClick: $options.merge,
+      title: "Prepend route to..."
     }, {
       "default": _withId(function () {
         return [_hoisted_6];
@@ -19064,7 +19088,22 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
 
     }, 8
     /* PROPS */
-    , ["onClick"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)], 2
+    , ["onClick"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
+      type: "button",
+      onClick: function onClick($event) {
+        return $options.reverse(index);
+      },
+      title: "Reverse route"
+    }, {
+      "default": _withId(function () {
+        return [_hoisted_7];
+      }),
+      _: 2
+      /* DYNAMIC */
+
+    }, 1032
+    /* PROPS, DYNAMIC_SLOTS */
+    , ["onClick"])], 2
     /* CLASS */
     )], 6
     /* CLASS, STYLE */

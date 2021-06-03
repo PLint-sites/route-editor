@@ -18,8 +18,9 @@
                     >
                         <div :class="index === activeRouteIndex ? 'active' : ''">
                             <span>Route {{ index + 1 }} - {{ route.distance.toFixed(2) }} km</span>
-                            <Button type="button" @click="deleteRoute(index)"><i class="fas fa-trash-alt"></i></Button>
-                            <Button v-if="index === activeRouteIndex && routes.length > 1" type="button" @click="merge"><i class="fas fa-paste"></i></Button>
+                            <Button type="button" @click="deleteRoute(index)" title="Delete route"><i class="fas fa-trash-alt"></i></Button>
+                            <Button v-if="index === activeRouteIndex && routes.length > 1" type="button" @click="merge" title="Prepend route to..."><i class="fas fa-paste"></i></Button>
+                            <Button type="button" @click="reverse(index)" title="Reverse route"><i class="fas fa-exchange-alt"></i></Button>
                         </div>
                     </div>
                 </div>
@@ -293,6 +294,19 @@ export default {
         },
         merge() {
             console.log('merge routes')
+        },
+        reverse(index) {
+            const route = this.routes[index]
+            // reverse route, reset index and switch start/endpoint colors
+            route.points = route.points.reverse().map((point, index, ar) => {
+                if (index === 0) point.circle.setStyle({color: '#ffffff'})
+                if (index === ar.length-1) point.circle.setStyle({color: '#000000'})
+                return {
+                    ...point,
+                    index
+                }
+            })
+            this.showMessage(`Route has been reversed`)
         },
     },
     mounted() {
