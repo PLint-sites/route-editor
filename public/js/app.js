@@ -17312,7 +17312,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         tileSize: 512,
         zoomOffset: -1,
         accessToken: this.accessToken
-      }).addTo(this.mymap); // incoming FIXED route from controller, via prop 'track'
+      }).addTo(this.mymap); // Init listener for clicks
+
+      this.mymap.on('click', this.onMapClick); // incoming FIXED route from controller, via prop 'track'
       // const points = this.track.map(point => [parseFloat(point[0]), parseFloat(point[1])])
       // const routeDistance = parseFloat(this.distance)
       // const color = this.colors[this.activeRouteIndex]
@@ -17342,20 +17344,67 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       //     polyline
       // }
       // this.routes.push(route)
-      // // Init listener for clicks
-      // this.mymap.on('click', this.onMapClick)
       // this.showMessage('Route ingeladen, klaar voor gebruik!')
     },
     onMapClick: function onMapClick(_ref) {
       var latlng = _ref.latlng;
-      console.log('Handle onMapClick'); // // show circle on map
-      // this.createPointOnMap(latlng)
-      // // add to route unless new route just created, in case we add to new route
-      // if (this.activeRouteIndex < this.routes.length) {
-      //     this.routes[this.activeRouteIndex].polyline.addLatLng(latlng)
-      // } else {
-      //     this.appendRoute([[latlng.lat, latlng.lng]], this.colors[this.activeRouteIndex], this.activeRouteIndex)
-      // }
+      console.log("Map clicked ".concat(latlng));
+
+      if (this.activeRouteIndex < this.routes.length) {
+        // add to route
+        var route = this.routes[this.activeRouteIndex];
+        route.polyline.addLatLng(latlng); // add a point and make it black, previous last point should become blue
+
+        var circle = L.circle(latlng, {
+          radius: 15,
+          color: 'black',
+          fillOpacity: 1,
+          bubblingMouseEvents: false
+        });
+        circle.addTo(this.mymap);
+        circle.on('click', this.onPointClick);
+        var currentNumberOfPoints = route.points.length;
+        route.points[currentNumberOfPoints - 1].circle.setStyle({
+          color: 'blue'
+        });
+        route.points.push({
+          circle: circle,
+          index: currentNumberOfPoints
+        }); // update distance of route
+      } else {
+        // start a route
+        console.log('Start a route'); // add a point and make it white
+
+        var _circle = L.circle(latlng, {
+          radius: 15,
+          color: '#ffffff',
+          fillOpacity: 1,
+          bubblingMouseEvents: false
+        });
+
+        _circle.addTo(this.mymap);
+
+        _circle.on('click', this.onPointClick);
+
+        var color = this.colors[this.activeRouteIndex];
+        var polyline = L.polyline([latlng], {
+          color: color
+        });
+        polyline.addTo(this.mymap);
+        var _route = {
+          name: "Nieuwe route ".concat(this.activeRouteIndex),
+          // distance: calculateDistance(polyline.getLatLngs()),
+          distance: 0,
+          index: this.activeRouteIndex,
+          color: color,
+          points: [{
+            circle: _circle,
+            index: 0
+          }],
+          polyline: polyline
+        };
+        this.routes.push(_route);
+      }
     },
     onPointClick: function onPointClick(event) {
       var pointIndex = this.findCuttingPointIndex(event);
@@ -17578,6 +17627,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         });
       });
       this.showMessage("Route has been reversed");
+    },
+    startRoute: function startRoute() {
+      this.activeRouteIndex += 1;
+      this.showMessage('Click on the map to start new route');
+    },
+    exportRoute: function exportRoute() {
+      console.log('export, zie AltitudeProfiles project');
     }
   },
   mounted: function mounted() {
@@ -18996,29 +19052,43 @@ var _hoisted_2 = {
 var _hoisted_3 = {
   id: "controls"
 };
-var _hoisted_4 = {
-  key: 0
-};
-var _hoisted_5 = {
+
+var _hoisted_4 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
+  "class": "fas fa-plus"
+}, null, -1
+/* HOISTED */
+);
+
+var _hoisted_5 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Start new route");
+
+var _hoisted_6 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
+  "class": "fas fa-route"
+}, null, -1
+/* HOISTED */
+);
+
+var _hoisted_7 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Export active route");
+
+var _hoisted_8 = {
   id: "legend"
 };
-var _hoisted_6 = {
+var _hoisted_9 = {
   "class": "buttons"
 };
 
-var _hoisted_7 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
+var _hoisted_10 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
   "class": "fas fa-trash-alt"
 }, null, -1
 /* HOISTED */
 );
 
-var _hoisted_8 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
+var _hoisted_11 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
   "class": "fas fa-paste"
 }, null, -1
 /* HOISTED */
 );
 
-var _hoisted_9 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
+var _hoisted_12 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
   "class": "fas fa-exchange-alt"
 }, null, -1
 /* HOISTED */
@@ -19031,7 +19101,8 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
 
   var _component_Dropzone = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Dropzone");
 
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", null, [_hoisted_1, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_3, [$data.routes.length ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("select", {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", null, [_hoisted_1, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", null, [$data.routes.length ? (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)(((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("select", {
+    key: 0,
     "onUpdate:modelValue": _cache[1] || (_cache[1] = function ($event) {
       return $data.activeRouteIndex = $event;
     }),
@@ -19049,7 +19120,34 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
   /* KEYED_FRAGMENT */
   ))], 544
   /* HYDRATE_EVENTS, NEED_PATCH */
-  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $data.activeRouteIndex]])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_5, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.routes, function (route, index) {
+  )), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $data.activeRouteIndex]]) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
+    type: "button",
+    onClick: $options.startRoute,
+    title: "Start new route"
+  }, {
+    "default": _withId(function () {
+      return [_hoisted_4, _hoisted_5];
+    }),
+    _: 1
+    /* STABLE */
+
+  }, 8
+  /* PROPS */
+  , ["onClick"]), $data.routes.length ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_Button, {
+    key: 1,
+    type: "button",
+    onClick: $options.exportRoute,
+    title: "Export active route"
+  }, {
+    "default": _withId(function () {
+      return [_hoisted_6, _hoisted_7];
+    }),
+    _: 1
+    /* STABLE */
+
+  }, 8
+  /* PROPS */
+  , ["onClick"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_8, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.routes, function (route, index) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", {
       key: "legend_".concat(index),
       "class": ["legend-item", index === $data.activeRouteIndex ? 'active' : ''],
@@ -19058,7 +19156,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
       "class": index === $data.activeRouteIndex ? 'active' : ''
     }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("span", null, "Route " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(index + 1) + " - " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(route.distance.toFixed(2)) + " km", 1
     /* TEXT */
-    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
+    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_9, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
       type: "button",
       onClick: function onClick($event) {
         return $options.deleteRoute(index);
@@ -19066,7 +19164,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
       title: "Delete route"
     }, {
       "default": _withId(function () {
-        return [_hoisted_7];
+        return [_hoisted_10];
       }),
       _: 2
       /* DYNAMIC */
@@ -19080,7 +19178,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
       title: "Prepend route to..."
     }, {
       "default": _withId(function () {
-        return [_hoisted_8];
+        return [_hoisted_11];
       }),
       _: 1
       /* STABLE */
@@ -19095,7 +19193,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
       title: "Reverse route"
     }, {
       "default": _withId(function () {
-        return [_hoisted_9];
+        return [_hoisted_12];
       }),
       _: 2
       /* DYNAMIC */
@@ -19690,7 +19788,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "#mapid[data-v-2013be4c] {\n  height: 80vh;\n}\n#control-container[data-v-2013be4c] {\n  box-sizing: border-box;\n  height: 20vh;\n  background: #ddeeff;\n  padding: 10px;\n}\n#control-container select[data-v-2013be4c] {\n  width: 270px;\n}\n#control-container #controls[data-v-2013be4c] {\n  display: grid;\n  grid-template-columns: 400px 1fr 1fr;\n  grid-gap: 20px;\n}\n#control-container #legend .legend-item[data-v-2013be4c] {\n  margin-bottom: 8px;\n  padding: 6px 12px;\n  width: 350px;\n}\n#control-container #legend .legend-item.active[data-v-2013be4c] {\n  border: 1px solid black !important;\n}\n#control-container #legend .legend-item div[data-v-2013be4c] {\n  display: grid;\n  grid-template-columns: 2fr 1fr;\n  align-items: center;\n  font-size: 0.7875rem;\n}\n#control-container #legend .legend-item div .buttons[data-v-2013be4c] {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, 30px);\n  grid-gap: 6px;\n  justify-content: end;\n}\n#control-container #legend .legend-item div .buttons button[data-v-2013be4c] {\n  justify-self: center;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "#mapid[data-v-2013be4c] {\n  height: 80vh;\n}\n#control-container[data-v-2013be4c] {\n  box-sizing: border-box;\n  height: 20vh;\n  background: #ddeeff;\n  padding: 10px;\n}\n#control-container select[data-v-2013be4c] {\n  width: 100%;\n  height: 45px;\n}\n#control-container #controls[data-v-2013be4c] {\n  display: grid;\n  grid-template-columns: 400px 1fr 1fr;\n  grid-gap: 20px;\n}\n#control-container #legend .legend-item[data-v-2013be4c] {\n  margin-bottom: 8px;\n  padding: 6px 12px;\n  width: 350px;\n}\n#control-container #legend .legend-item.active[data-v-2013be4c] {\n  border: 1px solid black !important;\n}\n#control-container #legend .legend-item div[data-v-2013be4c] {\n  display: grid;\n  grid-template-columns: 2fr 1fr;\n  align-items: center;\n  font-size: 0.7875rem;\n}\n#control-container #legend .legend-item div .buttons[data-v-2013be4c] {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, 30px);\n  grid-gap: 6px;\n  justify-content: end;\n}\n#control-container #legend .legend-item div .buttons button[data-v-2013be4c] {\n  justify-self: center;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

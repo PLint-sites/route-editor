@@ -3,10 +3,12 @@
         <div id="mapid"></div>
         <div id="control-container">
             <div id="controls">
-                <div v-if="routes.length">
-                    <select v-model="activeRouteIndex" @change="highlightActiveRoute">
+                <div>
+                    <select v-if="routes.length" v-model="activeRouteIndex" @change="highlightActiveRoute">
                         <option v-for="(route, index) in routes" :key="`route_${index}`" :value="index">Route {{ index+1 }}</option>
                     </select>
+                    <Button type="button" @click="startRoute" title="Start new route"><i class="fas fa-plus"></i> Start new route</Button>
+                    <Button v-if="routes.length" type="button" @click="exportRoute" title="Export active route"><i class="fas fa-route"></i> Export active route</Button>
                 </div>
                 <div id="legend">
                     <div 
@@ -70,6 +72,9 @@ export default {
                 accessToken: this.accessToken
             }).addTo(this.mymap)
 
+            // Init listener for clicks
+            this.mymap.on('click', this.onMapClick)
+
             // incoming FIXED route from controller, via prop 'track'
             // const points = this.track.map(point => [parseFloat(point[0]), parseFloat(point[1])])
             // const routeDistance = parseFloat(this.distance)
@@ -107,22 +112,70 @@ export default {
 
             // this.routes.push(route)
 
-            // // Init listener for clicks
-            // this.mymap.on('click', this.onMapClick)
+            
 
             // this.showMessage('Route ingeladen, klaar voor gebruik!')
         },
         onMapClick({latlng}) {
-            console.log('Handle onMapClick')
-            // // show circle on map
-            // this.createPointOnMap(latlng)
+            console.log(`Map clicked ${latlng}`)
+            if (this.activeRouteIndex < this.routes.length) {
+                // add to route
+                const route = this.routes[this.activeRouteIndex]
+                route.polyline.addLatLng(latlng)
+                
+                // add a point and make it black, previous last point should become blue
+                const circle = L.circle(latlng, {
+                    radius: 15, 
+                    color: 'black',
+                    fillOpacity: 1,
+                    bubblingMouseEvents: false
+                })
+                circle.addTo(this.mymap);
+                circle.on('click', this.onPointClick)
 
-            // // add to route unless new route just created, in case we add to new route
-            // if (this.activeRouteIndex < this.routes.length) {
-            //     this.routes[this.activeRouteIndex].polyline.addLatLng(latlng)
-            // } else {
-            //     this.appendRoute([[latlng.lat, latlng.lng]], this.colors[this.activeRouteIndex], this.activeRouteIndex)
-            // }
+                const currentNumberOfPoints = route.points.length
+                route.points[currentNumberOfPoints-1].circle.setStyle({color: 'blue'})
+
+                route.points.push({
+                    circle,
+                    index: currentNumberOfPoints
+                })
+
+                // update distance of route
+            } else {
+                // start a route
+                console.log('Start a route')
+
+                // add a point and make it white
+                const circle = L.circle(latlng, {
+                    radius: 15, 
+                    color: '#ffffff',
+                    fillOpacity: 1,
+                    bubblingMouseEvents: false
+                })
+                circle.addTo(this.mymap);
+                circle.on('click', this.onPointClick)
+
+                const color = this.colors[this.activeRouteIndex]
+
+                const polyline = L.polyline([latlng], {color})
+                polyline.addTo(this.mymap);
+
+                const route = {
+                    name: `Nieuwe route ${this.activeRouteIndex}`,
+                    // distance: calculateDistance(polyline.getLatLngs()),
+                    distance: 0,
+                    index: this.activeRouteIndex,
+                    color,
+                    points: [{
+                        circle,
+                        index: 0,
+                    }],
+                    polyline
+                }
+
+                this.routes.push(route)
+            }
         },
         onPointClick(event) {
             const pointIndex = this.findCuttingPointIndex(event)
@@ -310,6 +363,13 @@ export default {
             })
             this.showMessage(`Route has been reversed`)
         },
+        startRoute() {
+            this.activeRouteIndex += 1
+            this.showMessage('Click on the map to start new route')
+        },
+        exportRoute() {
+            console.log('export, zie AltitudeProfiles project')
+        },
     },
     mounted() {
         this.initMap()
@@ -329,7 +389,8 @@ export default {
     padding: 10px;
 
     select {
-        width: 270px;
+        width: 100%;
+        height: 45px;
     }
 
     #controls {
