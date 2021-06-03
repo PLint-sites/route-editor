@@ -3,7 +3,7 @@
         <div id="mapid"></div>
         <div id="control-container">
             <div id="controls">
-                <div>
+                <div v-if="routes.length">
                     <select v-model="activeRouteIndex" @change="highlightActiveRoute">
                         <option v-for="(route, index) in routes" :key="`route_${index}`" :value="index">Route {{ index+1 }}</option>
                     </select>
@@ -18,9 +18,11 @@
                     >
                         <div :class="index === activeRouteIndex ? 'active' : ''">
                             <span>Route {{ index + 1 }} - {{ route.distance.toFixed(2) }} km</span>
-                            <Button type="button" @click="deleteRoute(index)" title="Delete route"><i class="fas fa-trash-alt"></i></Button>
-                            <Button v-if="index === activeRouteIndex && routes.length > 1" type="button" @click="merge" title="Prepend route to..."><i class="fas fa-paste"></i></Button>
-                            <Button type="button" @click="reverse(index)" title="Reverse route"><i class="fas fa-exchange-alt"></i></Button>
+                            <div class="buttons">
+                                <Button type="button" @click="deleteRoute(index)" title="Delete route"><i class="fas fa-trash-alt"></i></Button>
+                                <Button v-if="index === activeRouteIndex && routes.length > 1" type="button" @click="merge" title="Prepend route to..."><i class="fas fa-paste"></i></Button>
+                                <Button type="button" @click="reverse(index)" title="Reverse route"><i class="fas fa-exchange-alt"></i></Button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -69,46 +71,46 @@ export default {
             }).addTo(this.mymap)
 
             // incoming FIXED route from controller, via prop 'track'
-            const points = this.track.map(point => [parseFloat(point[0]), parseFloat(point[1])])
-            const routeDistance = parseFloat(this.distance)
+            // const points = this.track.map(point => [parseFloat(point[0]), parseFloat(point[1])])
+            // const routeDistance = parseFloat(this.distance)
 
-            const color = this.colors[this.activeRouteIndex]
+            // const color = this.colors[this.activeRouteIndex]
 
-            const polyline = L.polyline(points, {color})
-            polyline.addTo(this.mymap);
+            // const polyline = L.polyline(points, {color})
+            // polyline.addTo(this.mymap);
 
-            const route = {
-                name: 'Route Demo',
-                distance: calculateDistance(polyline.getLatLngs()),
-                index: 0,
-                color,
-                points: points.map((point, index, ar) => {
-                    // eerste punt wit, laatste zwart
-                    const color = index === 0 ? '#ffffff' : (index === ar.length-1 ? '#000000' : 'blue')
+            // const route = {
+            //     name: 'Route Demo',
+            //     distance: calculateDistance(polyline.getLatLngs()),
+            //     index: 0,
+            //     color,
+            //     points: points.map((point, index, ar) => {
+            //         // eerste punt wit, laatste zwart
+            //         const color = index === 0 ? '#ffffff' : (index === ar.length-1 ? '#000000' : 'blue')
 
-                    const circle = L.circle(point, {
-                        radius: 15, 
-                        color,
-                        fillOpacity: 1,
-                        bubblingMouseEvents: false
-                    })
-                    circle.addTo(this.mymap);
-                    circle.on('click', this.onPointClick)
+            //         const circle = L.circle(point, {
+            //             radius: 15, 
+            //             color,
+            //             fillOpacity: 1,
+            //             bubblingMouseEvents: false
+            //         })
+            //         circle.addTo(this.mymap);
+            //         circle.on('click', this.onPointClick)
 
-                    return {
-                        circle,
-                        index
-                    }
-                }),
-                polyline
-            }
+            //         return {
+            //             circle,
+            //             index
+            //         }
+            //     }),
+            //     polyline
+            // }
 
-            this.routes.push(route)
+            // this.routes.push(route)
 
-            // Init listener for clicks
-            this.mymap.on('click', this.onMapClick)
+            // // Init listener for clicks
+            // this.mymap.on('click', this.onMapClick)
 
-            this.showMessage('Route ingeladen, klaar voor gebruik!')
+            // this.showMessage('Route ingeladen, klaar voor gebruik!')
         },
         onMapClick({latlng}) {
             console.log('Handle onMapClick')
@@ -322,7 +324,7 @@ export default {
 
 #control-container {
     box-sizing: border-box;
-    min-height: 20vh;
+    height: 20vh;
     background: #ddeeff;
     padding: 10px;
 
@@ -340,8 +342,8 @@ export default {
 
         .legend-item {
             margin-bottom: 8px;
-            width: 250px;
             padding: 6px 12px;
+            width: 350px;
 
             &.active {
                 border: 1px solid black !important;
@@ -349,18 +351,22 @@ export default {
         
             div {
                 display: grid;
-                grid-template-columns: 1fr 30px;
+                grid-template-columns: 2fr 1fr;
                 align-items: center;
-                grid-gap: 6px;
                 font-size: 0.7875rem;
 
-                &.active {
-                    grid-template-columns: 1fr 30px 30px;
+                .buttons {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, 30px);
+                    grid-gap: 6px;
+                    justify-content: end;
+                    
+                    button {
+                       justify-self: center;
+                    }
                 }
 
-                button {
-                    justify-self: center;
-                }
+                
             }
         }
     }

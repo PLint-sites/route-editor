@@ -17304,8 +17304,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   methods: {
     initMap: function initMap() {
-      var _this = this;
-
       this.mymap = L.map('mapid').setView(this.home, 16);
       L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=".concat(this.accessToken), {
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -17315,43 +17313,38 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         zoomOffset: -1,
         accessToken: this.accessToken
       }).addTo(this.mymap); // incoming FIXED route from controller, via prop 'track'
-
-      var points = this.track.map(function (point) {
-        return [parseFloat(point[0]), parseFloat(point[1])];
-      });
-      var routeDistance = parseFloat(this.distance);
-      var color = this.colors[this.activeRouteIndex];
-      var polyline = L.polyline(points, {
-        color: color
-      });
-      polyline.addTo(this.mymap);
-      var route = {
-        name: 'Route Demo',
-        distance: (0,_libs_distance__WEBPACK_IMPORTED_MODULE_0__.default)(polyline.getLatLngs()),
-        index: 0,
-        color: color,
-        points: points.map(function (point, index, ar) {
-          // eerste punt wit, laatste zwart
-          var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : 'blue';
-          var circle = L.circle(point, {
-            radius: 15,
-            color: color,
-            fillOpacity: 1,
-            bubblingMouseEvents: false
-          });
-          circle.addTo(_this.mymap);
-          circle.on('click', _this.onPointClick);
-          return {
-            circle: circle,
-            index: index
-          };
-        }),
-        polyline: polyline
-      };
-      this.routes.push(route); // Init listener for clicks
-
-      this.mymap.on('click', this.onMapClick);
-      this.showMessage('Route ingeladen, klaar voor gebruik!');
+      // const points = this.track.map(point => [parseFloat(point[0]), parseFloat(point[1])])
+      // const routeDistance = parseFloat(this.distance)
+      // const color = this.colors[this.activeRouteIndex]
+      // const polyline = L.polyline(points, {color})
+      // polyline.addTo(this.mymap);
+      // const route = {
+      //     name: 'Route Demo',
+      //     distance: calculateDistance(polyline.getLatLngs()),
+      //     index: 0,
+      //     color,
+      //     points: points.map((point, index, ar) => {
+      //         // eerste punt wit, laatste zwart
+      //         const color = index === 0 ? '#ffffff' : (index === ar.length-1 ? '#000000' : 'blue')
+      //         const circle = L.circle(point, {
+      //             radius: 15, 
+      //             color,
+      //             fillOpacity: 1,
+      //             bubblingMouseEvents: false
+      //         })
+      //         circle.addTo(this.mymap);
+      //         circle.on('click', this.onPointClick)
+      //         return {
+      //             circle,
+      //             index
+      //         }
+      //     }),
+      //     polyline
+      // }
+      // this.routes.push(route)
+      // // Init listener for clicks
+      // this.mymap.on('click', this.onMapClick)
+      // this.showMessage('Route ingeladen, klaar voor gebruik!')
     },
     onMapClick: function onMapClick(_ref) {
       var latlng = _ref.latlng;
@@ -17374,7 +17367,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
     },
     deleteRoute: function deleteRoute(index) {
-      var _this2 = this;
+      var _this = this;
 
       var route = this.routes[index]; // remove polyline from the map
 
@@ -17382,9 +17375,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       route.points.forEach(function (_ref2) {
         var circle = _ref2.circle;
-        circle.off('click', _this2.onPointClick);
+        circle.off('click', _this.onPointClick);
 
-        _this2.mymap.removeLayer(circle);
+        _this.mymap.removeLayer(circle);
       }); // remove from this.routes
 
       this.routes.splice(index, 1); // set first route active if active route is being deleted
@@ -17413,7 +17406,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       return null;
     },
     cutRoute: function cutRoute(pointIndex) {
-      var _this3 = this;
+      var _this2 = this;
 
       var route = this.routes[this.activeRouteIndex]; // remove polyline from the map
 
@@ -17421,7 +17414,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       route.points.forEach(function (_ref3) {
         var circle = _ref3.circle;
-        return circle.off('click', _this3.onPointClick);
+        return circle.off('click', _this2.onPointClick);
       }); // split points
 
       var route1Points = route.points.filter(function (point) {
@@ -17436,7 +17429,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.addRoute(route2Points);
     },
     updateRouteOnCut: function updateRouteOnCut(route, points) {
-      var _this4 = this;
+      var _this3 = this;
 
       var polyline = L.polyline(points.map(function (_ref4) {
         var circle = _ref4.circle;
@@ -17453,14 +17446,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       route.points.forEach(function (_ref5, index, ar) {
         var circle = _ref5.circle;
         var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : 'blue';
-        circle.on('click', _this4.onPointClick);
+        circle.on('click', _this3.onPointClick);
         circle.setStyle({
           color: color
         });
       });
     },
     addRoute: function addRoute(points) {
-      var _this5 = this;
+      var _this4 = this;
 
       this.activeRouteIndex = this.routes.length;
       var color = this.colors[this.activeRouteIndex];
@@ -17487,7 +17480,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       route.points.forEach(function (_ref7, index, ar) {
         var circle = _ref7.circle;
         var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : 'blue';
-        circle.on('click', _this5.onPointClick);
+        circle.on('click', _this4.onPointClick);
         circle.setStyle({
           color: color
         });
@@ -17506,7 +17499,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       })[type](message);
     },
     handleTrackImported: function handleTrackImported(_ref8) {
-      var _this6 = this;
+      var _this5 = this;
 
       var track = _ref8.track,
           distance = _ref8.distance;
@@ -17522,8 +17515,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           fillOpacity: 1,
           bubblingMouseEvents: false
         });
-        circle.addTo(_this6.mymap);
-        circle.on('click', _this6.onPointClick);
+        circle.addTo(_this5.mymap);
+        circle.on('click', _this5.onPointClick);
         return {
           circle: circle,
           index: index
@@ -17533,10 +17526,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.showMessage("New track imported (number of points ".concat(track.length, "), distance: ").concat(distance));
     },
     highlightActiveRoute: function highlightActiveRoute() {
-      var _this7 = this;
+      var _this6 = this;
 
       this.routes.forEach(function (route) {
-        if (route.index !== _this7.activeRouteIndex) {
+        if (route.index !== _this6.activeRouteIndex) {
           route.polyline.setStyle({
             opacity: 0.4
           });
@@ -19004,22 +18997,28 @@ var _hoisted_3 = {
   id: "controls"
 };
 var _hoisted_4 = {
+  key: 0
+};
+var _hoisted_5 = {
   id: "legend"
 };
+var _hoisted_6 = {
+  "class": "buttons"
+};
 
-var _hoisted_5 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
+var _hoisted_7 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
   "class": "fas fa-trash-alt"
 }, null, -1
 /* HOISTED */
 );
 
-var _hoisted_6 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
+var _hoisted_8 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
   "class": "fas fa-paste"
 }, null, -1
 /* HOISTED */
 );
 
-var _hoisted_7 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
+var _hoisted_9 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
   "class": "fas fa-exchange-alt"
 }, null, -1
 /* HOISTED */
@@ -19032,7 +19031,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
 
   var _component_Dropzone = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Dropzone");
 
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", null, [_hoisted_1, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("select", {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", null, [_hoisted_1, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_3, [$data.routes.length ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("select", {
     "onUpdate:modelValue": _cache[1] || (_cache[1] = function ($event) {
       return $data.activeRouteIndex = $event;
     }),
@@ -19050,7 +19049,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
   /* KEYED_FRAGMENT */
   ))], 544
   /* HYDRATE_EVENTS, NEED_PATCH */
-  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $data.activeRouteIndex]])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_4, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.routes, function (route, index) {
+  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $data.activeRouteIndex]])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_5, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.routes, function (route, index) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", {
       key: "legend_".concat(index),
       "class": ["legend-item", index === $data.activeRouteIndex ? 'active' : ''],
@@ -19059,7 +19058,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
       "class": index === $data.activeRouteIndex ? 'active' : ''
     }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("span", null, "Route " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(index + 1) + " - " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(route.distance.toFixed(2)) + " km", 1
     /* TEXT */
-    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
+    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
       type: "button",
       onClick: function onClick($event) {
         return $options.deleteRoute(index);
@@ -19067,7 +19066,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
       title: "Delete route"
     }, {
       "default": _withId(function () {
-        return [_hoisted_5];
+        return [_hoisted_7];
       }),
       _: 2
       /* DYNAMIC */
@@ -19081,7 +19080,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
       title: "Prepend route to..."
     }, {
       "default": _withId(function () {
-        return [_hoisted_6];
+        return [_hoisted_8];
       }),
       _: 1
       /* STABLE */
@@ -19096,14 +19095,14 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
       title: "Reverse route"
     }, {
       "default": _withId(function () {
-        return [_hoisted_7];
+        return [_hoisted_9];
       }),
       _: 2
       /* DYNAMIC */
 
     }, 1032
     /* PROPS, DYNAMIC_SLOTS */
-    , ["onClick"])], 2
+    , ["onClick"])])], 2
     /* CLASS */
     )], 6
     /* CLASS, STYLE */
@@ -19691,7 +19690,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "#mapid[data-v-2013be4c] {\n  height: 80vh;\n}\n#control-container[data-v-2013be4c] {\n  box-sizing: border-box;\n  min-height: 20vh;\n  background: #ddeeff;\n  padding: 10px;\n}\n#control-container select[data-v-2013be4c] {\n  width: 270px;\n}\n#control-container #controls[data-v-2013be4c] {\n  display: grid;\n  grid-template-columns: 400px 1fr 1fr;\n  grid-gap: 20px;\n}\n#control-container #legend .legend-item[data-v-2013be4c] {\n  margin-bottom: 8px;\n  width: 250px;\n  padding: 6px 12px;\n}\n#control-container #legend .legend-item.active[data-v-2013be4c] {\n  border: 1px solid black !important;\n}\n#control-container #legend .legend-item div[data-v-2013be4c] {\n  display: grid;\n  grid-template-columns: 1fr 30px;\n  align-items: center;\n  grid-gap: 6px;\n  font-size: 0.7875rem;\n}\n#control-container #legend .legend-item div.active[data-v-2013be4c] {\n  grid-template-columns: 1fr 30px 30px;\n}\n#control-container #legend .legend-item div button[data-v-2013be4c] {\n  justify-self: center;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "#mapid[data-v-2013be4c] {\n  height: 80vh;\n}\n#control-container[data-v-2013be4c] {\n  box-sizing: border-box;\n  height: 20vh;\n  background: #ddeeff;\n  padding: 10px;\n}\n#control-container select[data-v-2013be4c] {\n  width: 270px;\n}\n#control-container #controls[data-v-2013be4c] {\n  display: grid;\n  grid-template-columns: 400px 1fr 1fr;\n  grid-gap: 20px;\n}\n#control-container #legend .legend-item[data-v-2013be4c] {\n  margin-bottom: 8px;\n  padding: 6px 12px;\n  width: 350px;\n}\n#control-container #legend .legend-item.active[data-v-2013be4c] {\n  border: 1px solid black !important;\n}\n#control-container #legend .legend-item div[data-v-2013be4c] {\n  display: grid;\n  grid-template-columns: 2fr 1fr;\n  align-items: center;\n  font-size: 0.7875rem;\n}\n#control-container #legend .legend-item div .buttons[data-v-2013be4c] {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, 30px);\n  grid-gap: 6px;\n  justify-content: end;\n}\n#control-container #legend .legend-item div .buttons button[data-v-2013be4c] {\n  justify-self: center;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -19715,7 +19714,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "#upload-form .dropbox[data-v-b4a14bae] {\n  outline: 2px dashed grey;\n  /* the dash box */\n  outline-offset: -10px;\n  background: lightcyan;\n  color: dimgray;\n  padding: 10px 10px;\n  min-height: 200px;\n  /* minimum height */\n  position: relative;\n  cursor: pointer;\n}\n#upload-form .dropbox[data-v-b4a14bae]:hover {\n  background: lightblue;\n  /* when mouse over to the drop zone, change color */\n}\n#upload-form .dropbox p[data-v-b4a14bae] {\n  font-size: 1.2em;\n  text-align: center;\n  padding: 50px 0;\n}\n#upload-form .input-file[data-v-b4a14bae] {\n  opacity: 0;\n  /* invisible but it's there! */\n  width: 100%;\n  height: 200px;\n  position: absolute;\n  cursor: pointer;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "#upload-form .dropbox[data-v-b4a14bae] {\n  outline: 2px dashed grey;\n  /* the dash box */\n  outline-offset: -10px;\n  background: lightcyan;\n  color: dimgray;\n  padding: 10px 10px;\n  position: relative;\n  cursor: pointer;\n}\n#upload-form .dropbox[data-v-b4a14bae]:hover {\n  background: lightblue;\n  /* when mouse over to the drop zone, change color */\n}\n#upload-form .dropbox p[data-v-b4a14bae] {\n  font-size: 1.2em;\n  text-align: center;\n  padding: 50px 0;\n}\n#upload-form .input-file[data-v-b4a14bae] {\n  opacity: 0;\n  /* invisible but it's there! */\n  width: 100%;\n  height: 200px;\n  position: absolute;\n  cursor: pointer;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
