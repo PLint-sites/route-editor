@@ -17392,6 +17392,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       if (index === this.activeRouteIndex) {
         this.activeRouteIndex = 0;
         this.highlightActiveRoute();
+      } else {
+        this.activeRouteIndex -= 1;
       }
     },
     findCuttingPointIndex: function findCuttingPointIndex(event) {
@@ -17564,6 +17566,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           });
         }
       });
+    },
+    merge: function merge() {
+      console.log('merge routes');
     }
   },
   mounted: function mounted() {
@@ -17699,7 +17704,7 @@ __webpack_require__.r(__webpack_exports__);
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("button", {
     type: $props.type,
-    "class": "inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray transition ease-in-out duration-150"
+    "class": "inline-flex items-center px-2 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray transition ease-in-out duration-150"
   }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.renderSlot)(_ctx.$slots, "default")], 8
   /* PROPS */
   , ["type"]);
@@ -18987,13 +18992,13 @@ var _hoisted_4 = {
 };
 
 var _hoisted_5 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
-  "class": "fas fa-paste"
+  "class": "fas fa-trash-alt"
 }, null, -1
 /* HOISTED */
 );
 
 var _hoisted_6 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
-  "class": "fas fa-trash-alt"
+  "class": "fas fa-paste"
 }, null, -1
 /* HOISTED */
 );
@@ -19025,17 +19030,17 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
   /* HYDRATE_EVENTS, NEED_PATCH */
   ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $data.activeRouteIndex]])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_4, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.routes, function (route, index) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", {
-      key: "legend_".concat(index)
-    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
-      "class": index === $data.activeRouteIndex ? 'active' : '',
+      key: "legend_".concat(index),
+      "class": ["legend-item", index === $data.activeRouteIndex ? 'active' : ''],
       style: "background-color: ".concat(route.color, "; border-color: ").concat(route.color)
-    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Route " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(index + 1) + " - " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(route.distance.toFixed(2)) + " km ", 1
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
+      "class": index === $data.activeRouteIndex ? 'active' : ''
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("span", null, "Route " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(index + 1) + " - " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(route.distance.toFixed(2)) + " km", 1
     /* TEXT */
-    ), index !== $data.activeRouteIndex ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_Button, {
-      key: 0,
+    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
       type: "button",
       onClick: function onClick($event) {
-        return _ctx.mergeRouteWithActive(index);
+        return $options.deleteRoute(index);
       }
     }, {
       "default": _withId(function () {
@@ -19046,23 +19051,24 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
 
     }, 1032
     /* PROPS, DYNAMIC_SLOTS */
-    , ["onClick"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
+    , ["onClick"]), index === $data.activeRouteIndex && $data.routes.length > 1 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_Button, {
+      key: 0,
       type: "button",
-      onClick: function onClick($event) {
-        return $options.deleteRoute(index);
-      }
+      onClick: $options.merge
     }, {
       "default": _withId(function () {
         return [_hoisted_6];
       }),
-      _: 2
-      /* DYNAMIC */
+      _: 1
+      /* STABLE */
 
-    }, 1032
-    /* PROPS, DYNAMIC_SLOTS */
-    , ["onClick"])], 6
+    }, 8
+    /* PROPS */
+    , ["onClick"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)], 2
+    /* CLASS */
+    )], 6
     /* CLASS, STYLE */
-    )]);
+    );
   }), 128
   /* KEYED_FRAGMENT */
   ))]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Dropzone, {
@@ -19646,7 +19652,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "#mapid[data-v-2013be4c] {\n  height: 80vh;\n}\n#control-container[data-v-2013be4c] {\n  box-sizing: border-box;\n  min-height: 20vh;\n  background: #ddeeff;\n  padding: 10px;\n}\n#control-container select[data-v-2013be4c] {\n  width: 270px;\n}\n#control-container #controls[data-v-2013be4c] {\n  display: grid;\n  grid-template-columns: 400px 1fr 1fr;\n  grid-gap: 20px;\n}\n#control-container #legend > div > div[data-v-2013be4c] {\n  margin-bottom: 8px;\n  border: 1px solid;\n  display: inline-block;\n  font-size: 0.7875rem;\n  line-height: 42px;\n  padding: 0 10px;\n}\n#control-container #legend > div > div button[data-v-2013be4c] {\n  margin-left: 20px;\n}\n#control-container #legend > div > div.active[data-v-2013be4c] {\n  border: 1px solid black !important;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "#mapid[data-v-2013be4c] {\n  height: 80vh;\n}\n#control-container[data-v-2013be4c] {\n  box-sizing: border-box;\n  min-height: 20vh;\n  background: #ddeeff;\n  padding: 10px;\n}\n#control-container select[data-v-2013be4c] {\n  width: 270px;\n}\n#control-container #controls[data-v-2013be4c] {\n  display: grid;\n  grid-template-columns: 400px 1fr 1fr;\n  grid-gap: 20px;\n}\n#control-container #legend .legend-item[data-v-2013be4c] {\n  margin-bottom: 8px;\n  width: 250px;\n  padding: 6px 12px;\n}\n#control-container #legend .legend-item.active[data-v-2013be4c] {\n  border: 1px solid black !important;\n}\n#control-container #legend .legend-item div[data-v-2013be4c] {\n  display: grid;\n  grid-template-columns: 1fr 30px;\n  align-items: center;\n  grid-gap: 6px;\n  font-size: 0.7875rem;\n}\n#control-container #legend .legend-item div.active[data-v-2013be4c] {\n  grid-template-columns: 1fr 30px 30px;\n}\n#control-container #legend .legend-item div button[data-v-2013be4c] {\n  justify-self: center;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

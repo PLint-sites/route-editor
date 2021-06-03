@@ -12,15 +12,14 @@
                     <div 
                         v-for="(route, index) in routes" 
                         :key="`legend_${index}`"
+                        class="legend-item"
+                        :class="index === activeRouteIndex ? 'active' : ''" 
+                        :style="`background-color: ${route.color}; border-color: ${route.color}`"
                     >
-                        <div 
-                            :class="index === activeRouteIndex ? 'active' : ''" 
-                            :style="`background-color: ${route.color}; border-color: ${route.color}`"
-                        >
-                            Route {{ index + 1 }} - {{ route.distance.toFixed(2) }} km 
-                            <Button v-if="index !== activeRouteIndex" type="button" @click="mergeRouteWithActive(index)"><i class="fas fa-paste"></i></Button>
-                            
+                        <div :class="index === activeRouteIndex ? 'active' : ''">
+                            <span>Route {{ index + 1 }} - {{ route.distance.toFixed(2) }} km</span>
                             <Button type="button" @click="deleteRoute(index)"><i class="fas fa-trash-alt"></i></Button>
+                            <Button v-if="index === activeRouteIndex && routes.length > 1" type="button" @click="merge"><i class="fas fa-paste"></i></Button>
                         </div>
                     </div>
                 </div>
@@ -150,6 +149,8 @@ export default {
             if (index === this.activeRouteIndex) {
                 this.activeRouteIndex = 0
                 this.highlightActiveRoute()
+            } else {
+                this.activeRouteIndex -= 1
             }
         },
         findCuttingPointIndex(event) {
@@ -290,6 +291,9 @@ export default {
                 }
             })
         },
+        merge() {
+            console.log('merge routes')
+        },
     },
     mounted() {
         this.initMap()
@@ -318,22 +322,33 @@ export default {
         grid-gap: 20px;
     }
 
-    #legend>div>div {
-        margin-bottom: 8px;
-        border: 1px solid;
-        display: inline-block;
-        font-size: 0.7875rem;
-        line-height: 42px;
-        padding: 0 10px;
+    #legend {
 
-        button {
-            margin-left: 20px;
-        }
+        .legend-item {
+            margin-bottom: 8px;
+            width: 250px;
+            padding: 6px 12px;
 
-        &.active {
-            border: 1px solid black !important;
+            &.active {
+                border: 1px solid black !important;
+            }
+        
+            div {
+                display: grid;
+                grid-template-columns: 1fr 30px;
+                align-items: center;
+                grid-gap: 6px;
+                font-size: 0.7875rem;
+
+                &.active {
+                    grid-template-columns: 1fr 30px 30px;
+                }
+
+                button {
+                    justify-self: center;
+                }
+            }
         }
     }
-
 }
 </style>
