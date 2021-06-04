@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import calculateDistance from '../libs/distance'
+import calculateDistance, {calculatePointToPointDistance as p2pDistance } from '../libs/distance'
 import Button from '../Components/Button'
 import Dropzone from '../RouteComponents/Dropzone'
 import { Notyf } from 'notyf';
@@ -117,16 +117,21 @@ export default {
                 circle.on('click', this.onPointClick)
 
                 const currentNumberOfPoints = route.points.length
+                const currentLastPoint = route.points[currentNumberOfPoints-1]
                 if (currentNumberOfPoints > 1) {
-                    route.points[currentNumberOfPoints-1].circle.setStyle({color: 'blue'})
+                    currentLastPoint.circle.setStyle({color: 'blue'})
                 }
+
+                // update distance of route
+                // console.log('last point ', currentLastPoint.circle.getLatLng())
+                const addedDistance = p2pDistance(currentLastPoint.circle.getLatLng(), latlng)
+                // console.log(`added distance to route: ${addedDistance}km`)
+                route.distance += addedDistance
 
                 route.points.push({
                     circle,
                     index: currentNumberOfPoints
                 })
-
-                // update distance of route
             } else {
                 // start a route
                 this.activeRouteIndex = this.firstFreeIndex

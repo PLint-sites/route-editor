@@ -50,4 +50,5 @@ const calculateRouteDistance = points => {
     return distance
 }
 
-export { calculateRouteDistance as default}
+// export { calculateRouteDistance as default}
+export { getDistanceOnSphere as calculatePointToPointDistance, calculateRouteDistance as default}

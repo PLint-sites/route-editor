@@ -17362,17 +17362,23 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         circle.addTo(this.mymap);
         circle.on('click', this.onPointClick);
         var currentNumberOfPoints = route.points.length;
+        var currentLastPoint = route.points[currentNumberOfPoints - 1];
 
         if (currentNumberOfPoints > 1) {
-          route.points[currentNumberOfPoints - 1].circle.setStyle({
+          currentLastPoint.circle.setStyle({
             color: 'blue'
           });
-        }
+        } // update distance of route
+        // console.log('last point ', currentLastPoint.circle.getLatLng())
 
+
+        var addedDistance = (0,_libs_distance__WEBPACK_IMPORTED_MODULE_0__.calculatePointToPointDistance)(currentLastPoint.circle.getLatLng(), latlng); // console.log(`added distance to route: ${addedDistance}km`)
+
+        route.distance += addedDistance;
         route.points.push({
           circle: circle,
           index: currentNumberOfPoints
-        }); // update distance of route
+        });
       } else {
         // start a route
         this.activeRouteIndex = this.firstFreeIndex; // add a point and make it white
@@ -19666,6 +19672,7 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "calculatePointToPointDistance": () => (/* binding */ getDistanceOnSphere),
 /* harmony export */   "default": () => (/* binding */ calculateRouteDistance)
 /* harmony export */ });
 var getDistanceOnSphere = function getDistanceOnSphere(p1, p2) {
@@ -19712,7 +19719,8 @@ var calculateRouteDistance = function calculateRouteDistance(points) {
   }
 
   return distance;
-};
+}; // export { calculateRouteDistance as default}
+
 
 
 
