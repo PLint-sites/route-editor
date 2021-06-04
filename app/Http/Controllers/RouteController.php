@@ -19,26 +19,29 @@ class RouteController extends Controller
      */
     public function init()
     {
-        $file = public_path('routes/wktocht_2013.GPX');
-        if (file_exists($file)) {
-            extract($this->readGpx($file, 'strava'));
-            extract($this->addDistance($lats, $lons));
+        return Inertia::render('RouteCreator');
 
-            // number of points per km is 'pointDensity'
-            $pointDensity = ceil(count($lats)/$total_distance);
-            $coarsenFactor = ceil($pointDensity/5);
+        // Was om een startpunt te hebben: een eerste route die uitgelezen was uit GPX. Nu hebben we import en is dit nie meer nodig.
+        // $file = public_path('routes/wktocht_2013.GPX');
+        // if (file_exists($file)) {
+        //     extract($this->readGpx($file, 'strava'));
+        //     extract($this->addDistance($lats, $lons));
 
-            $coarsendData = [];
-            foreach($latlng as $key => $point) {
-                if ($key % $coarsenFactor == 0) {
-                    $coarsendData[] = $point;
-                }
-            }
+        //     // number of points per km is 'pointDensity'
+        //     $pointDensity = ceil(count($lats)/$total_distance);
+        //     $coarsenFactor = ceil($pointDensity/5);
 
-            return Inertia::render('RouteCreator', ['track' => $coarsendData, 'distance' => $total_distance]);
-        } else {
-            dd('file niet gevonden');
-        }
+        //     $coarsendData = [];
+        //     foreach($latlng as $key => $point) {
+        //         if ($key % $coarsenFactor == 0) {
+        //             $coarsendData[] = $point;
+        //         }
+        //     }
+
+        //     return Inertia::render('RouteCreator', ['track' => $coarsendData, 'distance' => $total_distance]);
+        // } else {
+        //     dd('file niet gevonden');
+        // }
     }
 
     /**

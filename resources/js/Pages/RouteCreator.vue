@@ -5,7 +5,7 @@
             <div id="controls">
                 <div>
                     <select v-if="routes.length" v-model="activeRouteIndex" @change="highlightActiveRoute">
-                        <option v-for="(route, index) in routes" :key="`route_${index}`" :value="index">Route {{ index+1 }}</option>
+                        <option v-for="(route, index) in routes" :key="`route_${index}`" :value="route.index">{{ route.name }}</option>
                     </select>
 
                     <div id="main-control-buttons">
@@ -18,14 +18,14 @@
                         v-for="(route, index) in routes" 
                         :key="`legend_${index}`"
                         class="legend-item"
-                        :class="index === activeRouteIndex ? 'active' : ''" 
+                        :class="route.index === activeRouteIndex ? 'active' : ''" 
                         :style="`background-color: ${route.color}; border-color: ${route.color}`"
                     >
-                        <div :class="index === activeRouteIndex ? 'active' : ''">
-                            <span>Route {{ index + 1 }} - {{ route.distance.toFixed(2) }} km</span>
+                        <div :class="route.index === activeRouteIndex ? 'active' : ''">
+                            <span>{{ route.name }} - {{ route.distance.toFixed(2) }} km</span>
                             <div class="buttons">
                                 <Button type="button" @click="deleteRoute(index)" title="Delete route"><i class="fas fa-trash-alt"></i></Button>
-                                <Button v-if="index === activeRouteIndex && routes.length > 1" type="button" @click="merge" title="Prepend route to..."><i class="fas fa-paste"></i></Button>
+                                <Button v-if="route.index === activeRouteIndex && routes.length > 1" type="button" @click="merge" title="Prepend route to..."><i class="fas fa-paste"></i></Button>
                                 <Button type="button" @click="reverse(index)" title="Reverse route"><i class="fas fa-exchange-alt"></i></Button>
                             </div>
                         </div>
@@ -47,7 +47,6 @@ import 'notyf/notyf.min.css';
 export default {
     name: 'RouteCreator',
     components: { Button, Dropzone },
-    props: ['track', 'distance'],
     data() {
         return {
             mymap: null,
@@ -55,6 +54,7 @@ export default {
             home: [51.01097800768912, 5.856136009097099],
             routes: [],
             activeRouteIndex: 0,
+            occupiedIndices: [],
             colors: ['#ec008c', '#fff100', '#ff8c00', '#e81123', '#68217a', '#00188f', '#00bcf2', '#00b294', '#009e49', '#bad80a'],
             upload: {
                 isInitial: true,
@@ -72,6 +72,12 @@ export default {
             })
             return showButton
         },
+        firstFreeIndex() {
+            return this.occupiedIndices.findIndex(item => item === false)
+        },
+        activeRoute() {
+            return this.routes.find(({index}) => index === this.activeRouteIndex)
+        },
     },
     methods: {
         initMap() {
@@ -85,54 +91,19 @@ export default {
                 accessToken: this.accessToken
             }).addTo(this.mymap)
 
+            // init occupiedIndices: array with false
+            this.occupiedIndices = this.colors.map(() => false)
+            this.occupiedIndices[0] = true
+            this.occupiedIndices[1] = true
+
             // Init listener for clicks
             this.mymap.on('click', this.onMapClick)
 
-            // incoming FIXED route from controller, via prop 'track'
-            // const points = this.track.map(point => [parseFloat(point[0]), parseFloat(point[1])])
-            // const routeDistance = parseFloat(this.distance)
-
-            // const color = this.colors[this.activeRouteIndex]
-
-            // const polyline = L.polyline(points, {color})
-            // polyline.addTo(this.mymap);
-
-            // const route = {
-            //     name: 'Route Demo',
-            //     distance: calculateDistance(polyline.getLatLngs()),
-            //     index: 0,
-            //     color,
-            //     points: points.map((point, index, ar) => {
-            //         // eerste punt wit, laatste zwart
-            //         const color = index === 0 ? '#ffffff' : (index === ar.length-1 ? '#000000' : 'blue')
-
-            //         const circle = L.circle(point, {
-            //             radius: 15, 
-            //             color,
-            //             fillOpacity: 1,
-            //             bubblingMouseEvents: false
-            //         })
-            //         circle.addTo(this.mymap);
-            //         circle.on('click', this.onPointClick)
-
-            //         return {
-            //             circle,
-            //             index
-            //         }
-            //     }),
-            //     polyline
-            // }
-
-            // this.routes.push(route)
-
-            
-
-            // this.showMessage('Route ingeladen, klaar voor gebruik!')
         },
         onMapClick({latlng}) {
-            if (this.activeRouteIndex < this.routes.length) {
-                // add to route
-                const route = this.routes[this.activeRouteIndex]
+            const route = this.activeRoute
+            if (route) {
+                // add to current active route
                 route.polyline.addLatLng(latlng)
                 
                 // add a point and make it black, previous last point should become blue, unless it is the starting point
@@ -158,7 +129,7 @@ export default {
                 // update distance of route
             } else {
                 // start a route
-                console.log('Start a route')
+                this.activeRouteIndex = this.firstFreeIndex
 
                 // add a point and make it white
                 const circle = L.circle(latlng, {
@@ -170,17 +141,20 @@ export default {
                 circle.addTo(this.mymap);
                 circle.on('click', this.onPointClick)
 
-                const color = this.colors[this.activeRouteIndex]
+                // firstFreeIndex tenzij alles vol, dan 
+                const routeIndex = this.firstFreeIndex > -1 ? this.firstFreeIndex : this.routes.length
+                if (this.firstFreeIndex > -1) {
+                    this.occupiedIndices[this.firstFreeIndex] = true
+                }
+                const color = this.colors[routeIndex % this.colors.length]
 
-                // const polyline = L.polyline([latlng.lat, latlng.lng], {color})
                 const polyline = L.polyline([latlng], {color})
                 polyline.addTo(this.mymap);
 
                 const route = {
-                    name: `Nieuwe route ${this.activeRouteIndex}`,
-                    // distance: calculateDistance(polyline.getLatLngs()),
+                    name: `Nieuwe route ${routeIndex}`,
                     distance: 0,
-                    index: this.activeRouteIndex,
+                    index: routeIndex,
                     color,
                     points: [{
                         circle,
@@ -190,6 +164,9 @@ export default {
                 }
 
                 this.routes.push(route)
+
+                // highlight
+                this.highlightActiveRoute()
             }
         },
         onPointClick(event) {
@@ -216,6 +193,9 @@ export default {
             // remove from this.routes
             this.routes.splice(index, 1)
 
+            // open index in occupied array
+            this.occupiedIndices[route.index % this.colors.length] = false
+
             // set first route active if active route is being deleted
             if (index === this.activeRouteIndex) {
                 this.activeRouteIndex = 0
@@ -226,7 +206,7 @@ export default {
         },
         findCuttingPointIndex(event) {
             // find index of the ACTIVE route where this point is part of
-            const route = this.routes[this.activeRouteIndex]
+            const route = this.activeRoute
             const routePoints = route.polyline.getLatLngs()
             const pointIndex = routePoints.findIndex(point => point.lat === event.latlng.lat && point.lng === event.latlng.lng)
 
@@ -239,7 +219,7 @@ export default {
             return null
         },
         cutRoute(pointIndex) {
-            const route = this.routes[this.activeRouteIndex]
+            const route = this.activeRoute
             // remove polyline from the map
             this.mymap.removeLayer(route.polyline)
 
@@ -271,15 +251,21 @@ export default {
             })
         },
         addRoute(points) {
-            this.activeRouteIndex = this.routes.length
-            const color = this.colors[this.activeRouteIndex]
+            // firstFreeIndex tenzij alles vol, dan 
+            const routeIndex = this.firstFreeIndex > -1 ? this.firstFreeIndex : this.routes.length
+            this.activeRouteIndex = routeIndex
+            if (this.firstFreeIndex > -1) {
+                this.occupiedIndices[this.firstFreeIndex] = true
+            }
+            const color = this.colors[routeIndex % this.colors.length]
+
             const polyline = L.polyline(points.map(({circle}) => circle.getLatLng()), {color})
             polyline.addTo(this.mymap);
 
             const route = {
-                name: `Route ${this.activeRouteIndex}`,
+                name: `Route ${routeIndex}`,
                 distance: calculateDistance(polyline.getLatLngs()),
-                index: this.activeRouteIndex,
+                index: routeIndex,
                 color,
                 points: points.map((point, index) => ({
                     ...point,
@@ -386,7 +372,7 @@ export default {
             this.showMessage(`Route has been reversed`)
         },
         startRoute() {
-            this.activeRouteIndex = this.routes.length
+            this.activeRouteIndex = this.firstFreeIndex
             this.showMessage('Click on the map to start new route')
         },
         exportRoute() {

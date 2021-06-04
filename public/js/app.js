@@ -17286,7 +17286,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     Button: _Components_Button__WEBPACK_IMPORTED_MODULE_1__.default,
     Dropzone: _RouteComponents_Dropzone__WEBPACK_IMPORTED_MODULE_2__.default
   },
-  props: ['track', 'distance'],
   data: function data() {
     return {
       mymap: null,
@@ -17294,6 +17293,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       home: [51.01097800768912, 5.856136009097099],
       routes: [],
       activeRouteIndex: 0,
+      occupiedIndices: [],
       colors: ['#ec008c', '#fff100', '#ff8c00', '#e81123', '#68217a', '#00188f', '#00bcf2', '#00b294', '#009e49', '#bad80a'],
       upload: {
         isInitial: true,
@@ -17310,6 +17310,19 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         if (route.points.length > 1) showButton = true;
       });
       return showButton;
+    },
+    firstFreeIndex: function firstFreeIndex() {
+      return this.occupiedIndices.findIndex(function (item) {
+        return item === false;
+      });
+    },
+    activeRoute: function activeRoute() {
+      var _this = this;
+
+      return this.routes.find(function (_ref) {
+        var index = _ref.index;
+        return index === _this.activeRouteIndex;
+      });
     }
   },
   methods: {
@@ -17322,46 +17335,22 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         tileSize: 512,
         zoomOffset: -1,
         accessToken: this.accessToken
-      }).addTo(this.mymap); // Init listener for clicks
+      }).addTo(this.mymap); // init occupiedIndices: array with false
 
-      this.mymap.on('click', this.onMapClick); // incoming FIXED route from controller, via prop 'track'
-      // const points = this.track.map(point => [parseFloat(point[0]), parseFloat(point[1])])
-      // const routeDistance = parseFloat(this.distance)
-      // const color = this.colors[this.activeRouteIndex]
-      // const polyline = L.polyline(points, {color})
-      // polyline.addTo(this.mymap);
-      // const route = {
-      //     name: 'Route Demo',
-      //     distance: calculateDistance(polyline.getLatLngs()),
-      //     index: 0,
-      //     color,
-      //     points: points.map((point, index, ar) => {
-      //         // eerste punt wit, laatste zwart
-      //         const color = index === 0 ? '#ffffff' : (index === ar.length-1 ? '#000000' : 'blue')
-      //         const circle = L.circle(point, {
-      //             radius: 15, 
-      //             color,
-      //             fillOpacity: 1,
-      //             bubblingMouseEvents: false
-      //         })
-      //         circle.addTo(this.mymap);
-      //         circle.on('click', this.onPointClick)
-      //         return {
-      //             circle,
-      //             index
-      //         }
-      //     }),
-      //     polyline
-      // }
-      // this.routes.push(route)
-      // this.showMessage('Route ingeladen, klaar voor gebruik!')
+      this.occupiedIndices = this.colors.map(function () {
+        return false;
+      });
+      this.occupiedIndices[0] = true;
+      this.occupiedIndices[1] = true; // Init listener for clicks
+
+      this.mymap.on('click', this.onMapClick);
     },
-    onMapClick: function onMapClick(_ref) {
-      var latlng = _ref.latlng;
+    onMapClick: function onMapClick(_ref2) {
+      var latlng = _ref2.latlng;
+      var route = this.activeRoute;
 
-      if (this.activeRouteIndex < this.routes.length) {
-        // add to route
-        var route = this.routes[this.activeRouteIndex];
+      if (route) {
+        // add to current active route
         route.polyline.addLatLng(latlng); // add a point and make it black, previous last point should become blue, unless it is the starting point
 
         var circle = L.circle(latlng, {
@@ -17386,7 +17375,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         }); // update distance of route
       } else {
         // start a route
-        console.log('Start a route'); // add a point and make it white
+        this.activeRouteIndex = this.firstFreeIndex; // add a point and make it white
 
         var _circle = L.circle(latlng, {
           radius: 15,
@@ -17397,19 +17386,24 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
         _circle.addTo(this.mymap);
 
-        _circle.on('click', this.onPointClick);
+        _circle.on('click', this.onPointClick); // firstFreeIndex tenzij alles vol, dan 
 
-        var color = this.colors[this.activeRouteIndex]; // const polyline = L.polyline([latlng.lat, latlng.lng], {color})
 
+        var routeIndex = this.firstFreeIndex > -1 ? this.firstFreeIndex : this.routes.length;
+
+        if (this.firstFreeIndex > -1) {
+          this.occupiedIndices[this.firstFreeIndex] = true;
+        }
+
+        var color = this.colors[routeIndex % this.colors.length];
         var polyline = L.polyline([latlng], {
           color: color
         });
         polyline.addTo(this.mymap);
         var _route = {
-          name: "Nieuwe route ".concat(this.activeRouteIndex),
-          // distance: calculateDistance(polyline.getLatLngs()),
+          name: "Nieuwe route ".concat(routeIndex),
           distance: 0,
-          index: this.activeRouteIndex,
+          index: routeIndex,
           color: color,
           points: [{
             circle: _circle,
@@ -17417,7 +17411,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           }],
           polyline: polyline
         };
-        this.routes.push(_route);
+        this.routes.push(_route); // highlight
+
+        this.highlightActiveRoute();
       }
     },
     onPointClick: function onPointClick(event) {
@@ -17430,20 +17426,22 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
     },
     deleteRoute: function deleteRoute(index) {
-      var _this = this;
+      var _this2 = this;
 
       var route = this.routes[index]; // remove polyline from the map
 
       this.mymap.removeLayer(route.polyline); // remove click handler from the points and remove points from map
 
-      route.points.forEach(function (_ref2) {
-        var circle = _ref2.circle;
-        circle.off('click', _this.onPointClick);
+      route.points.forEach(function (_ref3) {
+        var circle = _ref3.circle;
+        circle.off('click', _this2.onPointClick);
 
-        _this.mymap.removeLayer(circle);
+        _this2.mymap.removeLayer(circle);
       }); // remove from this.routes
 
-      this.routes.splice(index, 1); // set first route active if active route is being deleted
+      this.routes.splice(index, 1); // open index in occupied array
+
+      this.occupiedIndices[route.index % this.colors.length] = false; // set first route active if active route is being deleted
 
       if (index === this.activeRouteIndex) {
         this.activeRouteIndex = 0;
@@ -17454,7 +17452,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     findCuttingPointIndex: function findCuttingPointIndex(event) {
       // find index of the ACTIVE route where this point is part of
-      var route = this.routes[this.activeRouteIndex];
+      var route = this.activeRoute;
       var routePoints = route.polyline.getLatLngs();
       var pointIndex = routePoints.findIndex(function (point) {
         return point.lat === event.latlng.lat && point.lng === event.latlng.lng;
@@ -17469,15 +17467,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       return null;
     },
     cutRoute: function cutRoute(pointIndex) {
-      var _this2 = this;
+      var _this3 = this;
 
-      var route = this.routes[this.activeRouteIndex]; // remove polyline from the map
+      var route = this.activeRoute; // remove polyline from the map
 
       this.mymap.removeLayer(route.polyline); // remove click handler from the points, will be added later on
 
-      route.points.forEach(function (_ref3) {
-        var circle = _ref3.circle;
-        return circle.off('click', _this2.onPointClick);
+      route.points.forEach(function (_ref4) {
+        var circle = _ref4.circle;
+        return circle.off('click', _this3.onPointClick);
       }); // split points
 
       var route1Points = route.points.filter(function (point) {
@@ -17492,10 +17490,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.addRoute(route2Points);
     },
     updateRouteOnCut: function updateRouteOnCut(route, points) {
-      var _this3 = this;
+      var _this4 = this;
 
-      var polyline = L.polyline(points.map(function (_ref4) {
-        var circle = _ref4.circle;
+      var polyline = L.polyline(points.map(function (_ref5) {
+        var circle = _ref5.circle;
         return circle.getLatLng();
       }), {
         color: route.color
@@ -17506,31 +17504,38 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       route.points = points; // add the click events for the individual circles and update colors
 
-      route.points.forEach(function (_ref5, index, ar) {
-        var circle = _ref5.circle;
+      route.points.forEach(function (_ref6, index, ar) {
+        var circle = _ref6.circle;
         var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : 'blue';
-        circle.on('click', _this3.onPointClick);
+        circle.on('click', _this4.onPointClick);
         circle.setStyle({
           color: color
         });
       });
     },
     addRoute: function addRoute(points) {
-      var _this4 = this;
+      var _this5 = this;
 
-      this.activeRouteIndex = this.routes.length;
-      var color = this.colors[this.activeRouteIndex];
-      var polyline = L.polyline(points.map(function (_ref6) {
-        var circle = _ref6.circle;
+      // firstFreeIndex tenzij alles vol, dan 
+      var routeIndex = this.firstFreeIndex > -1 ? this.firstFreeIndex : this.routes.length;
+      this.activeRouteIndex = routeIndex;
+
+      if (this.firstFreeIndex > -1) {
+        this.occupiedIndices[this.firstFreeIndex] = true;
+      }
+
+      var color = this.colors[routeIndex % this.colors.length];
+      var polyline = L.polyline(points.map(function (_ref7) {
+        var circle = _ref7.circle;
         return circle.getLatLng();
       }), {
         color: color
       });
       polyline.addTo(this.mymap);
       var route = {
-        name: "Route ".concat(this.activeRouteIndex),
+        name: "Route ".concat(routeIndex),
         distance: (0,_libs_distance__WEBPACK_IMPORTED_MODULE_0__.default)(polyline.getLatLngs()),
-        index: this.activeRouteIndex,
+        index: routeIndex,
         color: color,
         points: points.map(function (point, index) {
           return _objectSpread(_objectSpread({}, point), {}, {
@@ -17540,10 +17545,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         polyline: polyline
       }; // add the click events for the individual circles and update colors
 
-      route.points.forEach(function (_ref7, index, ar) {
-        var circle = _ref7.circle;
+      route.points.forEach(function (_ref8, index, ar) {
+        var circle = _ref8.circle;
         var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : 'blue';
-        circle.on('click', _this4.onPointClick);
+        circle.on('click', _this5.onPointClick);
         circle.setStyle({
           color: color
         });
@@ -17561,11 +17566,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         }
       })[type](message);
     },
-    handleTrackImported: function handleTrackImported(_ref8) {
-      var _this5 = this;
+    handleTrackImported: function handleTrackImported(_ref9) {
+      var _this6 = this;
 
-      var track = _ref8.track,
-          distance = _ref8.distance;
+      var track = _ref9.track,
+          distance = _ref9.distance;
       // Map track points to floating point and create objects
       var points = track.map(function (point) {
         return [parseFloat(point[0]), parseFloat(point[1])];
@@ -17578,8 +17583,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           fillOpacity: 1,
           bubblingMouseEvents: false
         });
-        circle.addTo(_this5.mymap);
-        circle.on('click', _this5.onPointClick);
+        circle.addTo(_this6.mymap);
+        circle.on('click', _this6.onPointClick);
         return {
           circle: circle,
           index: index
@@ -17591,15 +17596,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.showMessage("New track imported (number of points ".concat(track.length, "), distance: ").concat(distance));
     },
     highlightActiveRoute: function highlightActiveRoute() {
-      var _this6 = this;
+      var _this7 = this;
 
       this.routes.forEach(function (route) {
-        if (route.index !== _this6.activeRouteIndex) {
+        if (route.index !== _this7.activeRouteIndex) {
           route.polyline.setStyle({
             opacity: 0.4
           });
-          route.points.forEach(function (_ref9, index, ar) {
-            var circle = _ref9.circle;
+          route.points.forEach(function (_ref10, index, ar) {
+            var circle = _ref10.circle;
             var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : route.color;
             circle.setStyle({
               opacity: 0.3,
@@ -17612,8 +17617,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           route.polyline.setStyle({
             opacity: 1
           });
-          route.points.forEach(function (_ref10, index, ar) {
-            var circle = _ref10.circle;
+          route.points.forEach(function (_ref11, index, ar) {
+            var circle = _ref11.circle;
             var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : 'blue';
             circle.setStyle({
               opacity: 1,
@@ -17643,8 +17648,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         });
       }); // rerender polyline given the new order of points
 
-      route.polyline.setLatLngs(route.points.map(function (_ref11) {
-        var circle = _ref11.circle;
+      route.polyline.setLatLngs(route.points.map(function (_ref12) {
+        var circle = _ref12.circle;
         return circle.getLatLng();
       }), {
         color: route.color
@@ -17652,7 +17657,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.showMessage("Route has been reversed");
     },
     startRoute: function startRoute() {
-      this.activeRouteIndex = this.routes.length;
+      this.activeRouteIndex = this.firstFreeIndex;
       this.showMessage('Click on the map to start new route');
     },
     exportRoute: function exportRoute() {
@@ -19138,8 +19143,8 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
   }, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.routes, function (route, index) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("option", {
       key: "route_".concat(index),
-      value: index
-    }, "Route " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(index + 1), 9
+      value: route.index
+    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(route.name), 9
     /* TEXT, PROPS */
     , ["value"]);
   }), 128
@@ -19176,11 +19181,11 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
   , ["onClick"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_9, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.routes, function (route, index) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", {
       key: "legend_".concat(index),
-      "class": ["legend-item", index === $data.activeRouteIndex ? 'active' : ''],
+      "class": ["legend-item", route.index === $data.activeRouteIndex ? 'active' : ''],
       style: "background-color: ".concat(route.color, "; border-color: ").concat(route.color)
     }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
-      "class": index === $data.activeRouteIndex ? 'active' : ''
-    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("span", null, "Route " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(index + 1) + " - " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(route.distance.toFixed(2)) + " km", 1
+      "class": route.index === $data.activeRouteIndex ? 'active' : ''
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(route.name) + " - " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(route.distance.toFixed(2)) + " km", 1
     /* TEXT */
     ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_10, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
       type: "button",
@@ -19197,7 +19202,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
 
     }, 1032
     /* PROPS, DYNAMIC_SLOTS */
-    , ["onClick"]), index === $data.activeRouteIndex && $data.routes.length > 1 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_Button, {
+    , ["onClick"]), route.index === $data.activeRouteIndex && $data.routes.length > 1 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_Button, {
       key: 0,
       type: "button",
       onClick: $options.merge,
