@@ -10,7 +10,7 @@
 
                     <div id="main-control-buttons">
                         <Button type="button" @click="startRoute" title="Start new route"><i class="fas fa-plus"></i> Start new route</Button>
-                        <Button v-if="routes.length" type="button" @click="exportRoute" title="Export active route"><i class="fas fa-route"></i> Export active route</Button>
+                        <Button v-if="showExportButton" type="button" @click="exportRoute" title="Export active route"><i class="fas fa-route"></i> Export active route</Button>
                     </div>
                 </div>
                 <div id="legend">
@@ -62,6 +62,16 @@ export default {
                 fieldName: 'gpx',
             },
         }
+    },
+    computed: {
+        showExportButton() {
+            // if there is at least one route with >1 points
+            let showButton = false
+            this.routes.forEach(route => {
+                if (route.points.length > 1) showButton = true
+            })
+            return showButton
+        },
     },
     methods: {
         initMap() {
@@ -120,13 +130,12 @@ export default {
             // this.showMessage('Route ingeladen, klaar voor gebruik!')
         },
         onMapClick({latlng}) {
-            console.log(`Map clicked ${latlng}`)
             if (this.activeRouteIndex < this.routes.length) {
                 // add to route
                 const route = this.routes[this.activeRouteIndex]
                 route.polyline.addLatLng(latlng)
                 
-                // add a point and make it black, previous last point should become blue
+                // add a point and make it black, previous last point should become blue, unless it is the starting point
                 const circle = L.circle(latlng, {
                     radius: 15, 
                     color: 'black',
@@ -137,7 +146,9 @@ export default {
                 circle.on('click', this.onPointClick)
 
                 const currentNumberOfPoints = route.points.length
-                route.points[currentNumberOfPoints-1].circle.setStyle({color: 'blue'})
+                if (currentNumberOfPoints > 1) {
+                    route.points[currentNumberOfPoints-1].circle.setStyle({color: 'blue'})
+                }
 
                 route.points.push({
                     circle,
@@ -161,6 +172,7 @@ export default {
 
                 const color = this.colors[this.activeRouteIndex]
 
+                // const polyline = L.polyline([latlng.lat, latlng.lng], {color})
                 const polyline = L.polyline([latlng], {color})
                 polyline.addTo(this.mymap);
 
@@ -370,7 +382,7 @@ export default {
             this.showMessage(`Route has been reversed`)
         },
         startRoute() {
-            this.activeRouteIndex += 1
+            this.activeRouteIndex = this.routes.length
             this.showMessage('Click on the map to start new route')
         },
         exportRoute() {

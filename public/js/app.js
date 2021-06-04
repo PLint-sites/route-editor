@@ -17302,6 +17302,16 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
     };
   },
+  computed: {
+    showExportButton: function showExportButton() {
+      // if there is at least one route with >1 points
+      var showButton = false;
+      this.routes.forEach(function (route) {
+        if (route.points.length > 1) showButton = true;
+      });
+      return showButton;
+    }
+  },
   methods: {
     initMap: function initMap() {
       this.mymap = L.map('mapid').setView(this.home, 16);
@@ -17348,12 +17358,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     onMapClick: function onMapClick(_ref) {
       var latlng = _ref.latlng;
-      console.log("Map clicked ".concat(latlng));
 
       if (this.activeRouteIndex < this.routes.length) {
         // add to route
         var route = this.routes[this.activeRouteIndex];
-        route.polyline.addLatLng(latlng); // add a point and make it black, previous last point should become blue
+        route.polyline.addLatLng(latlng); // add a point and make it black, previous last point should become blue, unless it is the starting point
 
         var circle = L.circle(latlng, {
           radius: 15,
@@ -17364,9 +17373,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         circle.addTo(this.mymap);
         circle.on('click', this.onPointClick);
         var currentNumberOfPoints = route.points.length;
-        route.points[currentNumberOfPoints - 1].circle.setStyle({
-          color: 'blue'
-        });
+
+        if (currentNumberOfPoints > 1) {
+          route.points[currentNumberOfPoints - 1].circle.setStyle({
+            color: 'blue'
+          });
+        }
+
         route.points.push({
           circle: circle,
           index: currentNumberOfPoints
@@ -17386,7 +17399,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
         _circle.on('click', this.onPointClick);
 
-        var color = this.colors[this.activeRouteIndex];
+        var color = this.colors[this.activeRouteIndex]; // const polyline = L.polyline([latlng.lat, latlng.lng], {color})
+
         var polyline = L.polyline([latlng], {
           color: color
         });
@@ -17631,7 +17645,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.showMessage("Route has been reversed");
     },
     startRoute: function startRoute() {
-      this.activeRouteIndex += 1;
+      this.activeRouteIndex = this.routes.length;
       this.showMessage('Click on the map to start new route');
     },
     exportRoute: function exportRoute() {
@@ -19138,7 +19152,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
 
   }, 8
   /* PROPS */
-  , ["onClick"]), $data.routes.length ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_Button, {
+  , ["onClick"]), $options.showExportButton ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_Button, {
     key: 0,
     type: "button",
     onClick: $options.exportRoute,
