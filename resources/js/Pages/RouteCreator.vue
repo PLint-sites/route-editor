@@ -7,8 +7,11 @@
                     <select v-if="routes.length" v-model="activeRouteIndex" @change="highlightActiveRoute">
                         <option v-for="(route, index) in routes" :key="`route_${index}`" :value="index">Route {{ index+1 }}</option>
                     </select>
-                    <Button type="button" @click="startRoute" title="Start new route"><i class="fas fa-plus"></i> Start new route</Button>
-                    <Button v-if="routes.length" type="button" @click="exportRoute" title="Export active route"><i class="fas fa-route"></i> Export active route</Button>
+
+                    <div id="main-control-buttons">
+                        <Button type="button" @click="startRoute" title="Start new route"><i class="fas fa-plus"></i> Start new route</Button>
+                        <Button v-if="routes.length" type="button" @click="exportRoute" title="Export active route"><i class="fas fa-route"></i> Export active route</Button>
+                    </div>
                 </div>
                 <div id="legend">
                     <div 
@@ -316,7 +319,10 @@ export default {
                     }
                 })
 
-            this.addRoute(points)            
+            this.addRoute(points)
+
+            // Fit map to bounds of route
+            this.mymap.fitBounds(this.routes[this.activeRouteIndex].polyline.getBounds());            
 
             this.showMessage(`New track imported (number of points ${track.length}), distance: ${distance}`)
         },
@@ -395,39 +401,53 @@ export default {
 
     #controls {
         display: grid;
-        grid-template-columns: 400px 1fr 1fr;
+        grid-template-columns: 411px 1fr 1fr;
         grid-gap: 20px;
-    }
 
-    #legend {
+        #main-control-buttons {
+            margin-top: 10px;
+            padding: 10px 7px 10px 10px;
+            width: 100%;
+            background: #65329933;
+            box-sizing: border-box;
 
-        .legend-item {
-            margin-bottom: 8px;
-            padding: 6px 12px;
-            width: 350px;
-
-            &.active {
-                border: 1px solid black !important;
+            button {
+                width: 194px;
+                margin-right: 3px;
+                i.fas {
+                    margin-right: 3px;
+                }
             }
-        
-            div {
-                display: grid;
-                grid-template-columns: 2fr 1fr;
-                align-items: center;
-                font-size: 0.7875rem;
+        }
 
-                .buttons {
+        #legend {
+
+            .legend-item {
+                margin-bottom: 8px;
+                padding: 6px 12px;
+                width: 350px;
+
+                &.active {
+                    border: 1px solid black !important;
+                }
+            
+                div {
                     display: grid;
-                    grid-template-columns: repeat(auto-fit, 30px);
-                    grid-gap: 6px;
-                    justify-content: end;
-                    
-                    button {
-                       justify-self: center;
+                    grid-template-columns: 2fr 1fr;
+                    align-items: center;
+                    font-size: 0.7875rem;
+
+                    .buttons {
+                        display: grid;
+                        grid-template-columns: repeat(auto-fit, 30px);
+                        grid-gap: 6px;
+                        justify-content: end;
+                        
+                        button {
+                        justify-self: center;
+                        }
                     }
                 }
-
-                
             }
         }
     }
