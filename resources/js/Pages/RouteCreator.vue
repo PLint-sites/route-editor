@@ -379,6 +379,10 @@ export default {
                     index
                 }
             })
+
+            // rerender polyline given the new order of points
+            route.polyline.setLatLngs(route.points.map(({circle}) => circle.getLatLng()), {color: route.color})
+
             this.showMessage(`Route has been reversed`)
         },
         startRoute() {

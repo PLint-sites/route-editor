@@ -17641,6 +17641,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         return _objectSpread(_objectSpread({}, point), {}, {
           index: index
         });
+      }); // rerender polyline given the new order of points
+
+      route.polyline.setLatLngs(route.points.map(function (_ref11) {
+        var circle = _ref11.circle;
+        return circle.getLatLng();
+      }), {
+        color: route.color
       });
       this.showMessage("Route has been reversed");
     },
