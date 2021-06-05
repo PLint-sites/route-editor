@@ -123,9 +123,7 @@ export default {
                 }
 
                 // update distance of route
-                // console.log('last point ', currentLastPoint.circle.getLatLng())
                 const addedDistance = p2pDistance(currentLastPoint.circle.getLatLng(), latlng)
-                // console.log(`added distance to route: ${addedDistance}km`)
                 route.distance += addedDistance
 
                 route.points.push({
@@ -325,7 +323,9 @@ export default {
             this.addRoute(points)
 
             // Fit map to bounds of route
-            this.mymap.fitBounds(this.routes[this.activeRouteIndex].polyline.getBounds());            
+            this.mymap.fitBounds(this.activeRoute.polyline.getBounds());
+            // this.mymap.fitBounds(this.routes[this.activeRouteIndex].polyline.getBounds());
+            
 
             this.showMessage(`New track imported (number of points ${track.length}), distance: ${distance}`)
         },

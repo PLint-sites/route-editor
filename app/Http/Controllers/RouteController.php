@@ -20,28 +20,6 @@ class RouteController extends Controller
     public function init()
     {
         return Inertia::render('RouteCreator');
-
-        // Was om een startpunt te hebben: een eerste route die uitgelezen was uit GPX. Nu hebben we import en is dit nie meer nodig.
-        // $file = public_path('routes/wktocht_2013.GPX');
-        // if (file_exists($file)) {
-        //     extract($this->readGpx($file, 'strava'));
-        //     extract($this->addDistance($lats, $lons));
-
-        //     // number of points per km is 'pointDensity'
-        //     $pointDensity = ceil(count($lats)/$total_distance);
-        //     $coarsenFactor = ceil($pointDensity/5);
-
-        //     $coarsendData = [];
-        //     foreach($latlng as $key => $point) {
-        //         if ($key % $coarsenFactor == 0) {
-        //             $coarsendData[] = $point;
-        //         }
-        //     }
-
-        //     return Inertia::render('RouteCreator', ['track' => $coarsendData, 'distance' => $total_distance]);
-        // } else {
-        //     dd('file niet gevonden');
-        // }
     }
 
     /**

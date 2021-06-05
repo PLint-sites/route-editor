@@ -17369,11 +17369,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             color: 'blue'
           });
         } // update distance of route
-        // console.log('last point ', currentLastPoint.circle.getLatLng())
 
 
-        var addedDistance = (0,_libs_distance__WEBPACK_IMPORTED_MODULE_0__.calculatePointToPointDistance)(currentLastPoint.circle.getLatLng(), latlng); // console.log(`added distance to route: ${addedDistance}km`)
-
+        var addedDistance = (0,_libs_distance__WEBPACK_IMPORTED_MODULE_0__.calculatePointToPointDistance)(currentLastPoint.circle.getLatLng(), latlng);
         route.distance += addedDistance;
         route.points.push({
           circle: circle,
@@ -17598,7 +17596,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       });
       this.addRoute(points); // Fit map to bounds of route
 
-      this.mymap.fitBounds(this.routes[this.activeRouteIndex].polyline.getBounds());
+      this.mymap.fitBounds(this.activeRoute.polyline.getBounds()); // this.mymap.fitBounds(this.routes[this.activeRouteIndex].polyline.getBounds());
+
       this.showMessage("New track imported (number of points ".concat(track.length, "), distance: ").concat(distance));
     },
     highlightActiveRoute: function highlightActiveRoute() {
