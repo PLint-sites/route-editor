@@ -48,6 +48,58 @@ class RouteController extends Controller
         return ['track' => $coarsendData, 'distance' => $total_distance];
     }
 
+    /**
+     * Export a track to a GPX file, downloaded instantly
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function export(Request $request)
+    {
+        $now = Carbon::now();
+
+        $dom = new domDocument;
+        $dom->formatOutput = true;
+        
+        $gpxElement = $dom->createElement('gpx');
+        
+        // verschillende verplichte(?) attributen toekennen
+        $XmlnsAttr = $dom->createAttribute('xmlns');
+        $XmlnsAttr->value = "http://www.topografix.com/GPX/1/1";
+        $gpxElement->appendChild($XmlnsAttr);
+        
+        // gpxElement toevoegen aan Domnode
+        $root = $dom->appendChild($gpxElement);
+        
+        $sxe = simplexml_import_dom($dom);
+
+        $metadata = $sxe->addChild('metadata');
+        $metadata->addChild('time', $now->toISOString());
+
+        $track = $root->appendChild($dom->createElement('trk'));
+        $track->appendChild($dom->createElement('name', 'Rondje 1'));
+        $segment = $track->appendChild($dom->createElement('trkseg'));
+        
+        foreach ($request->data as $point) {
+            $trkpoint = $dom->createElement('trkpt');
+
+            $latAttr = $dom->createAttribute('lat');
+            $latAttr->value = $point['lat'];
+            $trkpoint->appendChild($latAttr);
+
+            $lonAttr = $dom->createAttribute('lon');
+            $lonAttr->value = $point['lng'];
+            $trkpoint->appendChild($lonAttr);
+
+            $segment->appendChild($trkpoint);
+        }
+
+        $dom = dom_import_simplexml($sxe)->ownerDocument;
+        $dom->preserveWhiteSpace = false;
+        $xmlfile = 'storage/routes/track_' .  $now->format('Ymd_His') . '.gpx';
+        $dom->save($xmlfile);
+    }
+
     // ---
     // Helper functions to read data, move to library
     // ---

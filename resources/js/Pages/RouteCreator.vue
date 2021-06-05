@@ -25,13 +25,25 @@
                             <span>{{ route.name }} - {{ route.distance.toFixed(2) }} km</span>
                             <div class="buttons">
                                 <Button type="button" @click="deleteRoute(index)" title="Delete route"><i class="fas fa-trash-alt"></i></Button>
-                                <Button v-if="route.index === activeRouteIndex && routes.length > 1" type="button" @click="merge" title="Prepend route to..."><i class="fas fa-paste"></i></Button>
+                                <Button v-if="route.index === activeRouteIndex && routes.length > 1" type="button" @click="showMergeInterface = true" title="Prepend route to..."><i class="fas fa-paste"></i></Button>
                                 <Button type="button" @click="reverse(index)" title="Reverse route"><i class="fas fa-exchange-alt"></i></Button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <Dropzone @track-imported="handleTrackImported"/>
+                <div id="merge-interface" v-if="showMergeInterface">
+                    <h2>Click the route you wish to append the current to</h2>
+                    <div v-for="(route, index) in mergeableRoutes" :key="`merging_${index}`">
+                        <Button 
+                            type="button" 
+                            @click="merge(route.index)"
+                            :style="`background-color: ${route.color};`"
+                        >
+                            {{ route.name }} - {{ route.distance.toFixed(2) }} km
+                        </Button>
+                    </div>
+                </div>
+                <Dropzone v-else @track-imported="handleTrackImported"/>
             </div>
         </div>
     </div>
@@ -51,7 +63,7 @@ export default {
         return {
             mymap: null,
             accessToken: 'pk.eyJ1IjoicGltaG9vZ2hpZW1zdHJhIiwiYSI6ImNrbnZ1cnRjZDA5Yngyd3Bta3Y2NXMydm0ifQ.eMPCdzzcSvMwIXRgRn3b3Q',
-            home: [51.01097800768912, 5.856136009097099],
+            home: [50.99408, 5.85511],
             routes: [],
             activeRouteIndex: 0,
             occupiedIndices: [],
@@ -61,6 +73,7 @@ export default {
                 isSaving: false,
                 fieldName: 'gpx',
             },
+            showMergeInterface: false,
         }
     },
     computed: {
@@ -78,6 +91,9 @@ export default {
         activeRoute() {
             return this.routes.find(({index}) => index === this.activeRouteIndex)
         },
+        mergeableRoutes() {
+            return this.routes.filter(route => route.index !== this.activeRouteIndex)
+        },
     },
     methods: {
         initMap() {
@@ -93,8 +109,6 @@ export default {
 
             // init occupiedIndices: array with false
             this.occupiedIndices = this.colors.map(() => false)
-            this.occupiedIndices[0] = true
-            this.occupiedIndices[1] = true
 
             // Init listener for clicks
             this.mymap.on('click', this.onMapClick)
@@ -356,8 +370,65 @@ export default {
                 }
             })
         },
-        merge() {
-            console.log('merge routes')
+        merge(index) {
+            const mergedColor = this.activeRoute.color
+            const mergedIndex = this.activeRoute.index
+            const activeRoutePoints = this.activeRoute.points
+            
+            const appendRoute = this.routes.find(route => route.index === index)
+            if (appendRoute) {
+                const appendRoutePoints = appendRoute.points
+
+                // remove both routes from map
+                this.mymap.removeLayer(this.activeRoute.polyline)
+                this.mymap.removeLayer(appendRoute.polyline)
+
+                // remove both routes from routes array
+                this.deleteRoute(index)
+                this.deleteRoute(this.routes.findIndex(route => route.index === mergedIndex))
+
+                // create polyline from combined points
+                const mergedPoints = activeRoutePoints.concat(appendRoutePoints)
+                console.log(mergedPoints[0])
+                const polyline = L.polyline(mergedPoints.map(({circle}) => circle.getLatLng()), {color: mergedColor})
+                polyline.addTo(this.mymap)
+
+                // add merged points to the map again (removed after deleting both routes)
+                mergedPoints.forEach((point, index, ar) => {
+                    const color = index === 0 ? '#ffffff' : (index === ar.length-1 ? '#000000' : 'blue')
+                    const circle = L.circle(point.circle.getLatLng(), {
+                        radius: 15, 
+                        color,
+                        fillOpacity: 1,
+                        bubblingMouseEvents: false
+                    })
+                    circle.addTo(this.mymap);
+                    circle.on('click', this.onPointClick)
+                })
+
+                // create new route object
+                const route = {
+                    name: `Merged route`,
+                    distance: calculateDistance(polyline.getLatLngs()),
+                    index: mergedIndex,
+                    color: mergedColor,
+                    points: mergedPoints.map((point, index) => ({
+                        ...point,
+                        index
+                    })),
+                    polyline
+                }
+
+                this.routes.push(route)
+
+                this.activeRouteIndex = mergedIndex
+
+                this.highlightActiveRoute()
+
+                this.showMergeInterface = false
+            } else {
+                this.showMessage('No route to append found, merge not possible', 'error')
+            }
         },
         reverse(index) {
             const route = this.routes[index]
@@ -382,6 +453,7 @@ export default {
         },
         exportRoute() {
             console.log('export, zie AltitudeProfiles project')
+            axios.post(`/export-gpx`, {data: this.activeRoute.polyline.getLatLngs()})
         },
     },
     mounted() {

@@ -17290,7 +17290,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     return {
       mymap: null,
       accessToken: 'pk.eyJ1IjoicGltaG9vZ2hpZW1zdHJhIiwiYSI6ImNrbnZ1cnRjZDA5Yngyd3Bta3Y2NXMydm0ifQ.eMPCdzzcSvMwIXRgRn3b3Q',
-      home: [51.01097800768912, 5.856136009097099],
+      home: [50.99408, 5.85511],
       routes: [],
       activeRouteIndex: 0,
       occupiedIndices: [],
@@ -17299,7 +17299,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         isInitial: true,
         isSaving: false,
         fieldName: 'gpx'
-      }
+      },
+      showMergeInterface: false
     };
   },
   computed: {
@@ -17323,6 +17324,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         var index = _ref.index;
         return index === _this.activeRouteIndex;
       });
+    },
+    mergeableRoutes: function mergeableRoutes() {
+      var _this2 = this;
+
+      return this.routes.filter(function (route) {
+        return route.index !== _this2.activeRouteIndex;
+      });
     }
   },
   methods: {
@@ -17339,9 +17347,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       this.occupiedIndices = this.colors.map(function () {
         return false;
-      });
-      this.occupiedIndices[0] = true;
-      this.occupiedIndices[1] = true; // Init listener for clicks
+      }); // Init listener for clicks
 
       this.mymap.on('click', this.onMapClick);
     },
@@ -17430,7 +17436,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
     },
     deleteRoute: function deleteRoute(index) {
-      var _this2 = this;
+      var _this3 = this;
 
       var route = this.routes[index]; // remove polyline from the map
 
@@ -17438,9 +17444,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       route.points.forEach(function (_ref3) {
         var circle = _ref3.circle;
-        circle.off('click', _this2.onPointClick);
+        circle.off('click', _this3.onPointClick);
 
-        _this2.mymap.removeLayer(circle);
+        _this3.mymap.removeLayer(circle);
       }); // remove from this.routes
 
       this.routes.splice(index, 1); // open index in occupied array
@@ -17471,7 +17477,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       return null;
     },
     cutRoute: function cutRoute(pointIndex) {
-      var _this3 = this;
+      var _this4 = this;
 
       var route = this.activeRoute; // remove polyline from the map
 
@@ -17479,7 +17485,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       route.points.forEach(function (_ref4) {
         var circle = _ref4.circle;
-        return circle.off('click', _this3.onPointClick);
+        return circle.off('click', _this4.onPointClick);
       }); // split points
 
       var route1Points = route.points.filter(function (point) {
@@ -17494,7 +17500,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.addRoute(route2Points);
     },
     updateRouteOnCut: function updateRouteOnCut(route, points) {
-      var _this4 = this;
+      var _this5 = this;
 
       var polyline = L.polyline(points.map(function (_ref5) {
         var circle = _ref5.circle;
@@ -17511,14 +17517,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       route.points.forEach(function (_ref6, index, ar) {
         var circle = _ref6.circle;
         var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : 'blue';
-        circle.on('click', _this4.onPointClick);
+        circle.on('click', _this5.onPointClick);
         circle.setStyle({
           color: color
         });
       });
     },
     addRoute: function addRoute(points) {
-      var _this5 = this;
+      var _this6 = this;
 
       // firstFreeIndex tenzij alles vol, dan 
       var routeIndex = this.firstFreeIndex > -1 ? this.firstFreeIndex : this.routes.length;
@@ -17552,7 +17558,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       route.points.forEach(function (_ref8, index, ar) {
         var circle = _ref8.circle;
         var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : 'blue';
-        circle.on('click', _this5.onPointClick);
+        circle.on('click', _this6.onPointClick);
         circle.setStyle({
           color: color
         });
@@ -17571,7 +17577,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       })[type](message);
     },
     handleTrackImported: function handleTrackImported(_ref9) {
-      var _this6 = this;
+      var _this7 = this;
 
       var track = _ref9.track,
           distance = _ref9.distance;
@@ -17587,8 +17593,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           fillOpacity: 1,
           bubblingMouseEvents: false
         });
-        circle.addTo(_this6.mymap);
-        circle.on('click', _this6.onPointClick);
+        circle.addTo(_this7.mymap);
+        circle.on('click', _this7.onPointClick);
         return {
           circle: circle,
           index: index
@@ -17601,10 +17607,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.showMessage("New track imported (number of points ".concat(track.length, "), distance: ").concat(distance));
     },
     highlightActiveRoute: function highlightActiveRoute() {
-      var _this7 = this;
+      var _this8 = this;
 
       this.routes.forEach(function (route) {
-        if (route.index !== _this7.activeRouteIndex) {
+        if (route.index !== _this8.activeRouteIndex) {
           route.polyline.setStyle({
             opacity: 0.4
           });
@@ -17635,8 +17641,68 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         }
       });
     },
-    merge: function merge() {
-      console.log('merge routes');
+    merge: function merge(index) {
+      var _this9 = this;
+
+      var mergedColor = this.activeRoute.color;
+      var mergedIndex = this.activeRoute.index;
+      var activeRoutePoints = this.activeRoute.points;
+      var appendRoute = this.routes.find(function (route) {
+        return route.index === index;
+      });
+
+      if (appendRoute) {
+        var appendRoutePoints = appendRoute.points; // remove both routes from map
+
+        this.mymap.removeLayer(this.activeRoute.polyline);
+        this.mymap.removeLayer(appendRoute.polyline); // remove both routes from routes array
+
+        this.deleteRoute(index);
+        this.deleteRoute(this.routes.findIndex(function (route) {
+          return route.index === mergedIndex;
+        })); // create polyline from combined points
+
+        var mergedPoints = activeRoutePoints.concat(appendRoutePoints);
+        console.log(mergedPoints[0]);
+        var polyline = L.polyline(mergedPoints.map(function (_ref12) {
+          var circle = _ref12.circle;
+          return circle.getLatLng();
+        }), {
+          color: mergedColor
+        });
+        polyline.addTo(this.mymap); // add merged points to the map again (removed after deleting both routes)
+
+        mergedPoints.forEach(function (point, index, ar) {
+          var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : 'blue';
+          var circle = L.circle(point.circle.getLatLng(), {
+            radius: 15,
+            color: color,
+            fillOpacity: 1,
+            bubblingMouseEvents: false
+          });
+          circle.addTo(_this9.mymap);
+          circle.on('click', _this9.onPointClick);
+        }); // create new route object
+
+        var route = {
+          name: "Merged route",
+          distance: (0,_libs_distance__WEBPACK_IMPORTED_MODULE_0__.default)(polyline.getLatLngs()),
+          index: mergedIndex,
+          color: mergedColor,
+          points: mergedPoints.map(function (point, index) {
+            return _objectSpread(_objectSpread({}, point), {}, {
+              index: index
+            });
+          }),
+          polyline: polyline
+        };
+        this.routes.push(route);
+        this.activeRouteIndex = mergedIndex;
+        this.highlightActiveRoute();
+        this.showMergeInterface = false;
+      } else {
+        this.showMessage('No route to append found, merge not possible', 'error');
+      }
     },
     reverse: function reverse(index) {
       var route = this.routes[index]; // reverse route, reset index and switch start/endpoint colors
@@ -17653,8 +17719,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         });
       }); // rerender polyline given the new order of points
 
-      route.polyline.setLatLngs(route.points.map(function (_ref12) {
-        var circle = _ref12.circle;
+      route.polyline.setLatLngs(route.points.map(function (_ref13) {
+        var circle = _ref13.circle;
         return circle.getLatLng();
       }), {
         color: route.color
@@ -17667,6 +17733,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     exportRoute: function exportRoute() {
       console.log('export, zie AltitudeProfiles project');
+      axios.post("/export-gpx", {
+        data: this.activeRoute.polyline.getLatLngs()
+      });
     }
   },
   mounted: function mounted() {
@@ -19130,6 +19199,15 @@ var _hoisted_13 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(
 /* HOISTED */
 );
 
+var _hoisted_14 = {
+  key: 0,
+  id: "merge-interface"
+};
+
+var _hoisted_15 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("h2", null, "Click the route you wish to append the current to", -1
+/* HOISTED */
+);
+
 (0,vue__WEBPACK_IMPORTED_MODULE_0__.popScopeId)();
 
 var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data, $options) {
@@ -19210,7 +19288,9 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
     , ["onClick"]), route.index === $data.activeRouteIndex && $data.routes.length > 1 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_Button, {
       key: 0,
       type: "button",
-      onClick: $options.merge,
+      onClick: _cache[3] || (_cache[3] = function ($event) {
+        return $data.showMergeInterface = true;
+      }),
       title: "Prepend route to..."
     }, {
       "default": _withId(function () {
@@ -19219,9 +19299,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
       _: 1
       /* STABLE */
 
-    }, 8
-    /* PROPS */
-    , ["onClick"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
+    })) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
       type: "button",
       onClick: function onClick($event) {
         return $options.reverse(index);
@@ -19243,11 +19321,35 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
     );
   }), 128
   /* KEYED_FRAGMENT */
-  ))]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Dropzone, {
+  ))]), $data.showMergeInterface ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_14, [_hoisted_15, ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.mergeableRoutes, function (route, index) {
+    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", {
+      key: "merging_".concat(index)
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
+      type: "button",
+      onClick: function onClick($event) {
+        return $options.merge(route.index);
+      },
+      style: "background-color: ".concat(route.color, ";")
+    }, {
+      "default": _withId(function () {
+        return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(route.name) + " - " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(route.distance.toFixed(2)) + " km ", 1
+        /* TEXT */
+        )];
+      }),
+      _: 2
+      /* DYNAMIC */
+
+    }, 1032
+    /* PROPS, DYNAMIC_SLOTS */
+    , ["onClick", "style"])]);
+  }), 128
+  /* KEYED_FRAGMENT */
+  ))])) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_Dropzone, {
+    key: 1,
     onTrackImported: $options.handleTrackImported
   }, null, 8
   /* PROPS */
-  , ["onTrackImported"])])])]);
+  , ["onTrackImported"]))])])]);
 });
 
 /***/ }),
