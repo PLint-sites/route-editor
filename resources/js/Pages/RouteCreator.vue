@@ -117,6 +117,16 @@ export default {
         onMapClick({latlng}) {
             const route = this.activeRoute
             if (route) {
+                let currentNumberOfPoints = route.points.length
+
+                // remove last point, add it in a second again in the correct color
+                // need to do this because simply updating the color of the existing point does not work
+                // if the route was just merged. This might have something to do with the merge method below
+                const endPoint = route.points[currentNumberOfPoints - 1].circle
+                const endlatlng = endPoint.getLatLng()
+                endPoint.off('click', this.onPointClick)
+                this.mymap.removeLayer(endPoint)
+
                 // add to current active route
                 route.polyline.addLatLng(latlng)
                 
@@ -130,20 +140,25 @@ export default {
                 circle.addTo(this.mymap);
                 circle.on('click', this.onPointClick)
 
-                const currentNumberOfPoints = route.points.length
-                const currentLastPoint = route.points[currentNumberOfPoints-1]
-                if (currentNumberOfPoints > 1) {
-                    currentLastPoint.circle.setStyle({color: 'blue'})
-                }
+                // add previous lastpoint again
+                const circlePrev = L.circle(endlatlng, {
+                    radius: 15, 
+                    color: 'blue',
+                    fillOpacity: 1,
+                    bubblingMouseEvents: false
+                })
+                circlePrev.addTo(this.mymap);
+                circlePrev.on('click', this.onPointClick)
 
-                // update distance of route
-                const addedDistance = p2pDistance(currentLastPoint.circle.getLatLng(), latlng)
-                route.distance += addedDistance
-
+                // add point to route points array
                 route.points.push({
                     circle,
                     index: currentNumberOfPoints
                 })
+
+                // update distance of route
+                const addedDistance = p2pDistance(route.points[currentNumberOfPoints - 1].circle.getLatLng(), latlng)
+                route.distance += addedDistance
             } else {
                 // start a route
                 this.activeRouteIndex = this.firstFreeIndex
@@ -389,12 +404,11 @@ export default {
 
                 // create polyline from combined points
                 const mergedPoints = activeRoutePoints.concat(appendRoutePoints)
-                console.log(mergedPoints[0])
                 const polyline = L.polyline(mergedPoints.map(({circle}) => circle.getLatLng()), {color: mergedColor})
                 polyline.addTo(this.mymap)
 
                 // add merged points to the map again (removed after deleting both routes)
-                mergedPoints.forEach((point, index, ar) => {
+                mergedPoints.forEach((point, index, ar) => {                    
                     const color = index === 0 ? '#ffffff' : (index === ar.length-1 ? '#000000' : 'blue')
                     const circle = L.circle(point.circle.getLatLng(), {
                         radius: 15, 
@@ -451,9 +465,9 @@ export default {
             this.activeRouteIndex = this.firstFreeIndex
             this.showMessage('Click on the map to start new route')
         },
-        exportRoute() {
-            console.log('export, zie AltitudeProfiles project')
-            axios.post(`/export-gpx`, {data: this.activeRoute.polyline.getLatLngs()})
+        async exportRoute() {
+            await axios.post(`/export-gpx`, {data: this.activeRoute.polyline.getLatLngs()})
+            this.showMessage('Route exported and stored in storage directory')
         },
     },
     mounted() {

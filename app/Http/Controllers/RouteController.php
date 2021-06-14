@@ -31,12 +31,16 @@ class RouteController extends Controller
     public function import(Request $request)
     {
         // available: $lats, $lons, $latlng
-        extract($this->readGpx($request->gpx, 'strava'));
+        extract($this->readGpx($request->gpx));
         extract($this->addDistance($lats, $lons));
 
         // number of points per km is 'pointDensity'
         $pointDensity = ceil(count($lats)/$total_distance);
+        // \Log::info('number of points: ' . count($lats) . ', distance: ' . $total_distance);
+        // \Log::info('point density: ' . $pointDensity);
         $coarsenFactor = ceil($pointDensity/5);
+
+        $coarsenFactor = 1;
 
         $coarsendData = [];
         foreach($latlng as $key => $point) {
@@ -162,21 +166,7 @@ class RouteController extends Controller
         return compact('distance', 'total_distance');
     }
 
-    private function readGpx($gpx, $type)
-    {
-        switch ($type) {
-            case 'strava':
-                $data = $this->readStrava($gpx);
-                break;
-            case 'basecamp':
-                $data = $this->readBasecamp($gpx);
-                break;
-        }
-        return $data;
-        
-    }
-
-    private function readStrava($gpx)
+    private function readGpx($gpx)
     {
         $xml = new XMLReader();
 
