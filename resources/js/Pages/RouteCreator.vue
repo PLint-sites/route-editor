@@ -430,6 +430,10 @@ export default {
 
                 this.activeRouteIndex = mergedIndex
 
+                if (this.firstFreeIndex > -1) {
+                   this.occupiedIndices[this.firstFreeIndex] = true
+                }
+
                 this.highlightActiveRoute()
 
                 this.showMergeInterface = false

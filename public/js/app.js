@@ -17724,6 +17724,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         };
         this.routes.push(route);
         this.activeRouteIndex = mergedIndex;
+
+        if (this.firstFreeIndex > -1) {
+          this.occupiedIndices[this.firstFreeIndex] = true;
+        }
+
         this.highlightActiveRoute();
         this.showMergeInterface = false;
       } else {
