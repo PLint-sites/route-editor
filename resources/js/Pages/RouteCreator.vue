@@ -119,14 +119,6 @@ export default {
             if (route) {
                 let currentNumberOfPoints = route.points.length
 
-                // remove last point, add it in a second again in the correct color
-                // need to do this because simply updating the color of the existing point does not work
-                // if the route was just merged. This might have something to do with the merge method below
-                const endPoint = route.points[currentNumberOfPoints - 1].circle
-                const endlatlng = endPoint.getLatLng()
-                endPoint.off('click', this.onPointClick)
-                this.mymap.removeLayer(endPoint)
-
                 // add to current active route
                 route.polyline.addLatLng(latlng)
                 
@@ -140,20 +132,16 @@ export default {
                 circle.addTo(this.mymap);
                 circle.on('click', this.onPointClick)
 
-                // add previous lastpoint again
-                const circlePrev = L.circle(endlatlng, {
-                    radius: 15, 
-                    color: 'blue',
-                    fillOpacity: 1,
-                    bubblingMouseEvents: false
-                })
-                circlePrev.addTo(this.mymap);
-                circlePrev.on('click', this.onPointClick)
-
                 // add point to route points array
                 route.points.push({
                     circle,
                     index: currentNumberOfPoints
+                })
+
+                // update color of points
+                route.points.forEach(({circle}, index, ar) => {
+                    const color = index === 0 ? '#ffffff' : (index === ar.length-1 ? '#000000' : 'blue')
+                    circle.setStyle({color})
                 })
 
                 // update distance of route
@@ -212,9 +200,6 @@ export default {
         deleteRoute(index) {
             const route = this.routes[index]
 
-            // remove polyline from the map
-            this.mymap.removeLayer(route.polyline)
-
             // remove click handler from the points and remove points from map
             route.points.forEach(({circle}) => {
                 circle.off('click', this.onPointClick)
@@ -222,19 +207,27 @@ export default {
                 this.mymap.removeLayer(circle)
             })
 
-            // remove from this.routes
-            this.routes.splice(index, 1)
+            // remove polyline from the map
+            this.mymap.removeLayer(route.polyline)
 
             // open index in occupied array
             this.occupiedIndices[route.index % this.colors.length] = false
 
-            // set first route active if active route is being deleted
-            if (index === this.activeRouteIndex) {
-                this.activeRouteIndex = 0
-                this.highlightActiveRoute()
-            } else {
-                this.activeRouteIndex -= 1
+            // reset activeRouteIndex if a non-active route was deleted
+            if (route.index === this.activeRouteIndex) {
+                // set active route index on first index that is occupied
+                const firstIndex = this.occupiedIndices.findIndex(item => item === true)
+                if (firstIndex === -1) {
+                    // last route removed, set to 0
+                    this.activeRouteIndex = 0
+                } else {
+                    this.activeRouteIndex = firstIndex
+                    this.highlightActiveRoute()
+                }
             }
+
+            // remove from this.routes
+            this.routes.splice(index, 1)
         },
         findCuttingPointIndex(event) {
             // find index of the ACTIVE route where this point is part of
@@ -394,13 +387,12 @@ export default {
             if (appendRoute) {
                 const appendRoutePoints = appendRoute.points
 
-                // remove both routes from map
-                this.mymap.removeLayer(this.activeRoute.polyline)
-                this.mymap.removeLayer(appendRoute.polyline)
-
                 // remove both routes from routes array
-                this.deleteRoute(index)
-                this.deleteRoute(this.routes.findIndex(route => route.index === mergedIndex))
+                const deleteIndexFirstRoute = this.routes.findIndex(route => route.index === index)
+                this.deleteRoute(deleteIndexFirstRoute)
+            
+                const deleteIndexSecondRoute = this.routes.findIndex(route => route.index === mergedIndex)
+                this.deleteRoute(deleteIndexSecondRoute)
 
                 // create polyline from combined points
                 const mergedPoints = activeRoutePoints.concat(appendRoutePoints)

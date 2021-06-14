@@ -36,11 +36,9 @@ class RouteController extends Controller
 
         // number of points per km is 'pointDensity'
         $pointDensity = ceil(count($lats)/$total_distance);
-        // \Log::info('number of points: ' . count($lats) . ', distance: ' . $total_distance);
-        // \Log::info('point density: ' . $pointDensity);
         $coarsenFactor = ceil($pointDensity/5);
 
-        $coarsenFactor = 1;
+        // $coarsenFactor = 1;
 
         $coarsendData = [];
         foreach($latlng as $key => $point) {

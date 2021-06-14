@@ -17375,14 +17375,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var route = this.activeRoute;
 
       if (route) {
-        var currentNumberOfPoints = route.points.length; // remove last point, add it in a second again in the correct color
-        // need to do this because simply updating the color of the existing point does not work
-        // if the route was just merged. This might have something to do with the merge method below
-
-        var endPoint = route.points[currentNumberOfPoints - 1].circle;
-        var endlatlng = endPoint.getLatLng();
-        endPoint.off('click', this.onPointClick);
-        this.mymap.removeLayer(endPoint); // add to current active route
+        var currentNumberOfPoints = route.points.length; // add to current active route
 
         route.polyline.addLatLng(latlng); // add a point and make it black, previous last point should become blue, unless it is the starting point
 
@@ -17393,20 +17386,19 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           bubblingMouseEvents: false
         });
         circle.addTo(this.mymap);
-        circle.on('click', this.onPointClick); // add previous lastpoint again
-
-        var circlePrev = L.circle(endlatlng, {
-          radius: 15,
-          color: 'blue',
-          fillOpacity: 1,
-          bubblingMouseEvents: false
-        });
-        circlePrev.addTo(this.mymap);
-        circlePrev.on('click', this.onPointClick); // add point to route points array
+        circle.on('click', this.onPointClick); // add point to route points array
 
         route.points.push({
           circle: circle,
           index: currentNumberOfPoints
+        }); // update color of points
+
+        route.points.forEach(function (_ref3, index, ar) {
+          var circle = _ref3.circle;
+          var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : 'blue';
+          circle.setStyle({
+            color: color
+          });
         }); // update distance of route
 
         var addedDistance = (0,_libs_distance__WEBPACK_IMPORTED_MODULE_1__.calculatePointToPointDistance)(route.points[currentNumberOfPoints - 1].circle.getLatLng(), latlng);
@@ -17466,27 +17458,36 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     deleteRoute: function deleteRoute(index) {
       var _this3 = this;
 
-      var route = this.routes[index]; // remove polyline from the map
+      var route = this.routes[index]; // remove click handler from the points and remove points from map
 
-      this.mymap.removeLayer(route.polyline); // remove click handler from the points and remove points from map
-
-      route.points.forEach(function (_ref3) {
-        var circle = _ref3.circle;
+      route.points.forEach(function (_ref4) {
+        var circle = _ref4.circle;
         circle.off('click', _this3.onPointClick);
 
         _this3.mymap.removeLayer(circle);
-      }); // remove from this.routes
+      }); // remove polyline from the map
 
-      this.routes.splice(index, 1); // open index in occupied array
+      this.mymap.removeLayer(route.polyline); // open index in occupied array
 
-      this.occupiedIndices[route.index % this.colors.length] = false; // set first route active if active route is being deleted
+      this.occupiedIndices[route.index % this.colors.length] = false; // reset activeRouteIndex if a non-active route was deleted
 
-      if (index === this.activeRouteIndex) {
-        this.activeRouteIndex = 0;
-        this.highlightActiveRoute();
-      } else {
-        this.activeRouteIndex -= 1;
-      }
+      if (route.index === this.activeRouteIndex) {
+        // set active route index on first index that is occupied
+        var firstIndex = this.occupiedIndices.findIndex(function (item) {
+          return item === true;
+        });
+
+        if (firstIndex === -1) {
+          // last route removed, set to 0
+          this.activeRouteIndex = 0;
+        } else {
+          this.activeRouteIndex = firstIndex;
+          this.highlightActiveRoute();
+        }
+      } // remove from this.routes
+
+
+      this.routes.splice(index, 1);
     },
     findCuttingPointIndex: function findCuttingPointIndex(event) {
       // find index of the ACTIVE route where this point is part of
@@ -17511,8 +17512,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       this.mymap.removeLayer(route.polyline); // remove click handler from the points, will be added later on
 
-      route.points.forEach(function (_ref4) {
-        var circle = _ref4.circle;
+      route.points.forEach(function (_ref5) {
+        var circle = _ref5.circle;
         return circle.off('click', _this4.onPointClick);
       }); // split points
 
@@ -17530,8 +17531,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     updateRouteOnCut: function updateRouteOnCut(route, points) {
       var _this5 = this;
 
-      var polyline = L.polyline(points.map(function (_ref5) {
-        var circle = _ref5.circle;
+      var polyline = L.polyline(points.map(function (_ref6) {
+        var circle = _ref6.circle;
         return circle.getLatLng();
       }), {
         color: route.color
@@ -17542,8 +17543,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       route.points = points; // add the click events for the individual circles and update colors
 
-      route.points.forEach(function (_ref6, index, ar) {
-        var circle = _ref6.circle;
+      route.points.forEach(function (_ref7, index, ar) {
+        var circle = _ref7.circle;
         var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : 'blue';
         circle.on('click', _this5.onPointClick);
         circle.setStyle({
@@ -17563,8 +17564,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
 
       var color = this.colors[routeIndex % this.colors.length];
-      var polyline = L.polyline(points.map(function (_ref7) {
-        var circle = _ref7.circle;
+      var polyline = L.polyline(points.map(function (_ref8) {
+        var circle = _ref8.circle;
         return circle.getLatLng();
       }), {
         color: color
@@ -17583,8 +17584,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         polyline: polyline
       }; // add the click events for the individual circles and update colors
 
-      route.points.forEach(function (_ref8, index, ar) {
-        var circle = _ref8.circle;
+      route.points.forEach(function (_ref9, index, ar) {
+        var circle = _ref9.circle;
         var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : 'blue';
         circle.on('click', _this6.onPointClick);
         circle.setStyle({
@@ -17604,11 +17605,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         }
       })[type](message);
     },
-    handleTrackImported: function handleTrackImported(_ref9) {
+    handleTrackImported: function handleTrackImported(_ref10) {
       var _this7 = this;
 
-      var track = _ref9.track,
-          distance = _ref9.distance;
+      var track = _ref10.track,
+          distance = _ref10.distance;
       // Map track points to floating point and create objects
       var points = track.map(function (point) {
         return [parseFloat(point[0]), parseFloat(point[1])];
@@ -17642,8 +17643,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           route.polyline.setStyle({
             opacity: 0.4
           });
-          route.points.forEach(function (_ref10, index, ar) {
-            var circle = _ref10.circle;
+          route.points.forEach(function (_ref11, index, ar) {
+            var circle = _ref11.circle;
             var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : route.color;
             circle.setStyle({
               opacity: 0.3,
@@ -17656,8 +17657,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           route.polyline.setStyle({
             opacity: 1
           });
-          route.points.forEach(function (_ref11, index, ar) {
-            var circle = _ref11.circle;
+          route.points.forEach(function (_ref12, index, ar) {
+            var circle = _ref12.circle;
             var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : 'blue';
             circle.setStyle({
               opacity: 1,
@@ -17680,19 +17681,20 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       });
 
       if (appendRoute) {
-        var appendRoutePoints = appendRoute.points; // remove both routes from map
+        var appendRoutePoints = appendRoute.points; // remove both routes from routes array
 
-        this.mymap.removeLayer(this.activeRoute.polyline);
-        this.mymap.removeLayer(appendRoute.polyline); // remove both routes from routes array
-
-        this.deleteRoute(index);
-        this.deleteRoute(this.routes.findIndex(function (route) {
+        var deleteIndexFirstRoute = this.routes.findIndex(function (route) {
+          return route.index === index;
+        });
+        this.deleteRoute(deleteIndexFirstRoute);
+        var deleteIndexSecondRoute = this.routes.findIndex(function (route) {
           return route.index === mergedIndex;
-        })); // create polyline from combined points
+        });
+        this.deleteRoute(deleteIndexSecondRoute); // create polyline from combined points
 
         var mergedPoints = activeRoutePoints.concat(appendRoutePoints);
-        var polyline = L.polyline(mergedPoints.map(function (_ref12) {
-          var circle = _ref12.circle;
+        var polyline = L.polyline(mergedPoints.map(function (_ref13) {
+          var circle = _ref13.circle;
           return circle.getLatLng();
         }), {
           color: mergedColor
@@ -17746,8 +17748,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         });
       }); // rerender polyline given the new order of points
 
-      route.polyline.setLatLngs(route.points.map(function (_ref13) {
-        var circle = _ref13.circle;
+      route.polyline.setLatLngs(route.points.map(function (_ref14) {
+        var circle = _ref14.circle;
         return circle.getLatLng();
       }), {
         color: route.color
