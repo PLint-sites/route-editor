@@ -381,11 +381,11 @@ export default {
         merge(index) {
             const mergedColor = this.activeRoute.color
             const mergedIndex = this.activeRoute.index
-            const activeRoutePoints = this.activeRoute.points
+            const activeRoutePoints = this.activeRoute.polyline.getLatLngs()
             
             const appendRoute = this.routes.find(route => route.index === index)
             if (appendRoute) {
-                const appendRoutePoints = appendRoute.points
+                const appendRoutePoints = appendRoute.polyline.getLatLngs()
 
                 // remove both routes from routes array
                 const deleteIndexFirstRoute = this.routes.findIndex(route => route.index === index)
@@ -395,14 +395,14 @@ export default {
                 this.deleteRoute(deleteIndexSecondRoute)
 
                 // create polyline from combined points
-                const mergedPoints = activeRoutePoints.concat(appendRoutePoints)
-                const polyline = L.polyline(mergedPoints.map(({circle}) => circle.getLatLng()), {color: mergedColor})
+                let mergedPoints = activeRoutePoints.concat(appendRoutePoints)
+                const polyline = L.polyline(mergedPoints, {color: mergedColor})
                 polyline.addTo(this.mymap)
 
                 // add merged points to the map again (removed after deleting both routes)
-                mergedPoints.forEach((point, index, ar) => {                    
+                mergedPoints = mergedPoints.map((latlng, index, ar) => {
                     const color = index === 0 ? '#ffffff' : (index === ar.length-1 ? '#000000' : 'blue')
-                    const circle = L.circle(point.circle.getLatLng(), {
+                    const circle = L.circle(latlng, {
                         radius: 15, 
                         color,
                         fillOpacity: 1,
@@ -410,6 +410,10 @@ export default {
                     })
                     circle.addTo(this.mymap);
                     circle.on('click', this.onPointClick)
+                    return {
+                        circle, 
+                        index
+                    }
                 })
 
                 // create new route object
@@ -418,10 +422,7 @@ export default {
                     distance: calculateDistance(polyline.getLatLngs()),
                     index: mergedIndex,
                     color: mergedColor,
-                    points: mergedPoints.map((point, index) => ({
-                        ...point,
-                        index
-                    })),
+                    points: mergedPoints,
                     polyline
                 }
 

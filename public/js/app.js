@@ -17675,13 +17675,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       var mergedColor = this.activeRoute.color;
       var mergedIndex = this.activeRoute.index;
-      var activeRoutePoints = this.activeRoute.points;
+      var activeRoutePoints = this.activeRoute.polyline.getLatLngs();
       var appendRoute = this.routes.find(function (route) {
         return route.index === index;
       });
 
       if (appendRoute) {
-        var appendRoutePoints = appendRoute.points; // remove both routes from routes array
+        var appendRoutePoints = appendRoute.polyline.getLatLngs(); // remove both routes from routes array
 
         var deleteIndexFirstRoute = this.routes.findIndex(function (route) {
           return route.index === index;
@@ -17693,17 +17693,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this.deleteRoute(deleteIndexSecondRoute); // create polyline from combined points
 
         var mergedPoints = activeRoutePoints.concat(appendRoutePoints);
-        var polyline = L.polyline(mergedPoints.map(function (_ref13) {
-          var circle = _ref13.circle;
-          return circle.getLatLng();
-        }), {
+        var polyline = L.polyline(mergedPoints, {
           color: mergedColor
         });
         polyline.addTo(this.mymap); // add merged points to the map again (removed after deleting both routes)
 
-        mergedPoints.forEach(function (point, index, ar) {
+        mergedPoints = mergedPoints.map(function (latlng, index, ar) {
           var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : 'blue';
-          var circle = L.circle(point.circle.getLatLng(), {
+          var circle = L.circle(latlng, {
             radius: 15,
             color: color,
             fillOpacity: 1,
@@ -17711,6 +17708,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           });
           circle.addTo(_this9.mymap);
           circle.on('click', _this9.onPointClick);
+          return {
+            circle: circle,
+            index: index
+          };
         }); // create new route object
 
         var route = {
@@ -17718,11 +17719,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           distance: (0,_libs_distance__WEBPACK_IMPORTED_MODULE_1__.default)(polyline.getLatLngs()),
           index: mergedIndex,
           color: mergedColor,
-          points: mergedPoints.map(function (point, index) {
-            return _objectSpread(_objectSpread({}, point), {}, {
-              index: index
-            });
-          }),
+          points: mergedPoints,
           polyline: polyline
         };
         this.routes.push(route);
@@ -17748,8 +17745,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         });
       }); // rerender polyline given the new order of points
 
-      route.polyline.setLatLngs(route.points.map(function (_ref14) {
-        var circle = _ref14.circle;
+      route.polyline.setLatLngs(route.points.map(function (_ref13) {
+        var circle = _ref13.circle;
         return circle.getLatLng();
       }), {
         color: route.color
