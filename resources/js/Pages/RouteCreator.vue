@@ -275,7 +275,7 @@ export default {
                 circle.setStyle({color})
             })
         },
-        addRoute(points) {
+        addRoute(points, name = false) {
             // firstFreeIndex tenzij alles vol, dan 
             const routeIndex = this.firstFreeIndex > -1 ? this.firstFreeIndex : this.routes.length
             this.activeRouteIndex = routeIndex
@@ -288,7 +288,7 @@ export default {
             polyline.addTo(this.mymap);
 
             const route = {
-                name: `Route ${routeIndex}`,
+                name: name ? name : `Route ${routeIndex}`,
                 distance: calculateDistance(polyline.getLatLngs()),
                 index: routeIndex,
                 color,
@@ -319,7 +319,8 @@ export default {
                 },
             }))[type](message)
         },
-        handleTrackImported({track, distance}) {
+        handleTrackImported({track, distance, name}) {
+            console.log(`imported ${name}`)
             // Map track points to floating point and create objects
             const points = track
                 .map(point => [parseFloat(point[0]), parseFloat(point[1])])
@@ -342,14 +343,12 @@ export default {
                     }
                 })
 
-            this.addRoute(points)
+            this.addRoute(points, name)
 
             // Fit map to bounds of route
             this.mymap.fitBounds(this.activeRoute.polyline.getBounds());
-            // this.mymap.fitBounds(this.routes[this.activeRouteIndex].polyline.getBounds());
-            
 
-            this.showMessage(`New track imported (number of points ${track.length}), distance: ${distance}`)
+            this.showMessage(`Imported: ${name}, ${distance.toFixed(2)}km (#${track.length})`)
         },
         highlightActiveRoute() {
             this.routes.forEach(route => {
@@ -377,6 +376,7 @@ export default {
                     })
                 }
             })
+            this.mymap.fitBounds(this.activeRoute.polyline.getBounds());
         },
         merge(index) {
             const mergedColor = this.activeRoute.color

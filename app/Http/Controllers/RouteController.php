@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Str;
 
 use XMLReader;
 use SimpleXMLElement;
@@ -30,7 +31,7 @@ class RouteController extends Controller
      */
     public function import(Request $request)
     {
-        // available: $lats, $lons, $latlng, $needsCoarsening
+        // available: $lats, $lons, $latlng, $needsCoarsening, $name
         extract($this->readGpx($request->gpx));
         extract($this->addDistance($lats, $lons));
 
@@ -48,7 +49,7 @@ class RouteController extends Controller
             }
         }
 
-        return ['track' => $coarsendData, 'distance' => $total_distance];
+        return ['track' => $coarsendData, 'distance' => $total_distance, 'name' => $name];
     }
 
     /**
@@ -167,6 +168,8 @@ class RouteController extends Controller
 
     private function readGpx($gpx)
     {
+        $name = $this->getRouteName($gpx);
+
         $xml = new XMLReader();
 
         $xml->open($gpx);
@@ -178,11 +181,14 @@ class RouteController extends Controller
         while ($xml->read()) {
 
             if ($xml->name == 'metadata') {
-                // date
+                // date, link and name
                 $meta = new SimpleXMLElement($xml->readOuterXml());
                 $date = new Carbon($meta->time);
-                if (!empty($meta->link)) $needsCoarsening = true;
                 $mytrack['date'] = $date->format('l jS \\of F Y');
+                if (!empty($meta->link)) $needsCoarsening = true;
+                if (!empty($meta->name)) {
+                    $name = (string)$meta->name;
+                }
             } else if ($xml->name == 'trk') {
                 $track = new SimpleXMLElement($xml->readOuterXml());
 
@@ -229,6 +235,17 @@ class RouteController extends Controller
             return [$point['lat'], $point['lon']];
         }, $mytrack['data']);
 
-        return compact('latlng', 'lats', 'lons', 'needsCoarsening');
+        return compact('latlng', 'lats', 'lons', 'needsCoarsening', 'name');
+    }
+
+    private function getRouteName($file)
+    {
+        $name = $file->getClientOriginalName();
+
+        if (Str::endsWith($name, ['.gpx', '.GPX'])) {
+            return Str::substr($name, 0, strlen($name)-4);
+        }
+
+        return $name;
     }
 }

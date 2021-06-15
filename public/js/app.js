@@ -17555,6 +17555,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     addRoute: function addRoute(points) {
       var _this6 = this;
 
+      var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
       // firstFreeIndex tenzij alles vol, dan 
       var routeIndex = this.firstFreeIndex > -1 ? this.firstFreeIndex : this.routes.length;
       this.activeRouteIndex = routeIndex;
@@ -17572,7 +17573,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       });
       polyline.addTo(this.mymap);
       var route = {
-        name: "Route ".concat(routeIndex),
+        name: name ? name : "Route ".concat(routeIndex),
         distance: (0,_libs_distance__WEBPACK_IMPORTED_MODULE_1__.default)(polyline.getLatLngs()),
         index: routeIndex,
         color: color,
@@ -17609,8 +17610,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var _this7 = this;
 
       var track = _ref10.track,
-          distance = _ref10.distance;
-      // Map track points to floating point and create objects
+          distance = _ref10.distance,
+          name = _ref10.name;
+      console.log("imported ".concat(name)); // Map track points to floating point and create objects
+
       var points = track.map(function (point) {
         return [parseFloat(point[0]), parseFloat(point[1])];
       }).map(function (point, index, ar) {
@@ -17629,11 +17632,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           index: index
         };
       });
-      this.addRoute(points); // Fit map to bounds of route
+      this.addRoute(points, name); // Fit map to bounds of route
 
-      this.mymap.fitBounds(this.activeRoute.polyline.getBounds()); // this.mymap.fitBounds(this.routes[this.activeRouteIndex].polyline.getBounds());
-
-      this.showMessage("New track imported (number of points ".concat(track.length, "), distance: ").concat(distance));
+      this.mymap.fitBounds(this.activeRoute.polyline.getBounds());
+      this.showMessage("Imported: ".concat(name, ", ").concat(distance.toFixed(2), "km (#").concat(track.length, ")"));
     },
     highlightActiveRoute: function highlightActiveRoute() {
       var _this8 = this;
@@ -17669,6 +17671,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           });
         }
       });
+      this.mymap.fitBounds(this.activeRoute.polyline.getBounds());
     },
     merge: function merge(index) {
       var _this9 = this;
