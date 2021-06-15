@@ -1,14 +1,9 @@
 <template>
     <div id="upload-form">
-        <form enctype="multipart/form-data" v-if="isInitial || isSaving">
+        <form enctype="multipart/form-data">
             <div class="dropbox">
-                <input type="file" multiple :name="fieldName" :disabled="isSaving" @change="filesChange($event.target.name, $event.target.files); fileCount = $event.target.files.length" class="input-file">
-                <p v-if="isInitial">
-                    Drag your file(s) here to begin<br> or click to browse
-                </p>
-                <p v-if="isSaving">
-                    Uploading {{ fileCount }} files...
-                </p>
+                <p>Drag your file(s) here to begin<br> or click to browse</p>
+                <input type="file" multiple :name="fieldName" @change="filesChange($event.target.name, $event.target.files); fileCount = $event.target.files.length" class="input-file">
             </div>
         </form>
     </div>
@@ -19,8 +14,6 @@ export default {
     name: 'Dropzone',
     data() {
         return {
-            isInitial: true,
-            isSaving: false,
             fieldName: 'gpx'
         }
     },
@@ -43,20 +36,17 @@ export default {
         },
         save(formData) {
             axios.post(`/import-gpx`, formData)
-            // .then(({data: {track, distance}}) => {
             .then(({data}) => {
-                // // create a new route with this data
-                // this.activeRouteIndex = this.routes.length
-                // this.appendRoute(route, this.colors[this.activeRouteIndex], this.activeRouteIndex, distance)
-                // // create the individual points of the route
-                // route.forEach(point => this.createPointOnMap(point))
-
-                // this.showMessage(`New track imported (number of points ${track.length}), distance: ${distance}`)
-                // console.log(`New track imported (number of points ${track.length}), distance: ${distance}`)
                 this.$emit('track-imported', data)
             })
             .catch(error => console.log(error))
         },
+    },
+    mounted() {
+        const dropHeight = .2 * window.innerHeight - 40
+        document.querySelector('.dropbox .input-file').style.height = `${dropHeight}px`
+        const pWidth = document.querySelector('.dropbox').offsetWidth - 20
+        document.querySelector('.dropbox p').style.width = `${pWidth}px`
     },
 }
 </script>
@@ -76,19 +66,19 @@ export default {
             background: lightblue; /* when mouse over to the drop zone, change color */
         }
 
+        .input-file {
+            opacity: 0; /* invisible but it's there! */
+            width: 100%;
+            position: relative;
+            cursor: pointer;
+        }
+
         p {
             font-size: 1.2em;
             text-align: center;
-            padding: 50px 0;
+            position: absolute;
+            top: 10px;
         }
-    }
-
-    .input-file {
-        opacity: 0; /* invisible but it's there! */
-        width: 100%;
-        height: 200px;
-        position: absolute;
-        cursor: pointer;
     }
 }
 </style>

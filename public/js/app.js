@@ -17833,8 +17833,6 @@ __webpack_require__.r(__webpack_exports__);
   name: 'Dropzone',
   data: function data() {
     return {
-      isInitial: true,
-      isSaving: false,
       fieldName: 'gpx'
     };
   },
@@ -17853,22 +17851,20 @@ __webpack_require__.r(__webpack_exports__);
     save: function save(formData) {
       var _this = this;
 
-      axios.post("/import-gpx", formData) // .then(({data: {track, distance}}) => {
-      .then(function (_ref) {
+      axios.post("/import-gpx", formData).then(function (_ref) {
         var data = _ref.data;
 
-        // // create a new route with this data
-        // this.activeRouteIndex = this.routes.length
-        // this.appendRoute(route, this.colors[this.activeRouteIndex], this.activeRouteIndex, distance)
-        // // create the individual points of the route
-        // route.forEach(point => this.createPointOnMap(point))
-        // this.showMessage(`New track imported (number of points ${track.length}), distance: ${distance}`)
-        // console.log(`New track imported (number of points ${track.length}), distance: ${distance}`)
         _this.$emit('track-imported', data);
       })["catch"](function (error) {
         return console.log(error);
       });
     }
+  },
+  mounted: function mounted() {
+    var dropHeight = .2 * window.innerHeight - 40;
+    document.querySelector('.dropbox .input-file').style.height = "".concat(dropHeight, "px");
+    var pWidth = document.querySelector('.dropbox').offsetWidth - 20;
+    document.querySelector('.dropbox p').style.width = "".concat(pWidth, "px");
   }
 });
 
@@ -19700,36 +19696,23 @@ var _hoisted_1 = {
   id: "upload-form"
 };
 var _hoisted_2 = {
-  key: 0,
   enctype: "multipart/form-data"
 };
 var _hoisted_3 = {
   "class": "dropbox"
 };
-var _hoisted_4 = {
-  key: 0
-};
 
-var _hoisted_5 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Drag your file(s) here to begin");
-
-var _hoisted_6 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("br", null, null, -1
+var _hoisted_4 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("p", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("Drag your file(s) here to begin"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("br"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" or click to browse")], -1
 /* HOISTED */
 );
-
-var _hoisted_7 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" or click to browse ");
-
-var _hoisted_8 = {
-  key: 1
-};
 
 (0,vue__WEBPACK_IMPORTED_MODULE_0__.popScopeId)();
 
 var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data, $options) {
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_1, [$data.isInitial || $data.isSaving ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("form", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("input", {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("form", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_3, [_hoisted_4, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("input", {
     type: "file",
     multiple: "",
     name: $data.fieldName,
-    disabled: $data.isSaving,
     onChange: _cache[1] || (_cache[1] = function ($event) {
       $options.filesChange($event.target.name, $event.target.files);
       _ctx.fileCount = $event.target.files.length;
@@ -19737,9 +19720,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
     "class": "input-file"
   }, null, 40
   /* PROPS, HYDRATE_EVENTS */
-  , ["name", "disabled"]), $data.isInitial ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("p", _hoisted_4, [_hoisted_5, _hoisted_6, _hoisted_7])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $data.isSaving ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("p", _hoisted_8, " Uploading " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(_ctx.fileCount) + " files... ", 1
-  /* TEXT */
-  )) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]);
+  , ["name"])])])]);
 });
 
 /***/ }),
@@ -20001,7 +19982,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "#upload-form .dropbox[data-v-b4a14bae] {\n  outline: 2px dashed grey;\n  /* the dash box */\n  outline-offset: -10px;\n  background: lightcyan;\n  color: dimgray;\n  padding: 10px 10px;\n  position: relative;\n  cursor: pointer;\n}\n#upload-form .dropbox[data-v-b4a14bae]:hover {\n  background: lightblue;\n  /* when mouse over to the drop zone, change color */\n}\n#upload-form .dropbox p[data-v-b4a14bae] {\n  font-size: 1.2em;\n  text-align: center;\n  padding: 50px 0;\n}\n#upload-form .input-file[data-v-b4a14bae] {\n  opacity: 0;\n  /* invisible but it's there! */\n  width: 100%;\n  height: 200px;\n  position: absolute;\n  cursor: pointer;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "#upload-form .dropbox[data-v-b4a14bae] {\n  outline: 2px dashed grey;\n  /* the dash box */\n  outline-offset: -10px;\n  background: lightcyan;\n  color: dimgray;\n  padding: 10px 10px;\n  position: relative;\n  cursor: pointer;\n}\n#upload-form .dropbox[data-v-b4a14bae]:hover {\n  background: lightblue;\n  /* when mouse over to the drop zone, change color */\n}\n#upload-form .dropbox .input-file[data-v-b4a14bae] {\n  opacity: 0;\n  /* invisible but it's there! */\n  width: 100%;\n  position: relative;\n  cursor: pointer;\n}\n#upload-form .dropbox p[data-v-b4a14bae] {\n  font-size: 1.2em;\n  text-align: center;\n  position: absolute;\n  top: 10px;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
