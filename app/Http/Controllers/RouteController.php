@@ -30,15 +30,16 @@ class RouteController extends Controller
      */
     public function import(Request $request)
     {
-        // available: $lats, $lons, $latlng
+        // available: $lats, $lons, $latlng, $needsCoarsening
         extract($this->readGpx($request->gpx));
         extract($this->addDistance($lats, $lons));
 
-        // number of points per km is 'pointDensity'
-        $pointDensity = ceil(count($lats)/$total_distance);
-        $coarsenFactor = ceil($pointDensity/5);
-
-        // $coarsenFactor = 1;
+        $coarsenFactor = 1;
+        if ($needsCoarsening) {
+            // number of points per km is 'pointDensity'
+            $pointDensity = ceil(count($lats)/$total_distance);
+            $coarsenFactor = ceil($pointDensity/5);
+        }
 
         $coarsendData = [];
         foreach($latlng as $key => $point) {
@@ -172,12 +173,15 @@ class RouteController extends Controller
 
         $mytrack = ['data' => []];
 
+        $needsCoarsening = false;
+
         while ($xml->read()) {
 
             if ($xml->name == 'metadata') {
                 // date
                 $meta = new SimpleXMLElement($xml->readOuterXml());
                 $date = new Carbon($meta->time);
+                if (!empty($meta->link)) $needsCoarsening = true;
                 $mytrack['date'] = $date->format('l jS \\of F Y');
             } else if ($xml->name == 'trk') {
                 $track = new SimpleXMLElement($xml->readOuterXml());
@@ -225,6 +229,6 @@ class RouteController extends Controller
             return [$point['lat'], $point['lon']];
         }, $mytrack['data']);
 
-        return compact('latlng', 'lats', 'lons');
+        return compact('latlng', 'lats', 'lons', 'needsCoarsening');
     }
 }
