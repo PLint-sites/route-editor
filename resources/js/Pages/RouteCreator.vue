@@ -312,7 +312,7 @@ export default {
         },
         showMessage(message, type = 'success') {
             (new Notyf({
-                duration: 1500,
+                duration: 3000,
                 position: {
                     x: 'left',
                     y: 'bottom'
@@ -320,7 +320,6 @@ export default {
             }))[type](message)
         },
         handleTrackImported({track, distance, name}) {
-            console.log(`imported ${name}`)
             // Map track points to floating point and create objects
             const points = track
                 .map(point => [parseFloat(point[0]), parseFloat(point[1])])

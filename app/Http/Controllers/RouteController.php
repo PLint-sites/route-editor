@@ -176,7 +176,6 @@ class RouteController extends Controller
 
         $mytrack = ['data' => []];
 
-        $needsCoarsening = false;
 
         while ($xml->read()) {
 
@@ -185,7 +184,6 @@ class RouteController extends Controller
                 $meta = new SimpleXMLElement($xml->readOuterXml());
                 $date = new Carbon($meta->time);
                 $mytrack['date'] = $date->format('l jS \\of F Y');
-                if (!empty($meta->link)) $needsCoarsening = true;
                 if (!empty($meta->name)) {
                     $name = (string)$meta->name;
                 }
@@ -220,6 +218,10 @@ class RouteController extends Controller
                 }
             }
         }
+
+        // check needsCoarsening again based on number of points
+        $needsCoarsening = false;
+        if (count($mytrack['data']) > 500) $needsCoarsening = true;
 
         // for computing distance
         $lats = array_map(function($point) {

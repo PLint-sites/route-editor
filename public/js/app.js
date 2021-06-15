@@ -17599,7 +17599,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     showMessage: function showMessage(message) {
       var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'success';
       new notyf__WEBPACK_IMPORTED_MODULE_4__.Notyf({
-        duration: 1500,
+        duration: 3000,
         position: {
           x: 'left',
           y: 'bottom'
@@ -17612,8 +17612,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var track = _ref10.track,
           distance = _ref10.distance,
           name = _ref10.name;
-      console.log("imported ".concat(name)); // Map track points to floating point and create objects
-
+      // Map track points to floating point and create objects
       var points = track.map(function (point) {
         return [parseFloat(point[0]), parseFloat(point[1])];
       }).map(function (point, index, ar) {
