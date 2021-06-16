@@ -394,7 +394,7 @@ export default {
                 this.deleteRoute(deleteIndexSecondRoute)
 
                 // create polyline from combined points
-                let mergedPoints = activeRoutePoints.concat(appendRoutePoints)
+                let mergedPoints = [...activeRoutePoints, ...appendRoutePoints]
                 const polyline = L.polyline(mergedPoints, {color: mergedColor})
                 polyline.addTo(this.mymap)
 
