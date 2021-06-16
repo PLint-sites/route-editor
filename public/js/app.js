@@ -17288,6 +17288,12 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -17299,12 +17305,6 @@ function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symb
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 
 
@@ -17331,7 +17331,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         isSaving: false,
         fieldName: 'gpx'
       },
-      showMergeInterface: false
+      showMergeInterface: false,
+      zoomLevel: 16
     };
   },
   computed: {
@@ -17366,7 +17367,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   methods: {
     initMap: function initMap() {
-      this.mymap = L.map('mapid').setView(this.home, 16);
+      var _this3 = this;
+
+      this.mymap = L.map('mapid').setView(this.home, this.zoomLevel);
       L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=".concat(this.accessToken), {
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
         maxZoom: 18,
@@ -17381,6 +17384,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }); // Init listener for clicks
 
       this.mymap.on('click', this.onMapClick);
+      this.mymap.on('zoomend', function () {
+        _this3.zoomLevel = _this3.mymap.getZoom();
+      });
     },
     onMapClick: function onMapClick(_ref2) {
       var latlng = _ref2.latlng;
@@ -17459,6 +17465,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
     },
     onPointClick: function onPointClick(event) {
+      // Only works on zoomLevel >= 15
       var pointIndex = this.findCuttingPointIndex(event);
 
       if (pointIndex) {
@@ -17468,15 +17475,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
     },
     deleteRoute: function deleteRoute(index) {
-      var _this3 = this;
+      var _this4 = this;
 
       var route = this.routes[index]; // remove click handler from the points and remove points from map
 
       route.points.forEach(function (_ref4) {
         var circle = _ref4.circle;
-        circle.off('click', _this3.onPointClick);
+        circle.off('click', _this4.onPointClick);
 
-        _this3.mymap.removeLayer(circle);
+        _this4.mymap.removeLayer(circle);
       }); // remove polyline from the map
 
       this.mymap.removeLayer(route.polyline); // open index in occupied array
@@ -17504,21 +17511,31 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     findCuttingPointIndex: function findCuttingPointIndex(event) {
       // find index of the ACTIVE route where this point is part of
       var route = this.activeRoute;
-      var routePoints = route.polyline.getLatLngs();
-      var pointIndex = routePoints.findIndex(function (point) {
-        return point.lat === event.latlng.lat && point.lng === event.latlng.lng;
-      });
+      var routePoints = route.polyline.getLatLngs(); // Algorithm 1: find the index of the point matching the exact lat,lng of the point on themap clicked
+      // const pointIndex = routePoints.findIndex(point => point.lat === event.latlng.lat && point.lng === event.latlng.lng)
+      // if (pointIndex > -1) {
+      //     if (pointIndex > 0 && pointIndex < routePoints.length-1) {
+      //         return pointIndex
+      //     }
+      // }
+      // Algorithm 2: find index of point on active route closest to clicked point
 
-      if (pointIndex > -1) {
-        if (pointIndex > 0 && pointIndex < routePoints.length - 1) {
-          return pointIndex;
-        }
+      var clickedPoint = event.latlng;
+      var routeToPointDistance = routePoints.map(function (point, index) {
+        var distanceToPoint = (0,_libs_distance__WEBPACK_IMPORTED_MODULE_1__.calculatePointToPointDistance)(clickedPoint, point) * 1000; // in m
+
+        return distanceToPoint;
+      });
+      var minimalDistanceToPoint = Math.min.apply(Math, _toConsumableArray(routeToPointDistance)); // only return index if minimum distance smaller than 10 m
+
+      if (minimalDistanceToPoint < 10) {
+        return routeToPointDistance.indexOf(minimalDistanceToPoint);
       }
 
       return null;
     },
     cutRoute: function cutRoute(pointIndex) {
-      var _this4 = this;
+      var _this5 = this;
 
       var route = this.activeRoute; // remove polyline from the map
 
@@ -17526,7 +17543,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       route.points.forEach(function (_ref5) {
         var circle = _ref5.circle;
-        return circle.off('click', _this4.onPointClick);
+        return circle.off('click', _this5.onPointClick);
       }); // split points
 
       var route1Points = route.points.filter(function (point) {
@@ -17541,7 +17558,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.addRoute(route2Points);
     },
     updateRouteOnCut: function updateRouteOnCut(route, points) {
-      var _this5 = this;
+      var _this6 = this;
 
       var polyline = L.polyline(points.map(function (_ref6) {
         var circle = _ref6.circle;
@@ -17558,14 +17575,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       route.points.forEach(function (_ref7, index, ar) {
         var circle = _ref7.circle;
         var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : 'blue';
-        circle.on('click', _this5.onPointClick);
+        circle.on('click', _this6.onPointClick);
         circle.setStyle({
           color: color
         });
       });
     },
     addRoute: function addRoute(points) {
-      var _this6 = this;
+      var _this7 = this;
 
       var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
       // firstFreeIndex tenzij alles vol, dan 
@@ -17600,7 +17617,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       route.points.forEach(function (_ref9, index, ar) {
         var circle = _ref9.circle;
         var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : 'blue';
-        circle.on('click', _this6.onPointClick);
+        circle.on('click', _this7.onPointClick);
         circle.setStyle({
           color: color
         });
@@ -17619,7 +17636,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       })[type](message);
     },
     handleTrackImported: function handleTrackImported(_ref10) {
-      var _this7 = this;
+      var _this8 = this;
 
       var track = _ref10.track,
           distance = _ref10.distance,
@@ -17636,8 +17653,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           fillOpacity: 1,
           bubblingMouseEvents: false
         });
-        circle.addTo(_this7.mymap);
-        circle.on('click', _this7.onPointClick);
+        circle.addTo(_this8.mymap);
+        circle.on('click', _this8.onPointClick);
         return {
           circle: circle,
           index: index
@@ -17649,10 +17666,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.showMessage("Imported: ".concat(name, ", ").concat(distance.toFixed(2), "km (#").concat(track.length, ")"));
     },
     highlightActiveRoute: function highlightActiveRoute() {
-      var _this8 = this;
+      var _this9 = this;
 
       this.routes.forEach(function (route) {
-        if (route.index !== _this8.activeRouteIndex) {
+        if (route.index !== _this9.activeRouteIndex) {
           route.polyline.setStyle({
             opacity: 0.4
           });
@@ -17685,7 +17702,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.mymap.fitBounds(this.activeRoute.polyline.getBounds());
     },
     merge: function merge(index) {
-      var _this9 = this;
+      var _this10 = this;
 
       var mergedColor = this.activeRoute.color;
       var mergedIndex = this.activeRoute.index;
@@ -17720,8 +17737,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             fillOpacity: 1,
             bubblingMouseEvents: false
           });
-          circle.addTo(_this9.mymap);
-          circle.on('click', _this9.onPointClick);
+          circle.addTo(_this10.mymap);
+          circle.on('click', _this10.onPointClick);
           return {
             circle: circle,
             index: index
@@ -17777,7 +17794,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.showMessage('Click on the map to start new route');
     },
     exportRoute: function exportRoute() {
-      var _this10 = this;
+      var _this11 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
@@ -17786,11 +17803,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
               case 0:
                 _context.next = 2;
                 return axios.post("/export-gpx", {
-                  data: _this10.activeRoute.polyline.getLatLngs()
+                  data: _this11.activeRoute.polyline.getLatLngs()
                 });
 
               case 2:
-                _this10.showMessage('Route exported and stored in storage directory');
+                _this11.showMessage('Route exported and stored in storage directory');
 
               case 3:
               case "end":
@@ -19234,36 +19251,39 @@ var _hoisted_7 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("
 var _hoisted_8 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Export active route");
 
 var _hoisted_9 = {
-  id: "legend"
+  id: "map-"
 };
 var _hoisted_10 = {
+  id: "legend"
+};
+var _hoisted_11 = {
   "class": "buttons"
 };
 
-var _hoisted_11 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
+var _hoisted_12 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
   "class": "fas fa-trash-alt"
 }, null, -1
 /* HOISTED */
 );
 
-var _hoisted_12 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
+var _hoisted_13 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
   "class": "fas fa-paste"
 }, null, -1
 /* HOISTED */
 );
 
-var _hoisted_13 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
+var _hoisted_14 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
   "class": "fas fa-exchange-alt"
 }, null, -1
 /* HOISTED */
 );
 
-var _hoisted_14 = {
+var _hoisted_15 = {
   key: 0,
   id: "merge-interface"
 };
 
-var _hoisted_15 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("h2", null, "Click the route you wish to append the current to", -1
+var _hoisted_16 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("h2", null, "Click the route you wish to append the current to", -1
 /* HOISTED */
 );
 
@@ -19320,7 +19340,9 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
 
   }, 8
   /* PROPS */
-  , ["onClick"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_9, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.routes, function (route, index) {
+  , ["onClick"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_9, " Current zoomlevel: " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.zoomLevel), 1
+  /* TEXT */
+  )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_10, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.routes, function (route, index) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", {
       key: "legend_".concat(index),
       "class": ["legend-item", route.index === $data.activeRouteIndex ? 'active' : ''],
@@ -19329,7 +19351,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
       "class": route.index === $data.activeRouteIndex ? 'active' : ''
     }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(route.name) + " - " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(route.distance.toFixed(2)) + " km", 1
     /* TEXT */
-    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_10, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
+    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_11, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
       type: "button",
       onClick: function onClick($event) {
         return $options.deleteRoute(index);
@@ -19337,7 +19359,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
       title: "Delete route"
     }, {
       "default": _withId(function () {
-        return [_hoisted_11];
+        return [_hoisted_12];
       }),
       _: 2
       /* DYNAMIC */
@@ -19353,7 +19375,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
       title: "Prepend route to..."
     }, {
       "default": _withId(function () {
-        return [_hoisted_12];
+        return [_hoisted_13];
       }),
       _: 1
       /* STABLE */
@@ -19366,7 +19388,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
       title: "Reverse route"
     }, {
       "default": _withId(function () {
-        return [_hoisted_13];
+        return [_hoisted_14];
       }),
       _: 2
       /* DYNAMIC */
@@ -19380,7 +19402,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
     );
   }), 128
   /* KEYED_FRAGMENT */
-  ))]), $data.showMergeInterface ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_14, [_hoisted_15, ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.mergeableRoutes, function (route, index) {
+  ))]), $data.showMergeInterface ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_15, [_hoisted_16, ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.mergeableRoutes, function (route, index) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", {
       key: "merging_".concat(index)
     }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {

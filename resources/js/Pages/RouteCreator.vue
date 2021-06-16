@@ -12,6 +12,10 @@
                         <Button type="button" @click="startRoute" title="Start new route"><i class="fas fa-plus"></i> Start new route</Button>
                         <Button v-if="showExportButton" type="button" @click="exportRoute" title="Export active route"><i class="fas fa-route"></i> Export active route</Button>
                     </div>
+
+                    <div id="map-">
+                        Current zoomlevel: {{ zoomLevel }}
+                    </div>
                 </div>
                 <div id="legend">
                     <div 
@@ -74,6 +78,7 @@ export default {
                 fieldName: 'gpx',
             },
             showMergeInterface: false,
+            zoomLevel: 16,
         }
     },
     computed: {
@@ -97,7 +102,8 @@ export default {
     },
     methods: {
         initMap() {
-            this.mymap = L.map('mapid').setView(this.home, 16)
+            this.mymap = L.map('mapid').setView(this.home, this.zoomLevel)
+
             L.tileLayer(`https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=${this.accessToken}`, {
                 attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
                 maxZoom: 18,
@@ -113,6 +119,9 @@ export default {
             // Init listener for clicks
             this.mymap.on('click', this.onMapClick)
 
+            this.mymap.on('zoomend', () => {
+                this.zoomLevel = this.mymap.getZoom()
+            })
         },
         onMapClick({latlng}) {
             const route = this.activeRoute
@@ -190,6 +199,7 @@ export default {
             }
         },
         onPointClick(event) {
+            // Only works on zoomLevel >= 15
             const pointIndex = this.findCuttingPointIndex(event)
             if (pointIndex) {
                 this.cutRoute(pointIndex)
@@ -233,12 +243,25 @@ export default {
             // find index of the ACTIVE route where this point is part of
             const route = this.activeRoute
             const routePoints = route.polyline.getLatLngs()
-            const pointIndex = routePoints.findIndex(point => point.lat === event.latlng.lat && point.lng === event.latlng.lng)
+            
+            // Algorithm 1: find the index of the point matching the exact lat,lng of the point on themap clicked
+            // const pointIndex = routePoints.findIndex(point => point.lat === event.latlng.lat && point.lng === event.latlng.lng)
+            // if (pointIndex > -1) {
+            //     if (pointIndex > 0 && pointIndex < routePoints.length-1) {
+            //         return pointIndex
+            //     }
+            // }
 
-            if (pointIndex > -1) {
-                if (pointIndex > 0 && pointIndex < routePoints.length-1) {
-                    return pointIndex
-                }
+            // Algorithm 2: find index of point on active route closest to clicked point
+            const {latlng: clickedPoint} = event
+            const routeToPointDistance = routePoints.map((point, index) => {
+                const distanceToPoint = p2pDistance(clickedPoint, point) * 1000 // in m
+                return distanceToPoint
+            })
+            const minimalDistanceToPoint = Math.min(...routeToPointDistance)
+            // only return index if minimum distance smaller than 10 m
+            if (minimalDistanceToPoint < 10) {
+                return routeToPointDistance.indexOf(minimalDistanceToPoint)
             }
 
             return null
