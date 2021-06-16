@@ -67,6 +67,7 @@ export default {
         return {
             mymap: null,
             accessToken: 'pk.eyJ1IjoicGltaG9vZ2hpZW1zdHJhIiwiYSI6ImNrbnZ1cnRjZDA5Yngyd3Bta3Y2NXMydm0ifQ.eMPCdzzcSvMwIXRgRn3b3Q',
+            mapboxStyleId: 'ckpzbydzn1d0r17k8ci4bxyid',
             home: [50.99408, 5.85511],
             routes: [],
             activeRouteIndex: 0,
@@ -78,7 +79,7 @@ export default {
                 fieldName: 'gpx',
             },
             showMergeInterface: false,
-            zoomLevel: 16,
+            zoomLevel: 14,
         }
     },
     computed: {
@@ -104,14 +105,23 @@ export default {
         initMap() {
             this.mymap = L.map('mapid').setView(this.home, this.zoomLevel)
 
-            L.tileLayer(`https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=${this.accessToken}`, {
+            L.tileLayer(`https://api.mapbox.com/styles/v1/pimhooghiemstra/${this.mapboxStyleId}/tiles/{z}/{x}/{y}?access_token=${this.accessToken}`, {
                 attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
                 maxZoom: 18,
-                id: 'mapbox/streets-v11',
+                // id: 'mapbox/basic-v11',
                 tileSize: 512,
                 zoomOffset: -1,
                 accessToken: this.accessToken
             }).addTo(this.mymap)
+            
+            // L.tileLayer(`https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=${this.accessToken}`, {
+            //     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+            //     maxZoom: 18,
+            //     id: 'mapbox/basic-v11',
+            //     tileSize: 512,
+            //     zoomOffset: -1,
+            //     accessToken: this.accessToken
+            // }).addTo(this.mymap)
 
             // init occupiedIndices: array with false
             this.occupiedIndices = this.colors.map(() => false)
@@ -177,7 +187,15 @@ export default {
                 }
                 const color = this.colors[routeIndex % this.colors.length]
 
-                const polyline = L.polyline([latlng], {color})
+                const polyline = L.polyline([latlng], {
+                    color,
+                    distanceMarkers: {
+                        offset: 5000, // per 5k
+                        textFunction(distance) {
+                            return distance/1000
+                        }
+                    },
+                })
                 polyline.addTo(this.mymap);
 
                 const route = {
@@ -285,7 +303,15 @@ export default {
             this.addRoute(route2Points)
         },
         updateRouteOnCut(route, points) {
-            const polyline = L.polyline(points.map(({circle}) => circle.getLatLng()), {color: route.color})
+            const polyline = L.polyline(points.map(({circle}) => circle.getLatLng()), {
+                color: route.color,
+                distanceMarkers: {
+                    offset: 5000, // per 5k
+                    textFunction(distance) {
+                        return distance/1000
+                    }
+                },
+            })
             polyline.addTo(this.mymap)
             route.polyline = polyline
             route.distance = calculateDistance(polyline.getLatLngs())
@@ -307,7 +333,15 @@ export default {
             }
             const color = this.colors[routeIndex % this.colors.length]
 
-            const polyline = L.polyline(points.map(({circle}) => circle.getLatLng()), {color})
+            const polyline = L.polyline(points.map(({circle}) => circle.getLatLng()), {
+                color,
+                distanceMarkers: {
+                    offset: 5000, // per 5k
+                    textFunction(distance) {
+                        return distance/1000
+                    }
+                },
+            })
             polyline.addTo(this.mymap);
 
             const route = {
@@ -418,7 +452,15 @@ export default {
 
                 // create polyline from combined points
                 let mergedPoints = [...activeRoutePoints, ...appendRoutePoints]
-                const polyline = L.polyline(mergedPoints, {color: mergedColor})
+                const polyline = L.polyline(mergedPoints, {
+                    color: mergedColor,
+                    distanceMarkers: {
+                        offset: 5000, // per 5k
+                        textFunction(distance) {
+                            return distance/1000
+                        }
+                    },
+                })
                 polyline.addTo(this.mymap)
 
                 // add merged points to the map again (removed after deleting both routes)
@@ -494,6 +536,20 @@ export default {
     },
 }
 </script>
+
+<style>
+.dist-marker {
+	font-size: 7px;
+    line-height: 13px;
+	border: 1px solid blue;
+	border-radius: 50%;
+	text-align: center;
+	color: #000;
+	background: #fff;
+    width: 16px !important;
+    height: 16px !important;
+}
+</style>
 
 <style lang="less" scoped>
 #mapid {

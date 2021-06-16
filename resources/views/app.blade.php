@@ -28,6 +28,10 @@
         <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
             integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
             crossorigin=""></script>
+
+        {{-- Leaflet geometry util, required by distance markers plugin --}}
+        <script src="leaflet/leaflet.geometryutil.js"></script>
+        <script src="leaflet/leaflet.distance-marker.js"></script>
     </head>
     <body class="font-sans antialiased">
         @inertia
