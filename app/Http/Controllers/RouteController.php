@@ -24,32 +24,40 @@ class RouteController extends Controller
     }
 
     /**
-     * Import existing GPX file. Check if correct filetype, open and read lat-lng data and return it
+     * Import existing GPX file by file upload. Check if correct filetype, open and read lat-lng data and return it
      *
      * @param Request $request
-     * @return void
+     * @return Array
      */
     public function import(Request $request)
     {
-        // available: $lats, $lons, $latlng, $needsCoarsening, $name
         extract($this->readGpx($request->gpx));
-        extract($this->addDistance($lats, $lons));
 
-        $coarsenFactor = 1;
-        if ($needsCoarsening) {
-            // number of points per km is 'pointDensity'
-            $pointDensity = ceil(count($lats)/$total_distance);
-            $coarsenFactor = ceil($pointDensity/5);
+        $route = $this->CoarsenDataAndAppendDistance($lats, $lons, $latlng, $needsCoarsening);
+        $route['name'] = $name;
+
+        return $route;
+    }
+
+    /**
+     * Import existing file from storage
+     *
+     * @param Request $request
+     * @return Array
+     */
+    public function importFromFilename(Request $request)
+    {
+        $filename = 'storage/base-routes/' . $request->file;
+        if (file_exists($filename)) {
+            extract($this->readGpxAsXml($filename));
+
+            $route = $this->CoarsenDataAndAppendDistance($lats, $lons, $latlng, $needsCoarsening);
+            $route['name'] = $request->file;
+
+            return $route;
         }
 
-        $coarsendData = [];
-        foreach($latlng as $key => $point) {
-            if ($key % $coarsenFactor == 0) {
-                $coarsendData[] = $point;
-            }
-        }
-
-        return ['track' => $coarsendData, 'distance' => $total_distance, 'name' => $name];
+        return response('File niet gevonden', 404);
     }
 
     /**
@@ -151,6 +159,13 @@ class RouteController extends Controller
         return $arc*6373;
     }
 
+    /**
+     * Calculate distance (array) and total distance (float) from LatLng series
+     *
+     * @param Array $lats
+     * @param Array $lons
+     * @return Array
+     */
     private function addDistance($lats, $lons) {
         $distance = [0];
         $total_distance = 0;
@@ -166,16 +181,34 @@ class RouteController extends Controller
         return compact('distance', 'total_distance');
     }
 
-    private function readGpx($gpx)
+    /**
+     * Read data from uploaded GPX file
+     *
+     * @param Stream $uploadedFileStream
+     * @return void
+     */
+    private function readGpx($uploadedFileStream)
     {
-        $name = $this->getRouteName($gpx);
+        $name = $this->getRouteName($uploadedFileStream);
 
+        extract($this->readGpxAsXml($uploadedFileStream));
+
+        return compact('lats', 'lons', 'latlng', 'needsCoarsening', 'name');
+    }
+
+    /**
+     * Read data from GPX file on storage
+     *
+     * @param String $filename
+     * @return void
+     */
+    private function readGpxAsXml($filename)
+    {
         $xml = new XMLReader();
 
-        $xml->open($gpx);
+        $xml->open($filename);
 
         $mytrack = ['data' => []];
-
 
         while ($xml->read()) {
 
@@ -232,17 +265,56 @@ class RouteController extends Controller
             return $point['lon'];
         }, $mytrack['data']);
 
-        // for plotting on the map
         $latlng = array_map(function($point) {
             return [$point['lat'], $point['lon']];
         }, $mytrack['data']);
 
-        return compact('latlng', 'lats', 'lons', 'needsCoarsening', 'name');
+        return compact('lats', 'lons', 'latlng', 'needsCoarsening');
     }
 
-    private function getRouteName($file)
+    /**
+     * Add distance and apply coarsening
+     *
+     * @param Array $lats
+     * @param Array $lons
+     * @param Array $latlng
+     * @param Boolean $needsCoarsening
+     * @return Array
+     */
+    private function CoarsenDataAndAppendDistance($lats, $lons, $latlng, $needsCoarsening)
     {
-        $name = $file->getClientOriginalName();
+        // $distance, $total_distance
+        extract($this->addDistance($lats, $lons));
+
+        $coarsenFactor = 1;
+        if ($needsCoarsening) {
+            // number of points per km is 'pointDensity'
+            $pointDensity = ceil(count($lats)/$total_distance);
+            $coarsenFactor = ceil($pointDensity/5);
+        }
+
+        $coarsendData = [];
+        foreach($latlng as $key => $point) {
+            if ($key % $coarsenFactor == 0) {
+                $coarsendData[] = $point;
+            }
+        }
+
+        return [
+            'track' => $coarsendData,
+            'distance' => $total_distance
+        ];
+    }
+
+    /**
+     * Determine name of track based on uploaded file original name
+     *
+     * @param Stream $uploadedFile
+     * @return String
+     */
+    private function getRouteName($uploadedFile)
+    {
+        $name = $uploadedFile->getClientOriginalName();
 
         if (Str::endsWith($name, ['.gpx', '.GPX'])) {
             return Str::substr($name, 0, strlen($name)-4);

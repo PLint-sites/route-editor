@@ -17690,16 +17690,28 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       this.mymap.fitBounds(this.activeRoute.polyline.getBounds());
       this.showMessage("Imported: ".concat(name, ", ").concat(distance.toFixed(2), "km (#").concat(track.length, ")"));
     },
-    highlightActiveRoute: function highlightActiveRoute() {
+    importRoute: function importRoute(file) {
       var _this10 = this;
 
+      axios.post("/import-gpx-from-filename", {
+        file: file
+      }).then(function (_ref11) {
+        var data = _ref11.data;
+        return _this10.handleTrackImported(data);
+      })["catch"](function (err) {
+        return console.log(err);
+      });
+    },
+    highlightActiveRoute: function highlightActiveRoute() {
+      var _this11 = this;
+
       this.routes.forEach(function (route) {
-        if (route.index !== _this10.activeRouteIndex) {
+        if (route.index !== _this11.activeRouteIndex) {
           route.polyline.setStyle({
             opacity: 0.4
           });
-          route.points.forEach(function (_ref11, index, ar) {
-            var circle = _ref11.circle;
+          route.points.forEach(function (_ref12, index, ar) {
+            var circle = _ref12.circle;
             var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : route.color;
             circle.setStyle({
               opacity: 0.3,
@@ -17712,9 +17724,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           route.polyline.setStyle({
             opacity: 1
           });
-          route.points.forEach(function (_ref12, index, ar) {
-            var circle = _ref12.circle;
-            var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : _this10.pointColor;
+          route.points.forEach(function (_ref13, index, ar) {
+            var circle = _ref13.circle;
+            var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : _this11.pointColor;
             circle.setStyle({
               opacity: 1,
               fillOpacity: 1,
@@ -17727,7 +17739,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       this.mymap.fitBounds(this.activeRoute.polyline.getBounds());
     },
     merge: function merge(index) {
-      var _this11 = this;
+      var _this12 = this;
 
       var mergedColor = this.activeRoute.color;
       var mergedIndex = this.activeRoute.index;
@@ -17762,15 +17774,15 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         polyline.addTo(this.mymap); // add merged points to the map again (removed after deleting both routes)
 
         mergedPoints = mergedPoints.map(function (latlng, index, ar) {
-          var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : _this11.pointColor;
+          var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : _this12.pointColor;
           var circle = L.circle(latlng, {
             radius: 15,
             color: color,
             fillOpacity: 1,
             bubblingMouseEvents: false
           });
-          circle.addTo(_this11.mymap);
-          circle.on('click', _this11.onPointClick);
+          circle.addTo(_this12.mymap);
+          circle.on('click', _this12.onPointClick);
           return {
             circle: circle,
             index: index
@@ -17813,8 +17825,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         });
       }); // rerender polyline given the new order of points
 
-      route.polyline.setLatLngs(route.points.map(function (_ref13) {
-        var circle = _ref13.circle;
+      route.polyline.setLatLngs(route.points.map(function (_ref14) {
+        var circle = _ref14.circle;
         return circle.getLatLng();
       }), {
         color: route.color
@@ -17826,7 +17838,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       this.showMessage('Click on the map to start new route');
     },
     exportRoute: function exportRoute() {
-      var _this12 = this;
+      var _this13 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
@@ -17835,11 +17847,11 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
               case 0:
                 _context.next = 2;
                 return axios.post("/export-gpx", {
-                  data: _this12.activeRoute.polyline.getLatLngs()
+                  data: _this13.activeRoute.polyline.getLatLngs()
                 });
 
               case 2:
-                _this12.showMessage('Route exported and stored in storage directory');
+                _this13.showMessage('Route exported and stored in storage directory');
 
               case 3:
               case "end":
@@ -19250,72 +19262,100 @@ var _withId = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.withScopeId)("dat
 
 (0,vue__WEBPACK_IMPORTED_MODULE_0__.pushScopeId)("data-v-2013be4c");
 
-var _hoisted_1 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
-  id: "mapid"
-}, null, -1
-/* HOISTED */
-);
-
-var _hoisted_2 = {
-  id: "control-container"
-};
-var _hoisted_3 = {
-  id: "controls"
-};
-var _hoisted_4 = {
-  id: "main-control-buttons"
+var _hoisted_1 = {
+  id: "base-routes-cntr"
 };
 
-var _hoisted_5 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
-  "class": "fas fa-plus"
-}, null, -1
-/* HOISTED */
-);
-
-var _hoisted_6 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Start new route");
-
-var _hoisted_7 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
+var _hoisted_2 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
   "class": "fas fa-route"
 }, null, -1
 /* HOISTED */
 );
 
-var _hoisted_8 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Export active route");
+var _hoisted_3 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Geleen-Spaubeek");
+
+var _hoisted_4 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
+  "class": "fas fa-route"
+}, null, -1
+/* HOISTED */
+);
+
+var _hoisted_5 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Munstergeleen naar Puth");
+
+var _hoisted_6 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
+  "class": "fas fa-route"
+}, null, -1
+/* HOISTED */
+);
+
+var _hoisted_7 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Langs de Hornbach");
+
+var _hoisted_8 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
+  id: "mapid"
+}, null, -1
+/* HOISTED */
+);
 
 var _hoisted_9 = {
-  id: "map-"
+  id: "control-container"
 };
 var _hoisted_10 = {
-  id: "legend"
+  id: "controls"
 };
 var _hoisted_11 = {
-  "class": "buttons"
+  id: "main-control-buttons"
 };
 
 var _hoisted_12 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
+  "class": "fas fa-plus"
+}, null, -1
+/* HOISTED */
+);
+
+var _hoisted_13 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Start new route");
+
+var _hoisted_14 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
+  "class": "fas fa-route"
+}, null, -1
+/* HOISTED */
+);
+
+var _hoisted_15 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Export active route");
+
+var _hoisted_16 = {
+  id: "map-"
+};
+var _hoisted_17 = {
+  id: "legend"
+};
+var _hoisted_18 = {
+  "class": "buttons"
+};
+
+var _hoisted_19 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
   "class": "fas fa-trash-alt"
 }, null, -1
 /* HOISTED */
 );
 
-var _hoisted_13 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
+var _hoisted_20 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
   "class": "fas fa-paste"
 }, null, -1
 /* HOISTED */
 );
 
-var _hoisted_14 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
+var _hoisted_21 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
   "class": "fas fa-exchange-alt"
 }, null, -1
 /* HOISTED */
 );
 
-var _hoisted_15 = {
+var _hoisted_22 = {
   key: 0,
   id: "merge-interface"
 };
 
-var _hoisted_16 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("h2", null, "Click the route you wish to append the current to", -1
+var _hoisted_23 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("h2", null, "Click the route you wish to append the current to", -1
 /* HOISTED */
 );
 
@@ -19326,12 +19366,51 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
 
   var _component_Dropzone = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Dropzone");
 
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", null, [_hoisted_1, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", null, [$data.routes.length ? (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)(((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("select", {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
+    type: "button",
+    onClick: _cache[1] || (_cache[1] = function ($event) {
+      return $options.importRoute('Asiel-Spaubeek-Dorpstraat.gpx');
+    }),
+    title: "Import Asiel-Spaubeek-Dorpstraat"
+  }, {
+    "default": _withId(function () {
+      return [_hoisted_2, _hoisted_3];
+    }),
+    _: 1
+    /* STABLE */
+
+  }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
+    type: "button",
+    onClick: _cache[2] || (_cache[2] = function ($event) {
+      return $options.importRoute('Munstergeleen-via-Putherweg.gpx');
+    }),
+    title: "Import Munstergeleen naar Puth"
+  }, {
+    "default": _withId(function () {
+      return [_hoisted_4, _hoisted_5];
+    }),
+    _: 1
+    /* STABLE */
+
+  }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
+    type: "button",
+    onClick: _cache[3] || (_cache[3] = function ($event) {
+      return $options.importRoute('Stadion-Hornbach-Urmonderbaan.gpx');
+    }),
+    title: "Langs de Hornbach"
+  }, {
+    "default": _withId(function () {
+      return [_hoisted_6, _hoisted_7];
+    }),
+    _: 1
+    /* STABLE */
+
+  })]), _hoisted_8, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_9, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_10, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", null, [$data.routes.length ? (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)(((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("select", {
     key: 0,
-    "onUpdate:modelValue": _cache[1] || (_cache[1] = function ($event) {
+    "onUpdate:modelValue": _cache[4] || (_cache[4] = function ($event) {
       return $data.activeRouteIndex = $event;
     }),
-    onChange: _cache[2] || (_cache[2] = function () {
+    onChange: _cache[5] || (_cache[5] = function () {
       return $options.highlightActiveRoute && $options.highlightActiveRoute.apply($options, arguments);
     })
   }, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.routes, function (route, index) {
@@ -19345,13 +19424,13 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
   /* KEYED_FRAGMENT */
   ))], 544
   /* HYDRATE_EVENTS, NEED_PATCH */
-  )), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $data.activeRouteIndex]]) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
+  )), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $data.activeRouteIndex]]) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_11, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
     type: "button",
     onClick: $options.startRoute,
     title: "Start new route"
   }, {
     "default": _withId(function () {
-      return [_hoisted_5, _hoisted_6];
+      return [_hoisted_12, _hoisted_13];
     }),
     _: 1
     /* STABLE */
@@ -19365,16 +19444,16 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
     title: "Export active route"
   }, {
     "default": _withId(function () {
-      return [_hoisted_7, _hoisted_8];
+      return [_hoisted_14, _hoisted_15];
     }),
     _: 1
     /* STABLE */
 
   }, 8
   /* PROPS */
-  , ["onClick"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_9, " Current zoomlevel: " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.zoomLevel), 1
+  , ["onClick"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_16, " Current zoomlevel: " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.zoomLevel), 1
   /* TEXT */
-  )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_10, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.routes, function (route, index) {
+  )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_17, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.routes, function (route, index) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", {
       key: "legend_".concat(index),
       "class": ["legend-item", route.index === $data.activeRouteIndex ? 'active' : ''],
@@ -19383,7 +19462,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
       "class": route.index === $data.activeRouteIndex ? 'active' : ''
     }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(route.name) + " - " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(route.distance.toFixed(2)) + " km", 1
     /* TEXT */
-    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_11, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
+    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_18, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
       type: "button",
       onClick: function onClick($event) {
         return $options.deleteRoute(index);
@@ -19391,7 +19470,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
       title: "Delete route"
     }, {
       "default": _withId(function () {
-        return [_hoisted_12];
+        return [_hoisted_19];
       }),
       _: 2
       /* DYNAMIC */
@@ -19401,13 +19480,13 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
     , ["onClick"]), route.index === $data.activeRouteIndex && $data.routes.length > 1 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_Button, {
       key: 0,
       type: "button",
-      onClick: _cache[3] || (_cache[3] = function ($event) {
+      onClick: _cache[6] || (_cache[6] = function ($event) {
         return $data.showMergeInterface = true;
       }),
       title: "Prepend route to..."
     }, {
       "default": _withId(function () {
-        return [_hoisted_13];
+        return [_hoisted_20];
       }),
       _: 1
       /* STABLE */
@@ -19420,7 +19499,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
       title: "Reverse route"
     }, {
       "default": _withId(function () {
-        return [_hoisted_14];
+        return [_hoisted_21];
       }),
       _: 2
       /* DYNAMIC */
@@ -19434,7 +19513,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
     );
   }), 128
   /* KEYED_FRAGMENT */
-  ))]), $data.showMergeInterface ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_15, [_hoisted_16, ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.mergeableRoutes, function (route, index) {
+  ))]), $data.showMergeInterface ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_22, [_hoisted_23, ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.mergeableRoutes, function (route, index) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", {
       key: "merging_".concat(index)
     }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
@@ -20026,7 +20105,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "#mapid[data-v-2013be4c] {\n  height: 80vh;\n}\n#control-container[data-v-2013be4c] {\n  box-sizing: border-box;\n  height: 20vh;\n  background: #ddeeff;\n  padding: 10px;\n}\n#control-container select[data-v-2013be4c] {\n  width: 100%;\n  height: 45px;\n}\n#control-container #controls[data-v-2013be4c] {\n  display: grid;\n  grid-template-columns: 411px 1fr 1fr;\n  grid-gap: 20px;\n}\n#control-container #controls #main-control-buttons[data-v-2013be4c] {\n  margin-top: 10px;\n  padding: 10px 7px 10px 10px;\n  width: 100%;\n  background: #65329933;\n  box-sizing: border-box;\n}\n#control-container #controls #main-control-buttons button[data-v-2013be4c] {\n  width: 194px;\n  margin-right: 3px;\n}\n#control-container #controls #main-control-buttons button i.fas[data-v-2013be4c] {\n  margin-right: 3px;\n}\n#control-container #controls #legend .legend-item[data-v-2013be4c] {\n  margin-bottom: 8px;\n  padding: 6px 12px;\n  width: 350px;\n}\n#control-container #controls #legend .legend-item.active[data-v-2013be4c] {\n  border: 1px solid black !important;\n}\n#control-container #controls #legend .legend-item div[data-v-2013be4c] {\n  display: grid;\n  grid-template-columns: 2fr 1fr;\n  align-items: center;\n  font-size: 0.7875rem;\n}\n#control-container #controls #legend .legend-item div .buttons[data-v-2013be4c] {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, 30px);\n  grid-gap: 6px;\n  justify-content: end;\n}\n#control-container #controls #legend .legend-item div .buttons button[data-v-2013be4c] {\n  justify-self: center;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "#base-routes-cntr[data-v-2013be4c] {\n  height: 6vh;\n  background: #ddeeff;\n  box-sizing: border-box;\n  padding: 10px;\n}\n#base-routes-cntr button[data-v-2013be4c] {\n  margin-right: 15px;\n}\n#base-routes-cntr button i.fas[data-v-2013be4c] {\n  margin-right: 3px;\n}\n#mapid[data-v-2013be4c] {\n  height: 74vh;\n}\n#control-container[data-v-2013be4c] {\n  box-sizing: border-box;\n  height: 20vh;\n  background: #ddeeff;\n  padding: 10px;\n}\n#control-container select[data-v-2013be4c] {\n  width: 100%;\n  height: 45px;\n}\n#control-container #controls[data-v-2013be4c] {\n  display: grid;\n  grid-template-columns: 411px 1fr 1fr;\n  grid-gap: 20px;\n}\n#control-container #controls #main-control-buttons[data-v-2013be4c] {\n  margin-top: 10px;\n  padding: 10px 7px 10px 10px;\n  width: 100%;\n  background: #65329933;\n  box-sizing: border-box;\n}\n#control-container #controls #main-control-buttons button[data-v-2013be4c] {\n  width: 194px;\n  margin-right: 3px;\n}\n#control-container #controls #main-control-buttons button i.fas[data-v-2013be4c] {\n  margin-right: 3px;\n}\n#control-container #controls #legend .legend-item[data-v-2013be4c] {\n  margin-bottom: 8px;\n  padding: 6px 12px;\n  width: 350px;\n}\n#control-container #controls #legend .legend-item.active[data-v-2013be4c] {\n  border: 1px solid black !important;\n}\n#control-container #controls #legend .legend-item div[data-v-2013be4c] {\n  display: grid;\n  grid-template-columns: 2fr 1fr;\n  align-items: center;\n  font-size: 0.7875rem;\n}\n#control-container #controls #legend .legend-item div .buttons[data-v-2013be4c] {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, 30px);\n  grid-gap: 6px;\n  justify-content: end;\n}\n#control-container #controls #legend .legend-item div .buttons button[data-v-2013be4c] {\n  justify-self: center;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

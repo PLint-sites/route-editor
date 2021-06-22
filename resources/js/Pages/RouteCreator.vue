@@ -1,5 +1,10 @@
 <template>
     <div>
+        <div id="base-routes-cntr">
+            <Button type="button" @click="importRoute('Asiel-Spaubeek-Dorpstraat.gpx')" title="Import Asiel-Spaubeek-Dorpstraat"><i class="fas fa-route"></i> Geleen-Spaubeek</Button>
+            <Button type="button" @click="importRoute('Munstergeleen-via-Putherweg.gpx')" title="Import Munstergeleen naar Puth"><i class="fas fa-route"></i> Munstergeleen naar Puth</Button>
+            <Button type="button" @click="importRoute('Stadion-Hornbach-Urmonderbaan.gpx')" title="Langs de Hornbach"><i class="fas fa-route"></i> Langs de Hornbach</Button>
+        </div>
         <div id="mapid"></div>
         <div id="control-container">
             <div id="controls">
@@ -398,6 +403,11 @@ export default {
 
             this.showMessage(`Imported: ${name}, ${distance.toFixed(2)}km (#${track.length})`)
         },
+        importRoute(file) {
+            axios.post(`/import-gpx-from-filename`, {file})
+            .then(({data}) => this.handleTrackImported(data))
+            .catch(err => console.log(err))
+        },
         highlightActiveRoute() {
             this.routes.forEach(route => {
                 if (route.index !== this.activeRouteIndex) {
@@ -544,8 +554,22 @@ export default {
 </style>
 
 <style lang="less" scoped>
+#base-routes-cntr {
+    height: 6vh;
+    background: #ddeeff;
+    box-sizing: border-box;
+    padding: 10px;
+
+    button {
+        margin-right: 15px;
+        i.fas {
+            margin-right: 3px;
+        }
+    }
+}
+
 #mapid {
-    height: 80vh;
+    height: 74vh;
 }
 
 #control-container {
