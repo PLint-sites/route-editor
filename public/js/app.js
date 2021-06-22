@@ -17333,7 +17333,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         fieldName: 'gpx'
       },
       showMergeInterface: false,
-      zoomLevel: 14
+      zoomLevel: 14,
+      pointColor: '#604848'
     };
   },
   computed: {
@@ -17378,15 +17379,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         tileSize: 512,
         zoomOffset: -1,
         accessToken: this.accessToken
-      }).addTo(this.mymap); // L.tileLayer(`https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=${this.accessToken}`, {
-      //     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-      //     maxZoom: 18,
-      //     id: 'mapbox/basic-v11',
-      //     tileSize: 512,
-      //     zoomOffset: -1,
-      //     accessToken: this.accessToken
-      // }).addTo(this.mymap)
-      // init occupiedIndices: array with false
+      }).addTo(this.mymap); // init occupiedIndices: array with false
 
       this.occupiedIndices = this.colors.map(function () {
         return false;
@@ -17398,6 +17391,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       });
     },
     onMapClick: function onMapClick(_ref2) {
+      var _this4 = this;
+
       var latlng = _ref2.latlng;
       var route = this.activeRoute;
 
@@ -17422,7 +17417,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
         route.points.forEach(function (_ref3, index, ar) {
           var circle = _ref3.circle;
-          var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : 'blue';
+          var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : _this4.pointColor;
           circle.setStyle({
             color: color
           });
@@ -17491,15 +17486,15 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       }
     },
     deleteRoute: function deleteRoute(index) {
-      var _this4 = this;
+      var _this5 = this;
 
       var route = this.routes[index]; // remove click handler from the points and remove points from map
 
       route.points.forEach(function (_ref4) {
         var circle = _ref4.circle;
-        circle.off('click', _this4.onPointClick);
+        circle.off('click', _this5.onPointClick);
 
-        _this4.mymap.removeLayer(circle);
+        _this5.mymap.removeLayer(circle);
       }); // remove polyline from the map
 
       this.mymap.removeLayer(route.polyline); // open index in occupied array
@@ -17551,7 +17546,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       return null;
     },
     cutRoute: function cutRoute(pointIndex) {
-      var _this5 = this;
+      var _this6 = this;
 
       var route = this.activeRoute; // remove polyline from the map
 
@@ -17559,7 +17554,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
       route.points.forEach(function (_ref5) {
         var circle = _ref5.circle;
-        return circle.off('click', _this5.onPointClick);
+        return circle.off('click', _this6.onPointClick);
       }); // split points
 
       var route1Points = route.points.filter(function (point) {
@@ -17574,7 +17569,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       this.addRoute(route2Points);
     },
     updateRouteOnCut: function updateRouteOnCut(route, points) {
-      var _this6 = this;
+      var _this7 = this;
 
       var polyline = L.polyline(points.map(function (_ref6) {
         var circle = _ref6.circle;
@@ -17597,15 +17592,15 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
       route.points.forEach(function (_ref7, index, ar) {
         var circle = _ref7.circle;
-        var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : 'blue';
-        circle.on('click', _this6.onPointClick);
+        var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : _this7.pointColor;
+        circle.on('click', _this7.onPointClick);
         circle.setStyle({
           color: color
         });
       });
     },
     addRoute: function addRoute(points) {
-      var _this7 = this;
+      var _this8 = this;
 
       var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
       // firstFreeIndex tenzij alles vol, dan 
@@ -17646,8 +17641,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
       route.points.forEach(function (_ref9, index, ar) {
         var circle = _ref9.circle;
-        var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : 'blue';
-        circle.on('click', _this7.onPointClick);
+        var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : _this8.pointColor;
+        circle.on('click', _this8.onPointClick);
         circle.setStyle({
           color: color
         });
@@ -17666,7 +17661,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       })[type](message);
     },
     handleTrackImported: function handleTrackImported(_ref10) {
-      var _this8 = this;
+      var _this9 = this;
 
       var track = _ref10.track,
           distance = _ref10.distance,
@@ -17676,15 +17671,15 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         return [parseFloat(point[0]), parseFloat(point[1])];
       }).map(function (point, index, ar) {
         // eerste punt wit, laatste zwart
-        var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : 'blue';
+        var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : _this9.pointColor;
         var circle = L.circle(point, {
           radius: 15,
           color: color,
           fillOpacity: 1,
           bubblingMouseEvents: false
         });
-        circle.addTo(_this8.mymap);
-        circle.on('click', _this8.onPointClick);
+        circle.addTo(_this9.mymap);
+        circle.on('click', _this9.onPointClick);
         return {
           circle: circle,
           index: index
@@ -17696,10 +17691,10 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       this.showMessage("Imported: ".concat(name, ", ").concat(distance.toFixed(2), "km (#").concat(track.length, ")"));
     },
     highlightActiveRoute: function highlightActiveRoute() {
-      var _this9 = this;
+      var _this10 = this;
 
       this.routes.forEach(function (route) {
-        if (route.index !== _this9.activeRouteIndex) {
+        if (route.index !== _this10.activeRouteIndex) {
           route.polyline.setStyle({
             opacity: 0.4
           });
@@ -17719,7 +17714,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           });
           route.points.forEach(function (_ref12, index, ar) {
             var circle = _ref12.circle;
-            var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : 'blue';
+            var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : _this10.pointColor;
             circle.setStyle({
               opacity: 1,
               fillOpacity: 1,
@@ -17732,7 +17727,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       this.mymap.fitBounds(this.activeRoute.polyline.getBounds());
     },
     merge: function merge(index) {
-      var _this10 = this;
+      var _this11 = this;
 
       var mergedColor = this.activeRoute.color;
       var mergedIndex = this.activeRoute.index;
@@ -17767,15 +17762,15 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         polyline.addTo(this.mymap); // add merged points to the map again (removed after deleting both routes)
 
         mergedPoints = mergedPoints.map(function (latlng, index, ar) {
-          var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : 'blue';
+          var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : _this11.pointColor;
           var circle = L.circle(latlng, {
             radius: 15,
             color: color,
             fillOpacity: 1,
             bubblingMouseEvents: false
           });
-          circle.addTo(_this10.mymap);
-          circle.on('click', _this10.onPointClick);
+          circle.addTo(_this11.mymap);
+          circle.on('click', _this11.onPointClick);
           return {
             circle: circle,
             index: index
@@ -17831,7 +17826,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       this.showMessage('Click on the map to start new route');
     },
     exportRoute: function exportRoute() {
-      var _this11 = this;
+      var _this12 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
@@ -17840,11 +17835,11 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
               case 0:
                 _context.next = 2;
                 return axios.post("/export-gpx", {
-                  data: _this11.activeRoute.polyline.getLatLngs()
+                  data: _this12.activeRoute.polyline.getLatLngs()
                 });
 
               case 2:
-                _this11.showMessage('Route exported and stored in storage directory');
+                _this12.showMessage('Route exported and stored in storage directory');
 
               case 3:
               case "end":

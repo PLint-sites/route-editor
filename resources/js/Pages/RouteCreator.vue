@@ -80,6 +80,7 @@ export default {
             },
             showMergeInterface: false,
             zoomLevel: 14,
+            pointColor: '#604848',
         }
     },
     computed: {
@@ -114,15 +115,6 @@ export default {
                 accessToken: this.accessToken
             }).addTo(this.mymap)
             
-            // L.tileLayer(`https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=${this.accessToken}`, {
-            //     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-            //     maxZoom: 18,
-            //     id: 'mapbox/basic-v11',
-            //     tileSize: 512,
-            //     zoomOffset: -1,
-            //     accessToken: this.accessToken
-            // }).addTo(this.mymap)
-
             // init occupiedIndices: array with false
             this.occupiedIndices = this.colors.map(() => false)
 
@@ -159,7 +151,7 @@ export default {
 
                 // update color of points
                 route.points.forEach(({circle}, index, ar) => {
-                    const color = index === 0 ? '#ffffff' : (index === ar.length-1 ? '#000000' : 'blue')
+                    const color = index === 0 ? '#ffffff' : (index === ar.length-1 ? '#000000' : this.pointColor)
                     circle.setStyle({color})
                 })
 
@@ -319,7 +311,7 @@ export default {
             route.points = points
             // add the click events for the individual circles and update colors
             route.points.forEach(({circle}, index, ar) => {
-                const color = index === 0 ? '#ffffff' : (index === ar.length-1 ? '#000000' : 'blue')
+                const color = index === 0 ? '#ffffff' : (index === ar.length-1 ? '#000000' : this.pointColor)
                 circle.on('click', this.onPointClick)
                 circle.setStyle({color})
             })
@@ -358,7 +350,7 @@ export default {
 
             // add the click events for the individual circles and update colors
             route.points.forEach(({circle}, index, ar) => {
-                const color = index === 0 ? '#ffffff' : (index === ar.length-1 ? '#000000' : 'blue')
+                const color = index === 0 ? '#ffffff' : (index === ar.length-1 ? '#000000' : this.pointColor)
                 circle.on('click', this.onPointClick)
                 circle.setStyle({color})
             })
@@ -382,7 +374,7 @@ export default {
                 .map(point => [parseFloat(point[0]), parseFloat(point[1])])
                 .map((point, index, ar) => {
                     // eerste punt wit, laatste zwart
-                    const color = index === 0 ? '#ffffff' : (index === ar.length-1 ? '#000000' : 'blue')
+                    const color = index === 0 ? '#ffffff' : (index === ar.length-1 ? '#000000' : this.pointColor)
 
                     const circle = L.circle(point, {
                         radius: 15, 
@@ -422,7 +414,7 @@ export default {
                 } else {
                     route.polyline.setStyle({opacity: 1})
                     route.points.forEach(({circle}, index, ar) => {
-                        const color = index === 0 ? '#ffffff' : (index === ar.length-1 ? '#000000' : 'blue')
+                        const color = index === 0 ? '#ffffff' : (index === ar.length-1 ? '#000000' : this.pointColor)
                         circle.setStyle({
                             opacity: 1,
                             fillOpacity: 1,
@@ -465,7 +457,7 @@ export default {
 
                 // add merged points to the map again (removed after deleting both routes)
                 mergedPoints = mergedPoints.map((latlng, index, ar) => {
-                    const color = index === 0 ? '#ffffff' : (index === ar.length-1 ? '#000000' : 'blue')
+                    const color = index === 0 ? '#ffffff' : (index === ar.length-1 ? '#000000' : this.pointColor)
                     const circle = L.circle(latlng, {
                         radius: 15, 
                         color,
