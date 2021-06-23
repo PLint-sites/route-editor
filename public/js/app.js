@@ -18118,7 +18118,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           this.activeRouteIndex = 0;
         } else {
           this.activeRouteIndex = firstIndex;
-          this.highlightActiveRoute();
+          this.highlightActiveRoute(true);
         }
       } // remove from this.routes
 
@@ -18254,7 +18254,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         });
       });
       this.routes.push(route);
-      this.highlightActiveRoute();
+      this.highlightActiveRoute(true);
     },
     showMessage: function showMessage(message) {
       var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'success';
@@ -18291,9 +18291,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           index: index
         };
       });
-      this.addRoute(points, name); // Fit map to bounds of route
+      this.addRoute(points, name); // Fit map to bounds of route            
 
-      this.mymap.fitBounds(this.activeRoute.polyline.getBounds());
       this.showMessage("Imported: ".concat(name, ", ").concat(distance.toFixed(2), "km (#").concat(track.length, ")"));
     },
     importRoute: function importRoute(file) {
@@ -18311,6 +18310,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     highlightActiveRoute: function highlightActiveRoute() {
       var _this11 = this;
 
+      var zoom = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
       this.routes.forEach(function (route) {
         if (route.index !== _this11.activeRouteIndex) {
           route.polyline.setStyle({
@@ -18342,7 +18342,10 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           });
         }
       });
-      this.mymap.fitBounds(this.activeRoute.polyline.getBounds());
+
+      if (zoom) {
+        this.mymap.fitBounds(this.activeRoute.polyline.getBounds());
+      }
     },
     merge: function merge(index) {
       var _this12 = this;
@@ -20309,9 +20312,12 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
       value: route.index,
       "onUpdate:modelValue": _cache[4] || (_cache[4] = function ($event) {
         return $data.activeRouteIndex = $event;
+      }),
+      onChange: _cache[5] || (_cache[5] = function () {
+        return $options.highlightActiveRoute && $options.highlightActiveRoute.apply($options, arguments);
       })
-    }, null, 8
-    /* PROPS */
+    }, null, 40
+    /* PROPS, HYDRATE_EVENTS */
     , ["id", "value"]), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelRadio, $data.activeRouteIndex]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("label", {
       "for": "route_".concat(index + 1)
     }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(route.name), 9
@@ -20334,7 +20340,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
     , ["onClick"]), route.index === $data.activeRouteIndex && $data.routes.length > 1 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_Button, {
       key: 0,
       type: "button",
-      onClick: _cache[5] || (_cache[5] = function ($event) {
+      onClick: _cache[6] || (_cache[6] = function ($event) {
         return $data.showMergeInterface = true;
       }),
       title: "Prepend route to..."

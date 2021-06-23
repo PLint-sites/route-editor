@@ -20,7 +20,7 @@
                     :class="route.index === activeRouteIndex ? 'active' : ''"
                     :style="`background-color: ${route.color}; border-color: ${route.color}`"
                 >
-                    <input :id="`route_${index+1}`" type="radio" :value="route.index" v-model="activeRouteIndex">
+                    <input :id="`route_${index+1}`" type="radio" :value="route.index" v-model="activeRouteIndex" @change="highlightActiveRoute">
                     <label :for="`route_${index+1}`">{{ route.name }}</label>
 
                     <div class="route-controls">
@@ -472,7 +472,7 @@ export default {
                     this.activeRouteIndex = 0
                 } else {
                     this.activeRouteIndex = firstIndex
-                    this.highlightActiveRoute()
+                    this.highlightActiveRoute(true)
                 }
             }
 
@@ -587,7 +587,7 @@ export default {
 
             this.routes.push(route)
 
-            this.highlightActiveRoute()
+            this.highlightActiveRoute(true)
         },
         showMessage(message, type = 'success') {
             (new Notyf({
@@ -623,8 +623,7 @@ export default {
 
             this.addRoute(points, name)
 
-            // Fit map to bounds of route
-            this.mymap.fitBounds(this.activeRoute.polyline.getBounds());
+            // Fit map to bounds of route            
 
             this.showMessage(`Imported: ${name}, ${distance.toFixed(2)}km (#${track.length})`)
         },
@@ -633,7 +632,7 @@ export default {
             .then(({data}) => this.handleTrackImported(data))
             .catch(err => console.log(err))
         },
-        highlightActiveRoute() {
+        highlightActiveRoute(zoom = false) {
             this.routes.forEach(route => {
                 if (route.index !== this.activeRouteIndex) {
                     route.polyline.setStyle({opacity: 0.4})
@@ -659,7 +658,9 @@ export default {
                     })
                 }
             })
-            this.mymap.fitBounds(this.activeRoute.polyline.getBounds());
+            if (zoom) {
+                this.mymap.fitBounds(this.activeRoute.polyline.getBounds());
+            }
         },
         merge(index) {
             const mergedColor = this.activeRoute.color
