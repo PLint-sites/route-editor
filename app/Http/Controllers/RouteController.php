@@ -24,6 +24,16 @@ class RouteController extends Controller
     }
 
     /**
+     * Route creator: start with a fixed file to import
+     *
+     * @return void
+     */
+    public function init2()
+    {
+        return Inertia::render('RouteCreator2');
+    }
+
+    /**
      * Import existing GPX file by file upload. Check if correct filetype, open and read lat-lng data and return it
      *
      * @param Request $request

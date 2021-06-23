@@ -17869,6 +17869,612 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/Pages/RouteCreator2.vue?vue&type=script&lang=js":
+/*!**************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/Pages/RouteCreator2.vue?vue&type=script&lang=js ***!
+  \**************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _libs_distance__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../libs/distance */ "./resources/js/libs/distance.js");
+/* harmony import */ var _Components_Button__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Components/Button */ "./resources/js/Components/Button.vue");
+/* harmony import */ var _RouteComponents_Dropzone__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../RouteComponents/Dropzone */ "./resources/js/RouteComponents/Dropzone.vue");
+/* harmony import */ var notyf__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! notyf */ "./node_modules/notyf/notyf.es.js");
+/* harmony import */ var notyf_notyf_min_css__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! notyf/notyf.min.css */ "./node_modules/notyf/notyf.min.css");
+/* harmony import */ var notyf_notyf_min_css__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(notyf_notyf_min_css__WEBPACK_IMPORTED_MODULE_5__);
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+
+
+
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  name: 'RouteCreator2',
+  components: {
+    Button: _Components_Button__WEBPACK_IMPORTED_MODULE_2__.default,
+    Dropzone: _RouteComponents_Dropzone__WEBPACK_IMPORTED_MODULE_3__.default
+  },
+  data: function data() {
+    return {
+      mymap: null,
+      accessToken: 'pk.eyJ1IjoicGltaG9vZ2hpZW1zdHJhIiwiYSI6ImNrbnZ1cnRjZDA5Yngyd3Bta3Y2NXMydm0ifQ.eMPCdzzcSvMwIXRgRn3b3Q',
+      mapboxStyleId: 'ckpzbydzn1d0r17k8ci4bxyid',
+      home: [50.99408, 5.85511],
+      routes: [],
+      activeRouteIndex: 0,
+      occupiedIndices: [],
+      colors: ['#ec008c', '#fff100', '#ff8c00', '#e81123', '#68217a', '#00188f', '#00bcf2', '#00b294', '#009e49', '#bad80a'],
+      upload: {
+        isInitial: true,
+        isSaving: false,
+        fieldName: 'gpx'
+      },
+      showMergeInterface: false,
+      zoomLevel: 14,
+      pointColor: '#604848'
+    };
+  },
+  computed: {
+    showExportButton: function showExportButton() {
+      // if there is at least one route with >1 points
+      var showButton = false;
+      this.routes.forEach(function (route) {
+        if (route.points.length > 1) showButton = true;
+      });
+      return showButton;
+    },
+    firstFreeIndex: function firstFreeIndex() {
+      return this.occupiedIndices.findIndex(function (item) {
+        return item === false;
+      });
+    },
+    activeRoute: function activeRoute() {
+      var _this = this;
+
+      return this.routes.find(function (_ref) {
+        var index = _ref.index;
+        return index === _this.activeRouteIndex;
+      });
+    },
+    mergeableRoutes: function mergeableRoutes() {
+      var _this2 = this;
+
+      return this.routes.filter(function (route) {
+        return route.index !== _this2.activeRouteIndex;
+      });
+    }
+  },
+  methods: {
+    initMap: function initMap() {
+      var _this3 = this;
+
+      this.mymap = L.map('mapid').setView(this.home, this.zoomLevel);
+      L.tileLayer("https://api.mapbox.com/styles/v1/pimhooghiemstra/".concat(this.mapboxStyleId, "/tiles/{z}/{x}/{y}?access_token=").concat(this.accessToken), {
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        maxZoom: 18,
+        // id: 'mapbox/basic-v11',
+        tileSize: 512,
+        zoomOffset: -1,
+        accessToken: this.accessToken
+      }).addTo(this.mymap); // init occupiedIndices: array with false
+
+      this.occupiedIndices = this.colors.map(function () {
+        return false;
+      }); // Init listener for clicks
+
+      this.mymap.on('click', this.onMapClick);
+      this.mymap.on('zoomend', function () {
+        _this3.zoomLevel = _this3.mymap.getZoom();
+      });
+    },
+    onMapClick: function onMapClick(_ref2) {
+      var _this4 = this;
+
+      var latlng = _ref2.latlng;
+      var route = this.activeRoute;
+
+      if (route) {
+        var currentNumberOfPoints = route.points.length; // add to current active route
+
+        route.polyline.addLatLng(latlng); // add a point and make it black, previous last point should become blue, unless it is the starting point
+
+        var circle = L.circle(latlng, {
+          radius: 15,
+          color: 'black',
+          fillOpacity: 1,
+          bubblingMouseEvents: false
+        });
+        circle.addTo(this.mymap);
+        circle.on('click', this.onPointClick); // add point to route points array
+
+        route.points.push({
+          circle: circle,
+          index: currentNumberOfPoints
+        }); // update color of points
+
+        route.points.forEach(function (_ref3, index, ar) {
+          var circle = _ref3.circle;
+          var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : _this4.pointColor;
+          circle.setStyle({
+            color: color
+          });
+        }); // update distance of route
+
+        var addedDistance = (0,_libs_distance__WEBPACK_IMPORTED_MODULE_1__.calculatePointToPointDistance)(route.points[currentNumberOfPoints - 1].circle.getLatLng(), latlng);
+        route.distance += addedDistance;
+      } else {
+        // start a route
+        this.activeRouteIndex = this.firstFreeIndex; // add a point and make it white
+
+        var _circle = L.circle(latlng, {
+          radius: 15,
+          color: '#ffffff',
+          fillOpacity: 1,
+          bubblingMouseEvents: false
+        });
+
+        _circle.addTo(this.mymap);
+
+        _circle.on('click', this.onPointClick); // firstFreeIndex tenzij alles vol, dan 
+
+
+        var routeIndex = this.firstFreeIndex > -1 ? this.firstFreeIndex : this.routes.length;
+
+        if (this.firstFreeIndex > -1) {
+          this.occupiedIndices[this.firstFreeIndex] = true;
+        }
+
+        var color = this.colors[routeIndex % this.colors.length];
+        var polyline = L.polyline([latlng], {
+          color: color,
+          distanceMarkers: {
+            offset: 5000,
+            // per 5k
+            textFunction: function textFunction(distance) {
+              return distance / 1000;
+            }
+          }
+        });
+        polyline.addTo(this.mymap);
+        var _route = {
+          name: "Nieuwe route ".concat(routeIndex),
+          distance: 0,
+          index: routeIndex,
+          color: color,
+          points: [{
+            circle: _circle,
+            index: 0
+          }],
+          polyline: polyline
+        };
+        this.routes.push(_route); // highlight
+
+        this.highlightActiveRoute();
+      }
+    },
+    onPointClick: function onPointClick(event) {
+      // Only works on zoomLevel >= 15
+      var pointIndex = this.findCuttingPointIndex(event);
+
+      if (pointIndex) {
+        this.cutRoute(pointIndex);
+      } else {
+        this.showMessage('Point not on active route or on the edge', 'error');
+      }
+    },
+    deleteRoute: function deleteRoute(index) {
+      var _this5 = this;
+
+      var route = this.routes[index]; // remove click handler from the points and remove points from map
+
+      route.points.forEach(function (_ref4) {
+        var circle = _ref4.circle;
+        circle.off('click', _this5.onPointClick);
+
+        _this5.mymap.removeLayer(circle);
+      }); // remove polyline from the map
+
+      this.mymap.removeLayer(route.polyline); // open index in occupied array
+
+      this.occupiedIndices[route.index % this.colors.length] = false; // reset activeRouteIndex if a non-active route was deleted
+
+      if (route.index === this.activeRouteIndex) {
+        // set active route index on first index that is occupied
+        var firstIndex = this.occupiedIndices.findIndex(function (item) {
+          return item === true;
+        });
+
+        if (firstIndex === -1) {
+          // last route removed, set to 0
+          this.activeRouteIndex = 0;
+        } else {
+          this.activeRouteIndex = firstIndex;
+          this.highlightActiveRoute();
+        }
+      } // remove from this.routes
+
+
+      this.routes.splice(index, 1);
+    },
+    findCuttingPointIndex: function findCuttingPointIndex(event) {
+      // find index of the ACTIVE route where this point is part of
+      var route = this.activeRoute;
+      var routePoints = route.polyline.getLatLngs(); // Algorithm 1: find the index of the point matching the exact lat,lng of the point on themap clicked
+      // const pointIndex = routePoints.findIndex(point => point.lat === event.latlng.lat && point.lng === event.latlng.lng)
+      // if (pointIndex > -1) {
+      //     if (pointIndex > 0 && pointIndex < routePoints.length-1) {
+      //         return pointIndex
+      //     }
+      // }
+      // Algorithm 2: find index of point on active route closest to clicked point
+
+      var clickedPoint = event.latlng;
+      var routeToPointDistance = routePoints.map(function (point, index) {
+        var distanceToPoint = (0,_libs_distance__WEBPACK_IMPORTED_MODULE_1__.calculatePointToPointDistance)(clickedPoint, point) * 1000; // in m
+
+        return distanceToPoint;
+      });
+      var minimalDistanceToPoint = Math.min.apply(Math, _toConsumableArray(routeToPointDistance)); // only return index if minimum distance smaller than 10 m
+
+      if (minimalDistanceToPoint < 10) {
+        return routeToPointDistance.indexOf(minimalDistanceToPoint);
+      }
+
+      return null;
+    },
+    cutRoute: function cutRoute(pointIndex) {
+      var _this6 = this;
+
+      var route = this.activeRoute; // remove polyline from the map
+
+      this.mymap.removeLayer(route.polyline); // remove click handler from the points, will be added later on
+
+      route.points.forEach(function (_ref5) {
+        var circle = _ref5.circle;
+        return circle.off('click', _this6.onPointClick);
+      }); // split points
+
+      var route1Points = route.points.filter(function (point) {
+        return point.index <= pointIndex;
+      });
+      var route2Points = route.points.filter(function (point) {
+        return point.index > pointIndex;
+      }); // create new polyline from route1Points
+
+      this.updateRouteOnCut(route, route1Points); // idem for route2Points (first update activeRouteIndex)
+
+      this.addRoute(route2Points);
+    },
+    updateRouteOnCut: function updateRouteOnCut(route, points) {
+      var _this7 = this;
+
+      var polyline = L.polyline(points.map(function (_ref6) {
+        var circle = _ref6.circle;
+        return circle.getLatLng();
+      }), {
+        color: route.color,
+        distanceMarkers: {
+          offset: 5000,
+          // per 5k
+          textFunction: function textFunction(distance) {
+            return distance / 1000;
+          }
+        }
+      });
+      polyline.addTo(this.mymap);
+      route.polyline = polyline;
+      route.distance = (0,_libs_distance__WEBPACK_IMPORTED_MODULE_1__.default)(polyline.getLatLngs()); // update the points of the route
+
+      route.points = points; // add the click events for the individual circles and update colors
+
+      route.points.forEach(function (_ref7, index, ar) {
+        var circle = _ref7.circle;
+        var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : _this7.pointColor;
+        circle.on('click', _this7.onPointClick);
+        circle.setStyle({
+          color: color
+        });
+      });
+    },
+    addRoute: function addRoute(points) {
+      var _this8 = this;
+
+      var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+      // firstFreeIndex tenzij alles vol, dan 
+      var routeIndex = this.firstFreeIndex > -1 ? this.firstFreeIndex : this.routes.length;
+      this.activeRouteIndex = routeIndex;
+
+      if (this.firstFreeIndex > -1) {
+        this.occupiedIndices[this.firstFreeIndex] = true;
+      }
+
+      var color = this.colors[routeIndex % this.colors.length];
+      var polyline = L.polyline(points.map(function (_ref8) {
+        var circle = _ref8.circle;
+        return circle.getLatLng();
+      }), {
+        color: color,
+        distanceMarkers: {
+          offset: 5000,
+          // per 5k
+          textFunction: function textFunction(distance) {
+            return distance / 1000;
+          }
+        }
+      });
+      polyline.addTo(this.mymap);
+      var route = {
+        name: name ? name : "Route ".concat(routeIndex),
+        distance: (0,_libs_distance__WEBPACK_IMPORTED_MODULE_1__.default)(polyline.getLatLngs()),
+        index: routeIndex,
+        color: color,
+        points: points.map(function (point, index) {
+          return _objectSpread(_objectSpread({}, point), {}, {
+            index: index
+          });
+        }),
+        polyline: polyline
+      }; // add the click events for the individual circles and update colors
+
+      route.points.forEach(function (_ref9, index, ar) {
+        var circle = _ref9.circle;
+        var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : _this8.pointColor;
+        circle.on('click', _this8.onPointClick);
+        circle.setStyle({
+          color: color
+        });
+      });
+      this.routes.push(route);
+      this.highlightActiveRoute();
+    },
+    showMessage: function showMessage(message) {
+      var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'success';
+      new notyf__WEBPACK_IMPORTED_MODULE_4__.Notyf({
+        duration: 3000,
+        position: {
+          x: 'left',
+          y: 'bottom'
+        }
+      })[type](message);
+    },
+    handleTrackImported: function handleTrackImported(_ref10) {
+      var _this9 = this;
+
+      var track = _ref10.track,
+          distance = _ref10.distance,
+          name = _ref10.name;
+      // Map track points to floating point and create objects
+      var points = track.map(function (point) {
+        return [parseFloat(point[0]), parseFloat(point[1])];
+      }).map(function (point, index, ar) {
+        // eerste punt wit, laatste zwart
+        var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : _this9.pointColor;
+        var circle = L.circle(point, {
+          radius: 15,
+          color: color,
+          fillOpacity: 1,
+          bubblingMouseEvents: false
+        });
+        circle.addTo(_this9.mymap);
+        circle.on('click', _this9.onPointClick);
+        return {
+          circle: circle,
+          index: index
+        };
+      });
+      this.addRoute(points, name); // Fit map to bounds of route
+
+      this.mymap.fitBounds(this.activeRoute.polyline.getBounds());
+      this.showMessage("Imported: ".concat(name, ", ").concat(distance.toFixed(2), "km (#").concat(track.length, ")"));
+    },
+    importRoute: function importRoute(file) {
+      var _this10 = this;
+
+      axios.post("/import-gpx-from-filename", {
+        file: file
+      }).then(function (_ref11) {
+        var data = _ref11.data;
+        return _this10.handleTrackImported(data);
+      })["catch"](function (err) {
+        return console.log(err);
+      });
+    },
+    highlightActiveRoute: function highlightActiveRoute() {
+      var _this11 = this;
+
+      this.routes.forEach(function (route) {
+        if (route.index !== _this11.activeRouteIndex) {
+          route.polyline.setStyle({
+            opacity: 0.4
+          });
+          route.points.forEach(function (_ref12, index, ar) {
+            var circle = _ref12.circle;
+            var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : route.color;
+            circle.setStyle({
+              opacity: 0.3,
+              fillOpacity: 0.3,
+              weight: 1,
+              color: color
+            });
+          });
+        } else {
+          route.polyline.setStyle({
+            opacity: 1
+          });
+          route.points.forEach(function (_ref13, index, ar) {
+            var circle = _ref13.circle;
+            var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : _this11.pointColor;
+            circle.setStyle({
+              opacity: 1,
+              fillOpacity: 1,
+              weight: 3,
+              color: color
+            });
+          });
+        }
+      });
+      this.mymap.fitBounds(this.activeRoute.polyline.getBounds());
+    },
+    merge: function merge(index) {
+      var _this12 = this;
+
+      var mergedColor = this.activeRoute.color;
+      var mergedIndex = this.activeRoute.index;
+      var activeRoutePoints = this.activeRoute.polyline.getLatLngs();
+      var appendRoute = this.routes.find(function (route) {
+        return route.index === index;
+      });
+
+      if (appendRoute) {
+        var appendRoutePoints = appendRoute.polyline.getLatLngs(); // remove both routes from routes array
+
+        var deleteIndexFirstRoute = this.routes.findIndex(function (route) {
+          return route.index === index;
+        });
+        this.deleteRoute(deleteIndexFirstRoute);
+        var deleteIndexSecondRoute = this.routes.findIndex(function (route) {
+          return route.index === mergedIndex;
+        });
+        this.deleteRoute(deleteIndexSecondRoute); // create polyline from combined points
+
+        var mergedPoints = [].concat(_toConsumableArray(activeRoutePoints), _toConsumableArray(appendRoutePoints));
+        var polyline = L.polyline(mergedPoints, {
+          color: mergedColor,
+          distanceMarkers: {
+            offset: 5000,
+            // per 5k
+            textFunction: function textFunction(distance) {
+              return distance / 1000;
+            }
+          }
+        });
+        polyline.addTo(this.mymap); // add merged points to the map again (removed after deleting both routes)
+
+        mergedPoints = mergedPoints.map(function (latlng, index, ar) {
+          var color = index === 0 ? '#ffffff' : index === ar.length - 1 ? '#000000' : _this12.pointColor;
+          var circle = L.circle(latlng, {
+            radius: 15,
+            color: color,
+            fillOpacity: 1,
+            bubblingMouseEvents: false
+          });
+          circle.addTo(_this12.mymap);
+          circle.on('click', _this12.onPointClick);
+          return {
+            circle: circle,
+            index: index
+          };
+        }); // create new route object
+
+        var route = {
+          name: "Merged route",
+          distance: (0,_libs_distance__WEBPACK_IMPORTED_MODULE_1__.default)(polyline.getLatLngs()),
+          index: mergedIndex,
+          color: mergedColor,
+          points: mergedPoints,
+          polyline: polyline
+        };
+        this.routes.push(route);
+        this.activeRouteIndex = mergedIndex;
+
+        if (this.firstFreeIndex > -1) {
+          this.occupiedIndices[this.firstFreeIndex] = true;
+        }
+
+        this.highlightActiveRoute();
+        this.showMergeInterface = false;
+      } else {
+        this.showMessage('No route to append found, merge not possible', 'error');
+      }
+    },
+    reverse: function reverse(index) {
+      var route = this.routes[index]; // reverse route, reset index and switch start/endpoint colors
+
+      route.points = route.points.reverse().map(function (point, index, ar) {
+        if (index === 0) point.circle.setStyle({
+          color: '#ffffff'
+        });
+        if (index === ar.length - 1) point.circle.setStyle({
+          color: '#000000'
+        });
+        return _objectSpread(_objectSpread({}, point), {}, {
+          index: index
+        });
+      }); // rerender polyline given the new order of points
+
+      route.polyline.setLatLngs(route.points.map(function (_ref14) {
+        var circle = _ref14.circle;
+        return circle.getLatLng();
+      }), {
+        color: route.color
+      });
+      this.showMessage("Route has been reversed");
+    },
+    startRoute: function startRoute() {
+      this.activeRouteIndex = this.firstFreeIndex;
+      this.showMessage('Click on the map to start new route');
+    },
+    exportRoute: function exportRoute() {
+      var _this13 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _context.next = 2;
+                return axios.post("/export-gpx", {
+                  data: _this13.activeRoute.polyline.getLatLngs()
+                });
+
+              case 2:
+                _this13.showMessage('Route exported and stored in storage directory');
+
+              case 3:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      }))();
+    }
+  },
+  mounted: function mounted() {
+    this.initMap();
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/Pages/Welcome.vue?vue&type=script&lang=js":
 /*!********************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/Pages/Welcome.vue?vue&type=script&lang=js ***!
@@ -17934,12 +18540,6 @@ __webpack_require__.r(__webpack_exports__);
         return console.log(error);
       });
     }
-  },
-  mounted: function mounted() {
-    var dropHeight = .2 * window.innerHeight - 40;
-    document.querySelector('.dropbox .input-file').style.height = "".concat(dropHeight, "px");
-    var pWidth = document.querySelector('.dropbox').offsetWidth - 20;
-    document.querySelector('.dropbox p').style.width = "".concat(pWidth, "px");
   }
 });
 
@@ -19546,6 +20146,253 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/Pages/RouteCreator2.vue?vue&type=template&id=3b0896d4&scoped=true":
+/*!******************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/Pages/RouteCreator2.vue?vue&type=template&id=3b0896d4&scoped=true ***!
+  \******************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render)
+/* harmony export */ });
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
+
+
+var _withId = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.withScopeId)("data-v-3b0896d4");
+
+(0,vue__WEBPACK_IMPORTED_MODULE_0__.pushScopeId)("data-v-3b0896d4");
+
+var _hoisted_1 = {
+  id: "route-editor"
+};
+var _hoisted_2 = {
+  id: "controls"
+};
+var _hoisted_3 = {
+  id: "saved-routes"
+};
+
+var _hoisted_4 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
+  "class": "fas fa-route"
+}, null, -1
+/* HOISTED */
+);
+
+var _hoisted_5 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Geleen-Spaubeek");
+
+var _hoisted_6 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
+  "class": "fas fa-route"
+}, null, -1
+/* HOISTED */
+);
+
+var _hoisted_7 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Munstergeleen naar Puth");
+
+var _hoisted_8 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
+  "class": "fas fa-route"
+}, null, -1
+/* HOISTED */
+);
+
+var _hoisted_9 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Langs de Hornbach");
+
+var _hoisted_10 = {
+  id: "session-routes"
+};
+var _hoisted_11 = {
+  "class": "route-controls"
+};
+
+var _hoisted_12 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
+  "class": "fas fa-trash-alt"
+}, null, -1
+/* HOISTED */
+);
+
+var _hoisted_13 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
+  "class": "fas fa-paste"
+}, null, -1
+/* HOISTED */
+);
+
+var _hoisted_14 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
+  "class": "fas fa-exchange-alt"
+}, null, -1
+/* HOISTED */
+);
+
+var _hoisted_15 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
+  "class": "fas fa-route"
+}, null, -1
+/* HOISTED */
+);
+
+var _hoisted_16 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
+  "class": "fas fa-plus"
+}, null, -1
+/* HOISTED */
+);
+
+var _hoisted_17 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Start new route");
+
+var _hoisted_18 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
+  id: "mapid"
+}, null, -1
+/* HOISTED */
+);
+
+(0,vue__WEBPACK_IMPORTED_MODULE_0__.popScopeId)();
+
+var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data, $options) {
+  var _component_Button = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Button");
+
+  var _component_Dropzone = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Dropzone");
+
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Login button OR Saved routes "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
+    type: "button",
+    onClick: _cache[1] || (_cache[1] = function ($event) {
+      return $options.importRoute('Asiel-Spaubeek-Dorpstraat.gpx');
+    }),
+    title: "Import Asiel-Spaubeek-Dorpstraat"
+  }, {
+    "default": _withId(function () {
+      return [_hoisted_4, _hoisted_5];
+    }),
+    _: 1
+    /* STABLE */
+
+  }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
+    type: "button",
+    onClick: _cache[2] || (_cache[2] = function ($event) {
+      return $options.importRoute('Munstergeleen-via-Putherweg.gpx');
+    }),
+    title: "Import Munstergeleen naar Puth"
+  }, {
+    "default": _withId(function () {
+      return [_hoisted_6, _hoisted_7];
+    }),
+    _: 1
+    /* STABLE */
+
+  }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
+    type: "button",
+    onClick: _cache[3] || (_cache[3] = function ($event) {
+      return $options.importRoute('Stadion-Hornbach-Urmonderbaan.gpx');
+    }),
+    title: "Langs de Hornbach"
+  }, {
+    "default": _withId(function () {
+      return [_hoisted_8, _hoisted_9];
+    }),
+    _: 1
+    /* STABLE */
+
+  })]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Active routes "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_10, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.routes, function (route, index) {
+    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", {
+      key: "session_route_".concat(index + 1),
+      "class": ["session-route", route.index === $data.activeRouteIndex ? 'active' : ''],
+      style: "background-color: ".concat(route.color, "; border-color: ").concat(route.color)
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("input", {
+      id: "route_".concat(index + 1),
+      type: "radio",
+      "onUpdate:modelValue": _cache[4] || (_cache[4] = function ($event) {
+        return $data.activeRouteIndex = $event;
+      })
+    }, null, 8
+    /* PROPS */
+    , ["id"]), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelRadio, $data.activeRouteIndex]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("label", {
+      "for": "route_".concat(index + 1)
+    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(route.name), 9
+    /* TEXT, PROPS */
+    , ["for"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_11, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
+      type: "button",
+      onClick: function onClick($event) {
+        return $options.deleteRoute(index);
+      },
+      title: "Delete route"
+    }, {
+      "default": _withId(function () {
+        return [_hoisted_12];
+      }),
+      _: 2
+      /* DYNAMIC */
+
+    }, 1032
+    /* PROPS, DYNAMIC_SLOTS */
+    , ["onClick"]), route.index === $data.activeRouteIndex && $data.routes.length > 1 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_Button, {
+      key: 0,
+      type: "button",
+      onClick: _cache[5] || (_cache[5] = function ($event) {
+        return $data.showMergeInterface = true;
+      }),
+      title: "Prepend route to..."
+    }, {
+      "default": _withId(function () {
+        return [_hoisted_13];
+      }),
+      _: 1
+      /* STABLE */
+
+    })) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
+      type: "button",
+      onClick: function onClick($event) {
+        return $options.reverse(index);
+      },
+      title: "Reverse route"
+    }, {
+      "default": _withId(function () {
+        return [_hoisted_14];
+      }),
+      _: 2
+      /* DYNAMIC */
+
+    }, 1032
+    /* PROPS, DYNAMIC_SLOTS */
+    , ["onClick"]), $options.showExportButton && route.index === $data.activeRouteIndex ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_Button, {
+      key: 1,
+      type: "button",
+      onClick: $options.exportRoute,
+      title: "Export active route"
+    }, {
+      "default": _withId(function () {
+        return [_hoisted_15];
+      }),
+      _: 1
+      /* STABLE */
+
+    }, 8
+    /* PROPS */
+    , ["onClick"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])], 6
+    /* CLASS, STYLE */
+    );
+  }), 128
+  /* KEYED_FRAGMENT */
+  )), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
+    type: "button",
+    onClick: $options.startRoute,
+    title: "Start new route"
+  }, {
+    "default": _withId(function () {
+      return [_hoisted_16, _hoisted_17];
+    }),
+    _: 1
+    /* STABLE */
+
+  }, 8
+  /* PROPS */
+  , ["onClick"])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Dropzone "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Dropzone, {
+    onTrackImported: $options.handleTrackImported
+  }, null, 8
+  /* PROPS */
+  , ["onTrackImported"])]), _hoisted_18]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <div>\n        <div id=\"mapid\"></div>\n        <div id=\"control-container\">\n            <div id=\"controls\">\n                <div>\n                    <select v-if=\"routes.length\" v-model=\"activeRouteIndex\" @change=\"highlightActiveRoute\">\n                        <option v-for=\"(route, index) in routes\" :key=\"`route_${index}`\" :value=\"route.index\">{{ route.name }}</option>\n                    </select>\n\n                    <div id=\"main-control-buttons\">\n                        <Button type=\"button\" @click=\"startRoute\" title=\"Start new route\"><i class=\"fas fa-plus\"></i> Start new route</Button>\n                        <Button v-if=\"showExportButton\" type=\"button\" @click=\"exportRoute\" title=\"Export active route\"><i class=\"fas fa-route\"></i> Export active route</Button>\n                    </div>\n\n                    <div id=\"map-\">\n                        Current zoomlevel: {{ zoomLevel }}\n                    </div>\n                </div>\n                <div id=\"legend\">\n                    <div \n                        v-for=\"(route, index) in routes\" \n                        :key=\"`legend_${index}`\"\n                        class=\"legend-item\"\n                        :class=\"route.index === activeRouteIndex ? 'active' : ''\" \n                        :style=\"`background-color: ${route.color}; border-color: ${route.color}`\"\n                    >\n                        <div :class=\"route.index === activeRouteIndex ? 'active' : ''\">\n                            <span>{{ route.name }} - {{ route.distance.toFixed(2) }} km</span>\n                            <div class=\"buttons\">\n                                <Button type=\"button\" @click=\"deleteRoute(index)\" title=\"Delete route\"><i class=\"fas fa-trash-alt\"></i></Button>\n                                <Button v-if=\"route.index === activeRouteIndex && routes.length > 1\" type=\"button\" @click=\"showMergeInterface = true\" title=\"Prepend route to...\"><i class=\"fas fa-paste\"></i></Button>\n                                <Button type=\"button\" @click=\"reverse(index)\" title=\"Reverse route\"><i class=\"fas fa-exchange-alt\"></i></Button>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n                <div id=\"merge-interface\" v-if=\"showMergeInterface\">\n                    <h2>Click the route you wish to append the current to</h2>\n                    <div v-for=\"(route, index) in mergeableRoutes\" :key=\"`merging_${index}`\">\n                        <Button \n                            type=\"button\" \n                            @click=\"merge(route.index)\"\n                            :style=\"`background-color: ${route.color};`\"\n                        >\n                            {{ route.name }} - {{ route.distance.toFixed(2) }} km\n                        </Button>\n                    </div>\n                </div>\n                <Dropzone v-else @track-imported=\"handleTrackImported\"/>\n            </div>\n        </div>\n    </div> ")], 2112
+  /* STABLE_FRAGMENT, DEV_ROOT_FRAGMENT */
+  );
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/Pages/Welcome.vue?vue&type=template&id=317d1a6e&scoped=true":
 /*!************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/Pages/Welcome.vue?vue&type=template&id=317d1a6e&scoped=true ***!
@@ -19849,14 +20696,18 @@ var _hoisted_3 = {
   "class": "dropbox"
 };
 
-var _hoisted_4 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("p", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("Drag your file(s) here to begin"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("br"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" or click to browse")], -1
+var _hoisted_4 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("h2", null, "Upload GPX", -1
+/* HOISTED */
+);
+
+var _hoisted_5 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("p", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("Drag your file(s) here to begin"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("br"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" or click to browse")], -1
 /* HOISTED */
 );
 
 (0,vue__WEBPACK_IMPORTED_MODULE_0__.popScopeId)();
 
 var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data, $options) {
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("form", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_3, [_hoisted_4, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("input", {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("form", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_3, [_hoisted_4, _hoisted_5, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("input", {
     type: "file",
     multiple: "",
     name: $data.fieldName,
@@ -20112,6 +20963,30 @@ ___CSS_LOADER_EXPORT___.push([module.id, "#base-routes-cntr[data-v-2013be4c] {\n
 
 /***/ }),
 
+/***/ "./node_modules/css-loader/dist/cjs.js??clonedRuleSet-18.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-18.use[2]!./node_modules/less-loader/dist/cjs.js!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/Pages/RouteCreator2.vue?vue&type=style&index=1&id=3b0896d4&lang=less&scoped=true":
+/*!*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js??clonedRuleSet-18.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-18.use[2]!./node_modules/less-loader/dist/cjs.js!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/Pages/RouteCreator2.vue?vue&type=style&index=1&id=3b0896d4&lang=less&scoped=true ***!
+  \*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__);
+// Imports
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, "#route-editor[data-v-3b0896d4] {\n  display: grid;\n  width: 100vw;\n  height: 100vh;\n  grid-template-columns: 300px 1fr;\n}\n#route-editor #controls[data-v-3b0896d4] {\n  display: grid;\n  grid-template-rows: 1fr 2fr 225px;\n}\n", ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
 /***/ "./node_modules/css-loader/dist/cjs.js??clonedRuleSet-18.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-18.use[2]!./node_modules/less-loader/dist/cjs.js!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/RouteComponents/Dropzone.vue?vue&type=style&index=0&id=b4a14bae&lang=less&scoped=true":
 /*!**************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/css-loader/dist/cjs.js??clonedRuleSet-18.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-18.use[2]!./node_modules/less-loader/dist/cjs.js!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/RouteComponents/Dropzone.vue?vue&type=style&index=0&id=b4a14bae&lang=less&scoped=true ***!
@@ -20129,7 +21004,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "#upload-form .dropbox[data-v-b4a14bae] {\n  outline: 2px dashed grey;\n  /* the dash box */\n  outline-offset: -10px;\n  background: lightcyan;\n  color: dimgray;\n  padding: 10px 10px;\n  position: relative;\n  cursor: pointer;\n}\n#upload-form .dropbox[data-v-b4a14bae]:hover {\n  background: lightblue;\n  /* when mouse over to the drop zone, change color */\n}\n#upload-form .dropbox .input-file[data-v-b4a14bae] {\n  opacity: 0;\n  /* invisible but it's there! */\n  width: 100%;\n  position: relative;\n  cursor: pointer;\n}\n#upload-form .dropbox p[data-v-b4a14bae] {\n  font-size: 1.2em;\n  text-align: center;\n  position: absolute;\n  top: 10px;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "#upload-form .dropbox[data-v-b4a14bae] {\n  outline: 2px dashed grey;\n  /* the dash box */\n  outline-offset: -10px;\n  background: lightcyan;\n  color: dimgray;\n  padding: 10px 10px;\n  position: relative;\n  cursor: pointer;\n}\n#upload-form .dropbox[data-v-b4a14bae]:hover {\n  background: lightblue;\n  /* when mouse over to the drop zone, change color */\n}\n#upload-form .dropbox .input-file[data-v-b4a14bae] {\n  opacity: 0;\n  /* invisible but it's there! */\n  width: 100%;\n  position: relative;\n  cursor: pointer;\n  height: 205px;\n}\n#upload-form .dropbox h2[data-v-b4a14bae] {\n  text-transform: uppercase;\n  font-weight: bold;\n  font-size: 1.5em;\n  text-align: center;\n  position: absolute;\n  top: 10px;\n  width: 280px;\n}\n#upload-form .dropbox p[data-v-b4a14bae] {\n  font-size: 1.2em;\n  text-align: center;\n  position: absolute;\n  top: 80px;\n  width: 280px;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -20164,6 +21039,30 @@ ___CSS_LOADER_EXPORT___.push([module.id, "@-webkit-keyframes notyf-fadeinup{0%{o
 /*!**************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/Pages/RouteCreator.vue?vue&type=style&index=0&id=2013be4c&lang=css ***!
   \**************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__);
+// Imports
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, "\n.dist-marker {\n\tfont-size: 7px;\n    line-height: 13px;\n\tborder: 1px solid blue;\n\tborder-radius: 50%;\n\ttext-align: center;\n\tcolor: #000;\n\tbackground: #fff;\n    width: 16px !important;\n    height: 16px !important;\n}\n", ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/Pages/RouteCreator2.vue?vue&type=style&index=0&id=3b0896d4&lang=css":
+/*!***************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/Pages/RouteCreator2.vue?vue&type=style&index=0&id=3b0896d4&lang=css ***!
+  \***************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -43855,6 +44754,38 @@ _RouteCreator_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__.default._
 
 /***/ }),
 
+/***/ "./resources/js/Pages/RouteCreator2.vue":
+/*!**********************************************!*\
+  !*** ./resources/js/Pages/RouteCreator2.vue ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _RouteCreator2_vue_vue_type_template_id_3b0896d4_scoped_true__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./RouteCreator2.vue?vue&type=template&id=3b0896d4&scoped=true */ "./resources/js/Pages/RouteCreator2.vue?vue&type=template&id=3b0896d4&scoped=true");
+/* harmony import */ var _RouteCreator2_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./RouteCreator2.vue?vue&type=script&lang=js */ "./resources/js/Pages/RouteCreator2.vue?vue&type=script&lang=js");
+/* harmony import */ var _RouteCreator2_vue_vue_type_style_index_0_id_3b0896d4_lang_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./RouteCreator2.vue?vue&type=style&index=0&id=3b0896d4&lang=css */ "./resources/js/Pages/RouteCreator2.vue?vue&type=style&index=0&id=3b0896d4&lang=css");
+/* harmony import */ var _RouteCreator2_vue_vue_type_style_index_1_id_3b0896d4_lang_less_scoped_true__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./RouteCreator2.vue?vue&type=style&index=1&id=3b0896d4&lang=less&scoped=true */ "./resources/js/Pages/RouteCreator2.vue?vue&type=style&index=1&id=3b0896d4&lang=less&scoped=true");
+
+
+
+
+;
+
+_RouteCreator2_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__.default.render = _RouteCreator2_vue_vue_type_template_id_3b0896d4_scoped_true__WEBPACK_IMPORTED_MODULE_0__.render
+_RouteCreator2_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__.default.__scopeId = "data-v-3b0896d4"
+/* hot reload */
+if (false) {}
+
+_RouteCreator2_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__.default.__file = "resources/js/Pages/RouteCreator2.vue"
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_RouteCreator2_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__.default);
+
+/***/ }),
+
 /***/ "./resources/js/Pages/Welcome.vue":
 /*!****************************************!*\
   !*** ./resources/js/Pages/Welcome.vue ***!
@@ -44199,6 +45130,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_RouteCreator_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__.default)
 /* harmony export */ });
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_RouteCreator_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./RouteCreator.vue?vue&type=script&lang=js */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/Pages/RouteCreator.vue?vue&type=script&lang=js");
+ 
+
+/***/ }),
+
+/***/ "./resources/js/Pages/RouteCreator2.vue?vue&type=script&lang=js":
+/*!**********************************************************************!*\
+  !*** ./resources/js/Pages/RouteCreator2.vue?vue&type=script&lang=js ***!
+  \**********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_RouteCreator2_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__.default)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_RouteCreator2_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./RouteCreator2.vue?vue&type=script&lang=js */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/Pages/RouteCreator2.vue?vue&type=script&lang=js");
  
 
 /***/ }),
@@ -44555,6 +45502,22 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/Pages/RouteCreator2.vue?vue&type=template&id=3b0896d4&scoped=true":
+/*!****************************************************************************************!*\
+  !*** ./resources/js/Pages/RouteCreator2.vue?vue&type=template&id=3b0896d4&scoped=true ***!
+  \****************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_RouteCreator2_vue_vue_type_template_id_3b0896d4_scoped_true__WEBPACK_IMPORTED_MODULE_0__.render)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_RouteCreator2_vue_vue_type_template_id_3b0896d4_scoped_true__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./RouteCreator2.vue?vue&type=template&id=3b0896d4&scoped=true */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/Pages/RouteCreator2.vue?vue&type=template&id=3b0896d4&scoped=true");
+
+
+/***/ }),
+
 /***/ "./resources/js/Pages/Welcome.vue?vue&type=template&id=317d1a6e&scoped=true":
 /*!**********************************************************************************!*\
   !*** ./resources/js/Pages/Welcome.vue?vue&type=template&id=317d1a6e&scoped=true ***!
@@ -44604,6 +45567,23 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/Pages/RouteCreator2.vue?vue&type=style&index=1&id=3b0896d4&lang=less&scoped=true":
+/*!*******************************************************************************************************!*\
+  !*** ./resources/js/Pages/RouteCreator2.vue?vue&type=style&index=1&id=3b0896d4&lang=less&scoped=true ***!
+  \*******************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_18_use_1_node_modules_vue_loader_dist_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_18_use_2_node_modules_less_loader_dist_cjs_js_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_RouteCreator2_vue_vue_type_style_index_1_id_3b0896d4_lang_less_scoped_true__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-style-loader/index.js!../../../node_modules/css-loader/dist/cjs.js??clonedRuleSet-18.use[1]!../../../node_modules/vue-loader/dist/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-18.use[2]!../../../node_modules/less-loader/dist/cjs.js!../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./RouteCreator2.vue?vue&type=style&index=1&id=3b0896d4&lang=less&scoped=true */ "./node_modules/vue-style-loader/index.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-18.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-18.use[2]!./node_modules/less-loader/dist/cjs.js!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/Pages/RouteCreator2.vue?vue&type=style&index=1&id=3b0896d4&lang=less&scoped=true");
+/* harmony import */ var _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_18_use_1_node_modules_vue_loader_dist_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_18_use_2_node_modules_less_loader_dist_cjs_js_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_RouteCreator2_vue_vue_type_style_index_1_id_3b0896d4_lang_less_scoped_true__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_18_use_1_node_modules_vue_loader_dist_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_18_use_2_node_modules_less_loader_dist_cjs_js_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_RouteCreator2_vue_vue_type_style_index_1_id_3b0896d4_lang_less_scoped_true__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
+/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_18_use_1_node_modules_vue_loader_dist_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_18_use_2_node_modules_less_loader_dist_cjs_js_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_RouteCreator2_vue_vue_type_style_index_1_id_3b0896d4_lang_less_scoped_true__WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== "default") __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_18_use_1_node_modules_vue_loader_dist_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_18_use_2_node_modules_less_loader_dist_cjs_js_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_RouteCreator2_vue_vue_type_style_index_1_id_3b0896d4_lang_less_scoped_true__WEBPACK_IMPORTED_MODULE_0__[__WEBPACK_IMPORT_KEY__]
+/* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
+
+
+/***/ }),
+
 /***/ "./resources/js/RouteComponents/Dropzone.vue?vue&type=style&index=0&id=b4a14bae&lang=less&scoped=true":
 /*!************************************************************************************************************!*\
   !*** ./resources/js/RouteComponents/Dropzone.vue?vue&type=style&index=0&id=b4a14bae&lang=less&scoped=true ***!
@@ -44633,6 +45613,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_dist_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_RouteCreator_vue_vue_type_style_index_0_id_2013be4c_lang_css__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_dist_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_RouteCreator_vue_vue_type_style_index_0_id_2013be4c_lang_css__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
 /* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_dist_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_RouteCreator_vue_vue_type_style_index_0_id_2013be4c_lang_css__WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== "default") __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_dist_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_RouteCreator_vue_vue_type_style_index_0_id_2013be4c_lang_css__WEBPACK_IMPORTED_MODULE_0__[__WEBPACK_IMPORT_KEY__]
+/* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
+
+
+/***/ }),
+
+/***/ "./resources/js/Pages/RouteCreator2.vue?vue&type=style&index=0&id=3b0896d4&lang=css":
+/*!******************************************************************************************!*\
+  !*** ./resources/js/Pages/RouteCreator2.vue?vue&type=style&index=0&id=3b0896d4&lang=css ***!
+  \******************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_dist_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_RouteCreator2_vue_vue_type_style_index_0_id_3b0896d4_lang_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-style-loader/index.js!../../../node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!../../../node_modules/vue-loader/dist/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./RouteCreator2.vue?vue&type=style&index=0&id=3b0896d4&lang=css */ "./node_modules/vue-style-loader/index.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/Pages/RouteCreator2.vue?vue&type=style&index=0&id=3b0896d4&lang=css");
+/* harmony import */ var _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_dist_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_RouteCreator2_vue_vue_type_style_index_0_id_3b0896d4_lang_css__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_dist_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_RouteCreator2_vue_vue_type_style_index_0_id_3b0896d4_lang_css__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
+/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_dist_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_RouteCreator2_vue_vue_type_style_index_0_id_3b0896d4_lang_css__WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== "default") __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_dist_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_RouteCreator2_vue_vue_type_style_index_0_id_3b0896d4_lang_css__WEBPACK_IMPORTED_MODULE_0__[__WEBPACK_IMPORT_KEY__]
 /* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
 
 
@@ -44671,6 +45668,27 @@ if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
 var add = __webpack_require__(/*! !../../../node_modules/vue-style-loader/lib/addStylesClient.js */ "./node_modules/vue-style-loader/lib/addStylesClient.js").default
 var update = add("905982a2", content, false, {});
+// Hot Module Replacement
+if(false) {}
+
+/***/ }),
+
+/***/ "./node_modules/vue-style-loader/index.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-18.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-18.use[2]!./node_modules/less-loader/dist/cjs.js!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/Pages/RouteCreator2.vue?vue&type=style&index=1&id=3b0896d4&lang=less&scoped=true":
+/*!**************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-style-loader/index.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-18.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-18.use[2]!./node_modules/less-loader/dist/cjs.js!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/Pages/RouteCreator2.vue?vue&type=style&index=1&id=3b0896d4&lang=less&scoped=true ***!
+  \**************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(/*! !!../../../node_modules/css-loader/dist/cjs.js??clonedRuleSet-18.use[1]!../../../node_modules/vue-loader/dist/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-18.use[2]!../../../node_modules/less-loader/dist/cjs.js!../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./RouteCreator2.vue?vue&type=style&index=1&id=3b0896d4&lang=less&scoped=true */ "./node_modules/css-loader/dist/cjs.js??clonedRuleSet-18.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-18.use[2]!./node_modules/less-loader/dist/cjs.js!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/Pages/RouteCreator2.vue?vue&type=style&index=1&id=3b0896d4&lang=less&scoped=true");
+if(content.__esModule) content = content.default;
+if(typeof content === 'string') content = [[module.id, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var add = __webpack_require__(/*! !../../../node_modules/vue-style-loader/lib/addStylesClient.js */ "./node_modules/vue-style-loader/lib/addStylesClient.js").default
+var update = add("24a620dd", content, false, {});
 // Hot Module Replacement
 if(false) {}
 
@@ -44734,6 +45752,27 @@ if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
 var add = __webpack_require__(/*! !../../../node_modules/vue-style-loader/lib/addStylesClient.js */ "./node_modules/vue-style-loader/lib/addStylesClient.js").default
 var update = add("97481e88", content, false, {});
+// Hot Module Replacement
+if(false) {}
+
+/***/ }),
+
+/***/ "./node_modules/vue-style-loader/index.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/Pages/RouteCreator2.vue?vue&type=style&index=0&id=3b0896d4&lang=css":
+/*!********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-style-loader/index.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/Pages/RouteCreator2.vue?vue&type=style&index=0&id=3b0896d4&lang=css ***!
+  \********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(/*! !!../../../node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!../../../node_modules/vue-loader/dist/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./RouteCreator2.vue?vue&type=style&index=0&id=3b0896d4&lang=css */ "./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/Pages/RouteCreator2.vue?vue&type=style&index=0&id=3b0896d4&lang=css");
+if(content.__esModule) content = content.default;
+if(typeof content === 'string') content = [[module.id, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var add = __webpack_require__(/*! !../../../node_modules/vue-style-loader/lib/addStylesClient.js */ "./node_modules/vue-style-loader/lib/addStylesClient.js").default
+var update = add("5056d2ae", content, false, {});
 // Hot Module Replacement
 if(false) {}
 
@@ -45261,6 +46300,8 @@ var map = {
 	"./Dashboard.vue": "./resources/js/Pages/Dashboard.vue",
 	"./RouteCreator": "./resources/js/Pages/RouteCreator.vue",
 	"./RouteCreator.vue": "./resources/js/Pages/RouteCreator.vue",
+	"./RouteCreator2": "./resources/js/Pages/RouteCreator2.vue",
+	"./RouteCreator2.vue": "./resources/js/Pages/RouteCreator2.vue",
 	"./Welcome": "./resources/js/Pages/Welcome.vue",
 	"./Welcome.vue": "./resources/js/Pages/Welcome.vue"
 };

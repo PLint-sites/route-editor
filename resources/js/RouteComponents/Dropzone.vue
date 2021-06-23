@@ -2,6 +2,7 @@
     <div id="upload-form">
         <form enctype="multipart/form-data">
             <div class="dropbox">
+                <h2>Upload GPX</h2>
                 <p>Drag your file(s) here to begin<br> or click to browse</p>
                 <input type="file" multiple :name="fieldName" @change="filesChange($event.target.name, $event.target.files); fileCount = $event.target.files.length" class="input-file">
             </div>
@@ -42,12 +43,6 @@ export default {
             .catch(error => console.log(error))
         },
     },
-    mounted() {
-        const dropHeight = .2 * window.innerHeight - 40
-        document.querySelector('.dropbox .input-file').style.height = `${dropHeight}px`
-        const pWidth = document.querySelector('.dropbox').offsetWidth - 20
-        document.querySelector('.dropbox p').style.width = `${pWidth}px`
-    },
 }
 </script>
 
@@ -71,13 +66,25 @@ export default {
             width: 100%;
             position: relative;
             cursor: pointer;
+            height: 205px;
+        }
+
+        h2 {
+            text-transform: uppercase;
+            font-weight: bold;
+            font-size: 1.5em;
+            text-align: center;
+            position: absolute;
+            top: 10px;
+            width: 280px;
         }
 
         p {
             font-size: 1.2em;
             text-align: center;
             position: absolute;
-            top: 10px;
+            top: 80px;
+            width: 280px;
         }
     }
 }
