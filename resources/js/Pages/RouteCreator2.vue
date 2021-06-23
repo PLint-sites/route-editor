@@ -4,6 +4,7 @@
         <div id="controls">
             <!-- Login button OR Saved routes -->
             <div id="saved-routes">
+                <h2>Saved routes</h2>
                 <Button type="button" @click="importRoute('Asiel-Spaubeek-Dorpstraat.gpx')" title="Import Asiel-Spaubeek-Dorpstraat"><i class="fas fa-route"></i> Geleen-Spaubeek</Button>
                 <Button type="button" @click="importRoute('Munstergeleen-via-Putherweg.gpx')" title="Import Munstergeleen naar Puth"><i class="fas fa-route"></i> Munstergeleen naar Puth</Button>
                 <Button type="button" @click="importRoute('Stadion-Hornbach-Urmonderbaan.gpx')" title="Langs de Hornbach"><i class="fas fa-route"></i> Langs de Hornbach</Button>
@@ -11,6 +12,7 @@
 
             <!-- Active routes -->
             <div id="session-routes">
+                <h2>Active routes</h2>
                 <div 
                     v-for="(route, index) in routes"
                     :key="`session_route_${index+1}`"
@@ -18,7 +20,7 @@
                     :class="route.index === activeRouteIndex ? 'active' : ''"
                     :style="`background-color: ${route.color}; border-color: ${route.color}`"
                 >
-                    <input :id="`route_${index+1}`" type="radio" v-model="activeRouteIndex">
+                    <input :id="`route_${index+1}`" type="radio" :value="route.index" v-model="activeRouteIndex">
                     <label :for="`route_${index+1}`">{{ route.name }}</label>
 
                     <div class="route-controls">
@@ -28,7 +30,7 @@
                         <Button v-if="showExportButton && route.index === activeRouteIndex" type="button" @click="exportRoute" title="Export active route"><i class="fas fa-route"></i></Button>
                     </div>
                 </div>
-                <Button type="button" @click="startRoute" title="Start new route"><i class="fas fa-plus"></i> Start new route</Button>
+                <Button id="start-route-button" type="button" @click="startRoute" title="Start new route"><i class="fas fa-plus"></i> Start new route</Button>
             </div>
 
             <!-- Dropzone -->
@@ -116,6 +118,80 @@
     #controls {
         display: grid;
         grid-template-rows: 1fr 2fr 225px;
+
+        #saved-routes {
+            padding: 10px;
+            background: bisque;
+        }
+
+        #session-routes {
+            position: relative;
+            padding: 10px;
+            background: cornsilk;
+
+            .session-route {
+                position: relative;
+                margin-bottom: 5px;
+                border: 1px solid;
+                opacity: 0.5;
+
+                input[type="radio"] {
+                    display: none;
+                }
+
+                label {
+                    display: inline-block;
+                    width: 100%;
+                    height: 65px;
+                    text-align: center;
+
+                    &:hover {
+                        cursor: pointer;
+                    }
+                }
+
+                &.active {
+                    border-color: #333 !important;
+                    opacity: 1;
+                }
+
+                .route-controls {
+                    position: absolute;
+                    bottom: 5px;
+                    right: 0;
+
+                    button {
+                        margin-bottom: 0;
+                        margin-right: 5px;
+
+                        > i.fas {
+                            margin-right: 0;
+                        }
+                    }
+                }
+            }
+
+            #start-route-button {
+                position: absolute;
+                bottom: 0;
+            }
+        }
+
+        button {
+            border-radius: 0;
+            margin-bottom: 5px;
+
+            > i.fas {
+               margin-right: 5px;
+            }
+        }
+
+        h2 {
+            text-transform: uppercase;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+        }
     }
 }
 

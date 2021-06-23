@@ -20174,70 +20174,79 @@ var _hoisted_3 = {
   id: "saved-routes"
 };
 
-var _hoisted_4 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
+var _hoisted_4 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("h2", null, "Saved routes", -1
+/* HOISTED */
+);
+
+var _hoisted_5 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
   "class": "fas fa-route"
 }, null, -1
 /* HOISTED */
 );
 
-var _hoisted_5 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Geleen-Spaubeek");
+var _hoisted_6 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Geleen-Spaubeek");
 
-var _hoisted_6 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
+var _hoisted_7 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
   "class": "fas fa-route"
 }, null, -1
 /* HOISTED */
 );
 
-var _hoisted_7 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Munstergeleen naar Puth");
+var _hoisted_8 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Munstergeleen naar Puth");
 
-var _hoisted_8 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
+var _hoisted_9 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
   "class": "fas fa-route"
 }, null, -1
 /* HOISTED */
 );
 
-var _hoisted_9 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Langs de Hornbach");
+var _hoisted_10 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Langs de Hornbach");
 
-var _hoisted_10 = {
+var _hoisted_11 = {
   id: "session-routes"
 };
-var _hoisted_11 = {
+
+var _hoisted_12 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("h2", null, "Active routes", -1
+/* HOISTED */
+);
+
+var _hoisted_13 = {
   "class": "route-controls"
 };
 
-var _hoisted_12 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
+var _hoisted_14 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
   "class": "fas fa-trash-alt"
 }, null, -1
 /* HOISTED */
 );
 
-var _hoisted_13 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
+var _hoisted_15 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
   "class": "fas fa-paste"
 }, null, -1
 /* HOISTED */
 );
 
-var _hoisted_14 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
+var _hoisted_16 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
   "class": "fas fa-exchange-alt"
 }, null, -1
 /* HOISTED */
 );
 
-var _hoisted_15 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
+var _hoisted_17 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
   "class": "fas fa-route"
 }, null, -1
 /* HOISTED */
 );
 
-var _hoisted_16 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
+var _hoisted_18 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
   "class": "fas fa-plus"
 }, null, -1
 /* HOISTED */
 );
 
-var _hoisted_17 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Start new route");
+var _hoisted_19 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Start new route");
 
-var _hoisted_18 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
+var _hoisted_20 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
   id: "mapid"
 }, null, -1
 /* HOISTED */
@@ -20250,7 +20259,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
 
   var _component_Dropzone = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Dropzone");
 
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Login button OR Saved routes "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Login button OR Saved routes "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_3, [_hoisted_4, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
     type: "button",
     onClick: _cache[1] || (_cache[1] = function ($event) {
       return $options.importRoute('Asiel-Spaubeek-Dorpstraat.gpx');
@@ -20258,7 +20267,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
     title: "Import Asiel-Spaubeek-Dorpstraat"
   }, {
     "default": _withId(function () {
-      return [_hoisted_4, _hoisted_5];
+      return [_hoisted_5, _hoisted_6];
     }),
     _: 1
     /* STABLE */
@@ -20271,7 +20280,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
     title: "Import Munstergeleen naar Puth"
   }, {
     "default": _withId(function () {
-      return [_hoisted_6, _hoisted_7];
+      return [_hoisted_7, _hoisted_8];
     }),
     _: 1
     /* STABLE */
@@ -20284,12 +20293,12 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
     title: "Langs de Hornbach"
   }, {
     "default": _withId(function () {
-      return [_hoisted_8, _hoisted_9];
+      return [_hoisted_9, _hoisted_10];
     }),
     _: 1
     /* STABLE */
 
-  })]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Active routes "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_10, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.routes, function (route, index) {
+  })]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Active routes "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_11, [_hoisted_12, ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.routes, function (route, index) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", {
       key: "session_route_".concat(index + 1),
       "class": ["session-route", route.index === $data.activeRouteIndex ? 'active' : ''],
@@ -20297,16 +20306,17 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
     }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("input", {
       id: "route_".concat(index + 1),
       type: "radio",
+      value: route.index,
       "onUpdate:modelValue": _cache[4] || (_cache[4] = function ($event) {
         return $data.activeRouteIndex = $event;
       })
     }, null, 8
     /* PROPS */
-    , ["id"]), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelRadio, $data.activeRouteIndex]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("label", {
+    , ["id", "value"]), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelRadio, $data.activeRouteIndex]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("label", {
       "for": "route_".concat(index + 1)
     }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(route.name), 9
     /* TEXT, PROPS */
-    , ["for"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_11, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
+    , ["for"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_13, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
       type: "button",
       onClick: function onClick($event) {
         return $options.deleteRoute(index);
@@ -20314,7 +20324,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
       title: "Delete route"
     }, {
       "default": _withId(function () {
-        return [_hoisted_12];
+        return [_hoisted_14];
       }),
       _: 2
       /* DYNAMIC */
@@ -20330,7 +20340,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
       title: "Prepend route to..."
     }, {
       "default": _withId(function () {
-        return [_hoisted_13];
+        return [_hoisted_15];
       }),
       _: 1
       /* STABLE */
@@ -20343,7 +20353,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
       title: "Reverse route"
     }, {
       "default": _withId(function () {
-        return [_hoisted_14];
+        return [_hoisted_16];
       }),
       _: 2
       /* DYNAMIC */
@@ -20357,7 +20367,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
       title: "Export active route"
     }, {
       "default": _withId(function () {
-        return [_hoisted_15];
+        return [_hoisted_17];
       }),
       _: 1
       /* STABLE */
@@ -20370,12 +20380,13 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
   }), 128
   /* KEYED_FRAGMENT */
   )), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
+    id: "start-route-button",
     type: "button",
     onClick: $options.startRoute,
     title: "Start new route"
   }, {
     "default": _withId(function () {
-      return [_hoisted_16, _hoisted_17];
+      return [_hoisted_18, _hoisted_19];
     }),
     _: 1
     /* STABLE */
@@ -20386,7 +20397,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
     onTrackImported: $options.handleTrackImported
   }, null, 8
   /* PROPS */
-  , ["onTrackImported"])]), _hoisted_18]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <div>\n        <div id=\"mapid\"></div>\n        <div id=\"control-container\">\n            <div id=\"controls\">\n                <div>\n                    <select v-if=\"routes.length\" v-model=\"activeRouteIndex\" @change=\"highlightActiveRoute\">\n                        <option v-for=\"(route, index) in routes\" :key=\"`route_${index}`\" :value=\"route.index\">{{ route.name }}</option>\n                    </select>\n\n                    <div id=\"main-control-buttons\">\n                        <Button type=\"button\" @click=\"startRoute\" title=\"Start new route\"><i class=\"fas fa-plus\"></i> Start new route</Button>\n                        <Button v-if=\"showExportButton\" type=\"button\" @click=\"exportRoute\" title=\"Export active route\"><i class=\"fas fa-route\"></i> Export active route</Button>\n                    </div>\n\n                    <div id=\"map-\">\n                        Current zoomlevel: {{ zoomLevel }}\n                    </div>\n                </div>\n                <div id=\"legend\">\n                    <div \n                        v-for=\"(route, index) in routes\" \n                        :key=\"`legend_${index}`\"\n                        class=\"legend-item\"\n                        :class=\"route.index === activeRouteIndex ? 'active' : ''\" \n                        :style=\"`background-color: ${route.color}; border-color: ${route.color}`\"\n                    >\n                        <div :class=\"route.index === activeRouteIndex ? 'active' : ''\">\n                            <span>{{ route.name }} - {{ route.distance.toFixed(2) }} km</span>\n                            <div class=\"buttons\">\n                                <Button type=\"button\" @click=\"deleteRoute(index)\" title=\"Delete route\"><i class=\"fas fa-trash-alt\"></i></Button>\n                                <Button v-if=\"route.index === activeRouteIndex && routes.length > 1\" type=\"button\" @click=\"showMergeInterface = true\" title=\"Prepend route to...\"><i class=\"fas fa-paste\"></i></Button>\n                                <Button type=\"button\" @click=\"reverse(index)\" title=\"Reverse route\"><i class=\"fas fa-exchange-alt\"></i></Button>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n                <div id=\"merge-interface\" v-if=\"showMergeInterface\">\n                    <h2>Click the route you wish to append the current to</h2>\n                    <div v-for=\"(route, index) in mergeableRoutes\" :key=\"`merging_${index}`\">\n                        <Button \n                            type=\"button\" \n                            @click=\"merge(route.index)\"\n                            :style=\"`background-color: ${route.color};`\"\n                        >\n                            {{ route.name }} - {{ route.distance.toFixed(2) }} km\n                        </Button>\n                    </div>\n                </div>\n                <Dropzone v-else @track-imported=\"handleTrackImported\"/>\n            </div>\n        </div>\n    </div> ")], 2112
+  , ["onTrackImported"])]), _hoisted_20]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <div>\n        <div id=\"mapid\"></div>\n        <div id=\"control-container\">\n            <div id=\"controls\">\n                <div>\n                    <select v-if=\"routes.length\" v-model=\"activeRouteIndex\" @change=\"highlightActiveRoute\">\n                        <option v-for=\"(route, index) in routes\" :key=\"`route_${index}`\" :value=\"route.index\">{{ route.name }}</option>\n                    </select>\n\n                    <div id=\"main-control-buttons\">\n                        <Button type=\"button\" @click=\"startRoute\" title=\"Start new route\"><i class=\"fas fa-plus\"></i> Start new route</Button>\n                        <Button v-if=\"showExportButton\" type=\"button\" @click=\"exportRoute\" title=\"Export active route\"><i class=\"fas fa-route\"></i> Export active route</Button>\n                    </div>\n\n                    <div id=\"map-\">\n                        Current zoomlevel: {{ zoomLevel }}\n                    </div>\n                </div>\n                <div id=\"legend\">\n                    <div \n                        v-for=\"(route, index) in routes\" \n                        :key=\"`legend_${index}`\"\n                        class=\"legend-item\"\n                        :class=\"route.index === activeRouteIndex ? 'active' : ''\" \n                        :style=\"`background-color: ${route.color}; border-color: ${route.color}`\"\n                    >\n                        <div :class=\"route.index === activeRouteIndex ? 'active' : ''\">\n                            <span>{{ route.name }} - {{ route.distance.toFixed(2) }} km</span>\n                            <div class=\"buttons\">\n                                <Button type=\"button\" @click=\"deleteRoute(index)\" title=\"Delete route\"><i class=\"fas fa-trash-alt\"></i></Button>\n                                <Button v-if=\"route.index === activeRouteIndex && routes.length > 1\" type=\"button\" @click=\"showMergeInterface = true\" title=\"Prepend route to...\"><i class=\"fas fa-paste\"></i></Button>\n                                <Button type=\"button\" @click=\"reverse(index)\" title=\"Reverse route\"><i class=\"fas fa-exchange-alt\"></i></Button>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n                <div id=\"merge-interface\" v-if=\"showMergeInterface\">\n                    <h2>Click the route you wish to append the current to</h2>\n                    <div v-for=\"(route, index) in mergeableRoutes\" :key=\"`merging_${index}`\">\n                        <Button \n                            type=\"button\" \n                            @click=\"merge(route.index)\"\n                            :style=\"`background-color: ${route.color};`\"\n                        >\n                            {{ route.name }} - {{ route.distance.toFixed(2) }} km\n                        </Button>\n                    </div>\n                </div>\n                <Dropzone v-else @track-imported=\"handleTrackImported\"/>\n            </div>\n        </div>\n    </div> ")], 2112
   /* STABLE_FRAGMENT, DEV_ROOT_FRAGMENT */
   );
 });
@@ -20980,7 +20991,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "#route-editor[data-v-3b0896d4] {\n  display: grid;\n  width: 100vw;\n  height: 100vh;\n  grid-template-columns: 300px 1fr;\n}\n#route-editor #controls[data-v-3b0896d4] {\n  display: grid;\n  grid-template-rows: 1fr 2fr 225px;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "#route-editor[data-v-3b0896d4] {\n  display: grid;\n  width: 100vw;\n  height: 100vh;\n  grid-template-columns: 300px 1fr;\n}\n#route-editor #controls[data-v-3b0896d4] {\n  display: grid;\n  grid-template-rows: 1fr 2fr 225px;\n}\n#route-editor #controls #saved-routes[data-v-3b0896d4] {\n  padding: 10px;\n  background: bisque;\n}\n#route-editor #controls #session-routes[data-v-3b0896d4] {\n  position: relative;\n  padding: 10px;\n  background: cornsilk;\n}\n#route-editor #controls #session-routes .session-route[data-v-3b0896d4] {\n  position: relative;\n  margin-bottom: 5px;\n  border: 1px solid;\n  opacity: 0.5;\n}\n#route-editor #controls #session-routes .session-route input[type=\"radio\"][data-v-3b0896d4] {\n  display: none;\n}\n#route-editor #controls #session-routes .session-route label[data-v-3b0896d4] {\n  display: inline-block;\n  width: 100%;\n  height: 65px;\n  text-align: center;\n}\n#route-editor #controls #session-routes .session-route label[data-v-3b0896d4]:hover {\n  cursor: pointer;\n}\n#route-editor #controls #session-routes .session-route.active[data-v-3b0896d4] {\n  border-color: #333 !important;\n  opacity: 1;\n}\n#route-editor #controls #session-routes .session-route .route-controls[data-v-3b0896d4] {\n  position: absolute;\n  bottom: 5px;\n  right: 0;\n}\n#route-editor #controls #session-routes .session-route .route-controls button[data-v-3b0896d4] {\n  margin-bottom: 0;\n  margin-right: 5px;\n}\n#route-editor #controls #session-routes .session-route .route-controls button > i.fas[data-v-3b0896d4] {\n  margin-right: 0;\n}\n#route-editor #controls #session-routes #start-route-button[data-v-3b0896d4] {\n  position: absolute;\n  bottom: 0;\n}\n#route-editor #controls button[data-v-3b0896d4] {\n  border-radius: 0;\n  margin-bottom: 5px;\n}\n#route-editor #controls button > i.fas[data-v-3b0896d4] {\n  margin-right: 5px;\n}\n#route-editor #controls h2[data-v-3b0896d4] {\n  text-transform: uppercase;\n  font-size: 1.2em;\n  font-weight: bold;\n  color: #333;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
