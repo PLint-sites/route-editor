@@ -17305,20 +17305,23 @@ __webpack_require__.r(__webpack_exports__);
       L.marker(this.home).addTo(this.mymap); // The grid
 
       var gridItems = this.createGridItems(this.home, this.latInterval, this.lngInterval, 60);
-      L.featureGroup(gridItems).addTo(this.mymap); // Track (coarsened)
+      L.featureGroup(gridItems).addTo(this.mymap); // Track (coarsened)            
 
-      var trackRaw = localStorage.getItem('track').split(', ');
-      trackRaw.pop();
-      var track = [];
-      trackRaw.forEach(function (item, index, arr) {
-        if (index % 2 === 1) {
-          track.push([parseFloat(arr[index - 1].slice(1)), parseFloat(item.slice(0, -1))]);
-        }
-      });
+      var track = this.loadTrackFromLocalStorage();
       L.polygon(track, {
         color: '#bbb',
         fillColor: '#eee'
-      }).addTo(this.mymap);
+      }).addTo(this.mymap); // ---
+      // Give colors to the grid items
+      // ---
+
+      /**
+       * 1. Loop through points in track
+       * 2. Find square containing the point
+       * 3. update the 'amount' field of the square
+       * 4. set the 'visited_by_track' to true => this way a square can only by visited once per track
+       * 5. plot the grid, giving each square the appropriate color based on the amount value (with just one track, this is either red (visited) or background color)
+       */
     },
     createGridItems: function createGridItems(centerPoint, deltaLat, deltaLng, nPoints) {
       var grid = [];
@@ -17338,6 +17341,20 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       return grid;
+    },
+    loadTrackFromLocalStorage: function loadTrackFromLocalStorage() {
+      // this track can be added to Local Storage by visiting the home page of the app,
+      // uploading a track (export from Strava for example) and in method 'handleTrackImported'
+      // you uncomment the coarseTrack lines (start of method).
+      var trackRaw = localStorage.getItem('track').split(', ');
+      trackRaw.pop();
+      var track = [];
+      trackRaw.forEach(function (item, index, arr) {
+        if (index % 2 === 1) {
+          track.push([parseFloat(arr[index - 1].slice(1)), parseFloat(item.slice(0, -1))]);
+        }
+      });
+      return track;
     }
   },
   mounted: function mounted() {
