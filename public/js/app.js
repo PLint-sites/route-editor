@@ -17282,7 +17282,7 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       home: [50.99408, 5.85511],
-      zoomLevel: 17,
+      zoomLevel: 14,
       accessToken: 'pk.eyJ1IjoicGltaG9vZ2hpZW1zdHJhIiwiYSI6ImNrbnZ1cnRjZDA5Yngyd3Bta3Y2NXMydm0ifQ.eMPCdzzcSvMwIXRgRn3b3Q',
       mapboxStyleId: 'ckpzbydzn1d0r17k8ci4bxyid',
       latInterval: 0.0009,
@@ -17295,17 +17295,30 @@ __webpack_require__.r(__webpack_exports__);
       this.mymap = L.map('mapid').setView(this.home, this.zoomLevel);
       L.tileLayer("https://api.mapbox.com/styles/v1/pimhooghiemstra/".concat(this.mapboxStyleId, "/tiles/{z}/{x}/{y}?access_token=").concat(this.accessToken), {
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-        maxZoom: 14,
+        maxZoom: 18,
         // id: 'mapbox/basic-v11',
         tileSize: 512,
         zoomOffset: -1,
         accessToken: this.accessToken
       }).addTo(this.mymap); // Our home
 
-      L.marker(this.home).addTo(this.mymap);
+      L.marker(this.home).addTo(this.mymap); // The grid
+
       var gridItems = this.createGridItems(this.home, this.latInterval, this.lngInterval, 60);
-      console.log(gridItems);
-      L.featureGroup(gridItems).addTo(this.mymap);
+      L.featureGroup(gridItems).addTo(this.mymap); // Track (coarsened)
+
+      var trackRaw = localStorage.getItem('track').split(', ');
+      trackRaw.pop();
+      var track = [];
+      trackRaw.forEach(function (item, index, arr) {
+        if (index % 2 === 1) {
+          track.push([parseFloat(arr[index - 1].slice(1)), parseFloat(item.slice(0, -1))]);
+        }
+      });
+      L.polygon(track, {
+        color: '#bbb',
+        fillColor: '#eee'
+      }).addTo(this.mymap);
     },
     createGridItems: function createGridItems(centerPoint, deltaLat, deltaLng, nPoints) {
       var grid = [];
@@ -17317,7 +17330,6 @@ __webpack_require__.r(__webpack_exports__);
         for (var j = 0; j < nPoints; j++) {
           var leftLng = -nPoints * deltaLng / 2 + this.home[1] + deltaLng * j;
           var rightLng = -nPoints * deltaLng / 2 + this.home[1] + deltaLng * (j + 1);
-          console.log("(".concat(i, ", ").concat(j, "): [").concat(topLat, ", ").concat(leftLng, "], [").concat(bottomLat, ", ").concat(rightLng, "]"));
           grid.push(L.rectangle([[topLat, leftLng], [bottomLat, rightLng]], {
             color: '#699669',
             weight: 1
@@ -18344,6 +18356,13 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       var track = _ref10.track,
           distance = _ref10.distance,
           name = _ref10.name;
+      // let coarseTrack = ''
+      // track.forEach((point, index) => {
+      //     if (index%15 === 0) {
+      //         coarseTrack += `[${point[0]}, ${point[1]}], `
+      //     }
+      // })
+      // localStorage.setItem('track', coarseTrack);
       // Map track points to floating point and create objects
       var points = track.map(function (point) {
         return [parseFloat(point[0]), parseFloat(point[1])];

@@ -620,6 +620,15 @@ export default {
             }))[type](message)
         },
         handleTrackImported({track, distance, name}) {
+            // let coarseTrack = ''
+            // track.forEach((point, index) => {
+            //     if (index%15 === 0) {
+            //         coarseTrack += `[${point[0]}, ${point[1]}], `
+            //     }
+            // })
+
+            // localStorage.setItem('track', coarseTrack);
+                
             // Map track points to floating point and create objects
             const points = track
                 .map(point => [parseFloat(point[0]), parseFloat(point[1])])
