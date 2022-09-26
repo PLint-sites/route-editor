@@ -297,11 +297,11 @@ class RouteController extends Controller
         extract($this->addDistance($lats, $lons));
 
         $coarsenFactor = 1;
-        if ($needsCoarsening) {
-            // number of points per km is 'pointDensity'
-            $pointDensity = ceil(count($lats)/$total_distance);
-            $coarsenFactor = ceil($pointDensity/5);
-        }
+        // if ($needsCoarsening) {
+        //     // number of points per km is 'pointDensity'
+        //     $pointDensity = ceil(count($lats)/$total_distance);
+        //     $coarsenFactor = ceil($pointDensity/5);
+        // }
 
         $coarsendData = [];
         foreach($latlng as $key => $point) {

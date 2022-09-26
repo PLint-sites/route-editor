@@ -30,6 +30,20 @@
                         <Button v-if="showExportButton && route.index === activeRouteIndex" type="button" @click="exportRoute" title="Export active route"><i class="fas fa-route"></i></Button>
                     </div>
                 </div>
+
+                <div id="merge-interface" v-if="showMergeInterface">
+                    <h2>Select route to connect</h2>
+                    <div v-for="(route, index) in mergeableRoutes" :key="`merging_${index}`">
+                        <Button 
+                            type="button" 
+                            @click="merge(route.index)"
+                            :style="`background-color: ${route.color};`"
+                        >
+                            {{ route.name }} - {{ route.distance.toFixed(2) }} km
+                        </Button>
+                    </div>
+                </div>
+
                 <Button id="start-route-button" type="button" @click="startRoute" title="Start new route"><i class="fas fa-plus"></i> Start new route</Button>
             </div>
 
@@ -174,6 +188,13 @@
             #start-route-button {
                 position: absolute;
                 bottom: 0;
+            }
+
+            #merge-interface {
+                button {
+                    color: #333;
+                    width: 100%;
+                }
             }
         }
 
