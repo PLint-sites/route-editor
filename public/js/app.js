@@ -17274,15 +17274,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var _libs_distance__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../libs/distance */ "./resources/js/libs/distance.js");
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: 'LittleExplorer',
   components: {},
   data: function data() {
     return {
       home: [50.99408, 5.85511],
-      zoomLevel: 14,
+      zoomLevel: 17,
       accessToken: 'pk.eyJ1IjoicGltaG9vZ2hpZW1zdHJhIiwiYSI6ImNrbnZ1cnRjZDA5Yngyd3Bta3Y2NXMydm0ifQ.eMPCdzzcSvMwIXRgRn3b3Q',
-      mapboxStyleId: 'ckpzbydzn1d0r17k8ci4bxyid'
+      mapboxStyleId: 'ckpzbydzn1d0r17k8ci4bxyid',
+      latInterval: 0.0009,
+      lngInterval: 0.00143
     };
   },
   computed: {},
@@ -17291,12 +17295,37 @@ __webpack_require__.r(__webpack_exports__);
       this.mymap = L.map('mapid').setView(this.home, this.zoomLevel);
       L.tileLayer("https://api.mapbox.com/styles/v1/pimhooghiemstra/".concat(this.mapboxStyleId, "/tiles/{z}/{x}/{y}?access_token=").concat(this.accessToken), {
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-        maxZoom: 18,
+        maxZoom: 14,
         // id: 'mapbox/basic-v11',
         tileSize: 512,
         zoomOffset: -1,
         accessToken: this.accessToken
-      }).addTo(this.mymap);
+      }).addTo(this.mymap); // Our home
+
+      L.marker(this.home).addTo(this.mymap);
+      var gridItems = this.createGridItems(this.home, this.latInterval, this.lngInterval, 60);
+      console.log(gridItems);
+      L.featureGroup(gridItems).addTo(this.mymap);
+    },
+    createGridItems: function createGridItems(centerPoint, deltaLat, deltaLng, nPoints) {
+      var grid = [];
+
+      for (var i = 0; i < nPoints; i++) {
+        var topLat = -nPoints * deltaLat / 2 + this.home[0] + deltaLat * (i + 1);
+        var bottomLat = -nPoints * deltaLat / 2 + this.home[0] + deltaLat * i;
+
+        for (var j = 0; j < nPoints; j++) {
+          var leftLng = -nPoints * deltaLng / 2 + this.home[1] + deltaLng * j;
+          var rightLng = -nPoints * deltaLng / 2 + this.home[1] + deltaLng * (j + 1);
+          console.log("(".concat(i, ", ").concat(j, "): [").concat(topLat, ", ").concat(leftLng, "], [").concat(bottomLat, ", ").concat(rightLng, "]"));
+          grid.push(L.rectangle([[topLat, leftLng], [bottomLat, rightLng]], {
+            color: '#699669',
+            weight: 1
+          }));
+        }
+      }
+
+      return grid;
     }
   },
   mounted: function mounted() {
@@ -19915,7 +19944,8 @@ var _hoisted_1 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("
 );
 
 var _hoisted_2 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
-  id: "mapid"
+  id: "mapid",
+  "class": "border-2 border-green-600"
 }, null, -1
 /* HOISTED */
 );
@@ -21086,7 +21116,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "#mapid[data-v-bbf02684] {\n  height: 74vh;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "#mapid[data-v-bbf02684] {\n  height: 100vh;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
