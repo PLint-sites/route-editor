@@ -38,3 +38,5 @@ Route::post('import-gpx-from-filename', [App\Http\Controllers\RouteController::c
 Route::post('export-gpx', [App\Http\Controllers\RouteController::class, 'export']);
 
 
+// VeloViewer clone for walks with Amy Lynn: squares of 200x200 m over Sittard
+Route::get('/little-explorer', [App\Http\Controllers\LittleExplorerController::class, 'start']);
