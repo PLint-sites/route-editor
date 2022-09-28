@@ -17286,10 +17286,22 @@ __webpack_require__.r(__webpack_exports__);
       accessToken: 'pk.eyJ1IjoicGltaG9vZ2hpZW1zdHJhIiwiYSI6ImNrbnZ1cnRjZDA5Yngyd3Bta3Y2NXMydm0ifQ.eMPCdzzcSvMwIXRgRn3b3Q',
       mapboxStyleId: 'ckpzbydzn1d0r17k8ci4bxyid',
       latInterval: 0.0009,
-      lngInterval: 0.00143
+      lngInterval: 0.00143,
+      squares: [],
+      routes: []
     };
   },
-  computed: {},
+  computed: {
+    someSquares: function someSquares() {
+      if (this.squares.length) {
+        return this.squares.filter(function (square, index) {
+          return index % 7 === 0;
+        });
+      }
+
+      return [];
+    }
+  },
   methods: {
     initMap: function initMap() {
       this.mymap = L.map('mapid').setView(this.home, this.zoomLevel);
@@ -17305,13 +17317,26 @@ __webpack_require__.r(__webpack_exports__);
       L.marker(this.home).addTo(this.mymap); // The grid
 
       var gridItems = this.createGridItems(this.home, this.latInterval, this.lngInterval, 60);
-      L.featureGroup(gridItems).addTo(this.mymap); // Track (coarsened)            
+      L.featureGroup(gridItems).addTo(this.mymap); // add them to the state (squares)
+
+      this.squares = gridItems; // Track (coarsened)            
 
       var track = this.loadTrackFromLocalStorage();
       L.polygon(track, {
         color: '#bbb',
         fillColor: '#eee'
-      }).addTo(this.mymap); // ---
+      }).addTo(this.mymap); // add the track to the state (routes)
+
+      this.routes.push(track); // fill each 7th square with a greenish background color
+
+      this.someSquares.forEach(function (square) {
+        return square.setStyle({
+          opacity: 0.3,
+          fillOpacity: 0.6,
+          weight: 1,
+          color: '#1da025'
+        });
+      }); // ---
       // Give colors to the grid items
       // ---
 

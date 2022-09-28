@@ -20,9 +20,18 @@ export default {
             mapboxStyleId: 'ckpzbydzn1d0r17k8ci4bxyid',
             latInterval: 0.0009,
             lngInterval: 0.00143,
+            squares: [],
+            routes: [],
         }
     },
-    computed: {},
+    computed: {
+        someSquares() {
+            if (this.squares.length) {
+                return this.squares.filter((square, index) => index%7 === 0)
+            }
+            return []
+        },
+    },
     methods: {
         initMap() {
             this.mymap = L.map('mapid').setView(this.home, this.zoomLevel)
@@ -42,10 +51,22 @@ export default {
             // The grid
             const gridItems = this.createGridItems(this.home, this.latInterval, this.lngInterval, 60)
             L.featureGroup(gridItems).addTo(this.mymap)
+            // add them to the state (squares)
+            this.squares = gridItems
 
             // Track (coarsened)            
             const track = this.loadTrackFromLocalStorage()
             L.polygon(track, {color: '#bbb', fillColor: '#eee'}).addTo(this.mymap);
+            // add the track to the state (routes)
+            this.routes.push(track)
+
+            // fill each 7th square with a greenish background color
+            this.someSquares.forEach(square => square.setStyle({
+                opacity: 0.3,
+                fillOpacity: 0.6,
+                weight: 1,
+                color: '#1da025'
+            }))
 
             // ---
             // Give colors to the grid items
