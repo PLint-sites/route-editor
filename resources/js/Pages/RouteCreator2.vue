@@ -627,7 +627,7 @@ export default {
             //     }
             // })
 
-            // localStorage.setItem('track', coarseTrack);
+            // localStorage.setItem('track3', coarseTrack);
                 
             // Map track points to floating point and create objects
             const points = track

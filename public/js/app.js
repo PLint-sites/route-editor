@@ -17274,36 +17274,35 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _libs_distance__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../libs/distance */ "./resources/js/libs/distance.js");
+/* harmony import */ var _libs_distance_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../libs/distance.js */ "./resources/js/libs/distance.js");
+/* harmony import */ var _libs_grid_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../libs/grid.js */ "./resources/js/libs/grid.js");
+
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: 'LittleExplorer',
   components: {},
   data: function data() {
     return {
-      home: [50.99408, 5.85511],
+      // home: [50.99408, 5.85511], // real home
+      home: [50.9933, 5.85395],
+      // op het grasveld
       zoomLevel: 14,
       accessToken: 'pk.eyJ1IjoicGltaG9vZ2hpZW1zdHJhIiwiYSI6ImNrbnZ1cnRjZDA5Yngyd3Bta3Y2NXMydm0ifQ.eMPCdzzcSvMwIXRgRn3b3Q',
       mapboxStyleId: 'ckpzbydzn1d0r17k8ci4bxyid',
       latInterval: 0.0009,
       lngInterval: 0.00143,
+      gridSize: 60,
+      grid: [],
       squares: [],
-      routes: []
+      routes: [],
+      colorScale: ['#00FFFF', '#00FF80', '#00FF00', '#80FF00', '#FFFF00', '#FF8000', '#FF0000']
     };
   },
-  computed: {
-    someSquares: function someSquares() {
-      if (this.squares.length) {
-        return this.squares.filter(function (square, index) {
-          return index % 7 === 0;
-        });
-      }
-
-      return [];
-    }
-  },
+  computed: {},
   methods: {
     initMap: function initMap() {
+      var _this = this;
+
       this.mymap = L.map('mapid').setView(this.home, this.zoomLevel);
       L.tileLayer("https://api.mapbox.com/styles/v1/pimhooghiemstra/".concat(this.mapboxStyleId, "/tiles/{z}/{x}/{y}?access_token=").concat(this.accessToken), {
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -17312,29 +17311,92 @@ __webpack_require__.r(__webpack_exports__);
         tileSize: 512,
         zoomOffset: -1,
         accessToken: this.accessToken
-      }).addTo(this.mymap); // Our home
+      }).addTo(this.mymap); // Our home: add a marker
 
-      L.marker(this.home).addTo(this.mymap); // The grid
+      L.marker(this.home).addTo(this.mymap); // ---
+      // The grid with squares
+      // ---
+      // grid contains the (lat, lng) positions of the lower left point of the square. Squares count from bottom left
+      // to the top
 
-      var gridItems = this.createGridItems(this.home, this.latInterval, this.lngInterval, 60);
-      L.featureGroup(gridItems).addTo(this.mymap); // add them to the state (squares)
+      this.grid = (0,_libs_grid_js__WEBPACK_IMPORTED_MODULE_1__.createGridPositions)(this.home, this.latInterval, this.lngInterval, this.gridSize); // squares contains the actual leaflet squares
 
-      this.squares = gridItems; // Track (coarsened)            
+      var squares = (0,_libs_grid_js__WEBPACK_IMPORTED_MODULE_1__.createLeafletGridSquares)(this.home, this.latInterval, this.lngInterval, this.gridSize);
+      L.featureGroup(squares).addTo(this.mymap); // add them to the state (squares)
 
-      var track = this.loadTrackFromLocalStorage();
-      L.polygon(track, {
-        color: '#bbb',
-        fillColor: '#eee'
+      this.squares = squares; // ---
+      // Tracks (coarsened via RouteCreator2.vue)
+      // ---
+      // track 1
+
+      var track1 = this.loadTrackFromLocalStorage('track') // Filter points too close to home, at start and finish
+      .filter(function (point, index, curArray) {
+        return index > 27 && index < curArray.length - 3;
+      });
+      L.polygon(track1, {
+        color: '#333333',
+        opacity: 0.45,
+        fillOpacity: 0
       }).addTo(this.mymap); // add the track to the state (routes)
 
-      this.routes.push(track); // fill each 7th square with a greenish background color
+      this.routes.push(track1); // track 2
 
-      this.someSquares.forEach(function (square) {
-        return square.setStyle({
-          opacity: 0.3,
-          fillOpacity: 0.6,
-          weight: 1,
-          color: '#1da025'
+      var track2 = this.loadTrackFromLocalStorage('track2') // Filter points too close to home, at start and finish
+      .filter(function (point, index, curArray) {
+        return index > 10 && index < curArray.length - 10;
+      });
+      L.polygon(track2, {
+        color: '#330000',
+        opacity: 0.45,
+        fillOpacity: 0
+      }).addTo(this.mymap); // add the track to the state (routes)
+
+      this.routes.push(track2); // ---
+      // Color the squares the track touches
+      // ---
+      // 1. just loop through all track points, don't think about multiple points in a single square (yet)
+
+      var touchedIndicesTrack1 = [];
+      track1.forEach(function (point, index, arr) {
+        var _calculateSquareMatri = (0,_libs_grid_js__WEBPACK_IMPORTED_MODULE_1__.calculateSquareMatrixPosition)(point, _this.lngInterval, _this.latInterval, _this.grid[0].ar),
+            row = _calculateSquareMatri.row,
+            column = _calculateSquareMatri.column;
+
+        var squareIndex = (0,_libs_grid_js__WEBPACK_IMPORTED_MODULE_1__.calculateSquareIndex)(row, column, _this.gridSize);
+
+        if (!touchedIndicesTrack1.includes(squareIndex)) {
+          touchedIndicesTrack1.push(squareIndex);
+          _this.grid[squareIndex].count = 1;
+        }
+      });
+      var touchedIndicesTrack2 = [];
+      track2.forEach(function (point, index, arr) {
+        var _calculateSquareMatri2 = (0,_libs_grid_js__WEBPACK_IMPORTED_MODULE_1__.calculateSquareMatrixPosition)(point, _this.lngInterval, _this.latInterval, _this.grid[0].ar),
+            row = _calculateSquareMatri2.row,
+            column = _calculateSquareMatri2.column;
+
+        var squareIndex = (0,_libs_grid_js__WEBPACK_IMPORTED_MODULE_1__.calculateSquareIndex)(row, column, _this.gridSize);
+
+        if (!touchedIndicesTrack2.includes(squareIndex)) {
+          touchedIndicesTrack2.push(squareIndex);
+          _this.grid[squareIndex].count++;
+        }
+      });
+      var gridIndicesWithHits = this.grid.filter(function (point) {
+        return point.count > 0;
+      }).map(function (point) {
+        return {
+          index: point.index,
+          count: point.count
+        };
+      });
+      gridIndicesWithHits.forEach(function (item, index) {
+        var color = _this.getColorOfSquareByHits(item.count);
+
+        _this.squares[item.index].setStyle({
+          fillOpacity: 0.5,
+          color: color // color: this.colorScale[5],
+
         });
       }); // ---
       // Give colors to the grid items
@@ -17348,30 +17410,39 @@ __webpack_require__.r(__webpack_exports__);
        * 5. plot the grid, giving each square the appropriate color based on the amount value (with just one track, this is either red (visited) or background color)
        */
     },
-    createGridItems: function createGridItems(centerPoint, deltaLat, deltaLng, nPoints) {
-      var grid = [];
+    getColorOfSquareByHits: function getColorOfSquareByHits(hits) {
+      var color = this.colorScale[1];
 
-      for (var i = 0; i < nPoints; i++) {
-        var topLat = -nPoints * deltaLat / 2 + this.home[0] + deltaLat * (i + 1);
-        var bottomLat = -nPoints * deltaLat / 2 + this.home[0] + deltaLat * i;
+      if (hits === 2) {
+        return this.colorScale[2];
+      } else if (hits === 3) {
+        return this.colorScale[3];
+      } else if (hits === 4) {
+        return this.colorScale[4];
+      } else if (hits === 5) {
+        return this.colorScale[5];
+      } else if (hits === 6) {
+        return this.colorScale[6];
+      } // if (hits >= 50) {
+      //     return this.colorScale[6]
+      // } else if (hits > 20) {
+      //     return this.colorScale[5]
+      // } else if (hits > 10) {
+      //     return this.colorScale[4]
+      // } else if (hits > 5) {
+      //     return this.colorScale[3]
+      // } else if (hits > 2) {
+      //     return this.colorScale[2]
+      // }
 
-        for (var j = 0; j < nPoints; j++) {
-          var leftLng = -nPoints * deltaLng / 2 + this.home[1] + deltaLng * j;
-          var rightLng = -nPoints * deltaLng / 2 + this.home[1] + deltaLng * (j + 1);
-          grid.push(L.rectangle([[topLat, leftLng], [bottomLat, rightLng]], {
-            color: '#699669',
-            weight: 1
-          }));
-        }
-      }
 
-      return grid;
+      return color;
     },
-    loadTrackFromLocalStorage: function loadTrackFromLocalStorage() {
+    loadTrackFromLocalStorage: function loadTrackFromLocalStorage(trackName) {
       // this track can be added to Local Storage by visiting the home page of the app,
       // uploading a track (export from Strava for example) and in method 'handleTrackImported'
       // you uncomment the coarseTrack lines (start of method).
-      var trackRaw = localStorage.getItem('track').split(', ');
+      var trackRaw = localStorage.getItem(trackName).split(', ');
       trackRaw.pop();
       var track = [];
       trackRaw.forEach(function (item, index, arr) {
@@ -18404,7 +18475,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       //         coarseTrack += `[${point[0]}, ${point[1]}], `
       //     }
       // })
-      // localStorage.setItem('track', coarseTrack);
+      // localStorage.setItem('track3', coarseTrack);
       // Map track points to floating point and create objects
       var points = track.map(function (point) {
         return [parseFloat(point[0]), parseFloat(point[1])];
@@ -21071,6 +21142,82 @@ var calculateRouteDistance = function calculateRouteDistance(points) {
   return distance;
 }; // export { calculateRouteDistance as default}
 
+
+
+
+/***/ }),
+
+/***/ "./resources/js/libs/grid.js":
+/*!***********************************!*\
+  !*** ./resources/js/libs/grid.js ***!
+  \***********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "calculateSquareIndex": () => (/* binding */ calculateSquareIndex),
+/* harmony export */   "calculateSquareMatrixPosition": () => (/* binding */ calculateSquareMatrixPosition),
+/* harmony export */   "createGridPositions": () => (/* binding */ createGridPositions),
+/* harmony export */   "createLeafletGridSquares": () => (/* binding */ createLeafletGridSquares)
+/* harmony export */ });
+var calculateSquareMatrixPosition = function calculateSquareMatrixPosition(point, dx, dy, startPoint) {
+  var x = point[1];
+  var y = point[0];
+  var x0 = startPoint[1];
+  var y0 = startPoint[0];
+  return {
+    row: Math.ceil((y - y0) / dy),
+    column: Math.ceil((x - x0) / dx)
+  };
+};
+
+var calculateSquareIndex = function calculateSquareIndex(row, column, nCols) {
+  return (row - 1) * nCols + (column - 1);
+};
+
+var createGridPositions = function createGridPositions(centerPoint, deltaLat, deltaLng, nPoints) {
+  var grid = [];
+
+  for (var i = 0; i < nPoints; i++) {
+    var bottomLat = -nPoints * deltaLat / 2 + centerPoint[0] + deltaLat * i;
+
+    for (var j = 0; j < nPoints; j++) {
+      var leftLng = -nPoints * deltaLng / 2 + centerPoint[1] + deltaLng * j;
+      var gridPoint = {
+        index: j + nPoints * i,
+        ar: [bottomLat, leftLng],
+        lat: bottomLat,
+        lng: leftLng,
+        count: 0
+      }; // grid.push([bottomLat, leftLng])
+
+      grid.push(gridPoint);
+    }
+  }
+
+  return grid;
+};
+
+var createLeafletGridSquares = function createLeafletGridSquares(centerPoint, deltaLat, deltaLng, nPoints) {
+  var grid = [];
+
+  for (var i = 0; i < nPoints; i++) {
+    var topLat = -nPoints * deltaLat / 2 + centerPoint[0] + deltaLat * (i + 1);
+    var bottomLat = -nPoints * deltaLat / 2 + centerPoint[0] + deltaLat * i;
+
+    for (var j = 0; j < nPoints; j++) {
+      var leftLng = -nPoints * deltaLng / 2 + centerPoint[1] + deltaLng * j;
+      var rightLng = -nPoints * deltaLng / 2 + centerPoint[1] + deltaLng * (j + 1);
+      grid.push(L.rectangle([[topLat, leftLng], [bottomLat, rightLng]], {
+        color: '#ccc',
+        weight: 1
+      }));
+    }
+  }
+
+  return grid;
+};
 
 
 
